@@ -41,6 +41,10 @@ extern "C" {
 #define TRUE 1
 #define FALSE 0
 #define MeassureCount 10
+#define Z1Receive 1
+#define Z2Receive 2
+#define Z3Receive 10
+#define Z4Receive 11
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -65,6 +69,14 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SensOut_Pin GPIO_PIN_0
 #define SensOut_GPIO_Port GPIOA
+#define Z1Receive_Pin GPIO_PIN_1
+#define Z1Receive_GPIO_Port GPIOB
+#define Z2Receive_Pin GPIO_PIN_2
+#define Z2Receive_GPIO_Port GPIOB
+#define Z3Receive_Pin GPIO_PIN_10
+#define Z3Receive_GPIO_Port GPIOB
+#define Z4Receive_Pin GPIO_PIN_11
+#define Z4Receive_GPIO_Port GPIOB
 #define Z1_Pin GPIO_PIN_8
 #define Z1_GPIO_Port GPIOA
 #define Z2_Pin GPIO_PIN_9
@@ -76,10 +88,13 @@ void Error_Handler(void);
 #define LED_Pin GPIO_PIN_12
 #define LED_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-uint16_t count_tmr2, countPulse, noise_count;
+uint16_t countPulse, noise_count, currentMode;
+uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
 uint32_t sumCounter2, fastCounter;
+TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim2;
-bool intTMRFlag;
+TIM_HandleTypeDef htim1;
+bool readyFlag;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

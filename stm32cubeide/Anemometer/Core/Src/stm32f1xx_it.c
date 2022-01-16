@@ -57,6 +57,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_tim2_ch1;
+extern TIM_HandleTypeDef htim4;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -206,10 +207,45 @@ void DMA1_Channel5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
 	if (noise_count-- == 0) {
-		count_tmr2 = fastCounter & 0x0FFFF;
-		//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+		switch (currentMode) {
+			case 1: { // Z1 > Z2
+				Z12 = fastCounter & 0x0FFFF;
+				readyFlag = TRUE;
+				break;
+			}
+			case 2: { // Z2 > Z1
+				Z21 = fastCounter & 0x0FFFF;
+				break;
+			}
+			case 3: { // Z2 > Z3
+				Z23 = fastCounter & 0x0FFFF;
+				break;
+			}
+			case 4: { // Z3 > Z2
+				Z32 = fastCounter & 0x0FFFF;
+				break;
+			}
+			case 5: { // Z3 > Z4
+				Z34 = fastCounter & 0x0FFFF;
+				break;
+			}
+			case 6: { // Z4 > Z3
+				Z43 = fastCounter & 0x0FFFF;
+				break;
+			}
+			case 7: { // Z4 > Z1
+				Z41 = fastCounter & 0x0FFFF;
+				break;
+			}
+			case 8: { // Z1 > Z4
+				Z14 = fastCounter & 0x0FFFF;
+				break;
+			}
+		}
 		HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
+		//__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
+		//HAL_GPIO_TogglePin(GPIOA, LED_Pin);
+		HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 	}
 
   /* USER CODE END DMA1_Channel5_IRQn 0 */
@@ -217,6 +253,76 @@ void DMA1_Channel5_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
 
   /* USER CODE END DMA1_Channel5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM4 global interrupt.
+  */
+void TIM4_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM4_IRQn 0 */
+	  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+	  readyFlag = FALSE;
+	  noise_count = 2;
+	  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
+	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_2);
+	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_3);
+	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_4);
+	  /* Turn off all multiplexer */
+	  GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
+	  switch (currentMode++) {
+		  case 0: { // Z1 (transmit) > Z2 (receive)
+			  GPIOB->ODR |= (1 << Z2Receive); // Turn on multiplexer for input Z2 channel.
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
+			  break;
+		  }
+		  case 1: { // Z2 (transmit) > Z1 (receive)
+			  GPIOB->ODR |= (1 << Z1Receive); // Turn on multiplexer for input Z1 channel.
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
+			  break;
+		  }
+		  case 2: { // Z2 (transmit) > Z3 (receive)
+			  GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z3 channel.
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
+			  break;
+		  }
+		  case 3: { // Z3 (transmit) > Z2 (receive)
+			  GPIOB->ODR |= (1 << Z2Receive); // Turn on multiplexer for input Z2 channel.
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
+			  break;
+		  }
+		  case 4: { // Z3 (transmit) > Z4 (receive)
+			  GPIOB->ODR |= (uint16_t) (1 << Z4Receive); // Turn on multiplexer for input Z4 channel.
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
+			  break;
+		  }
+		  case 5: { // Z4 (transmit) > Z3 (receive)
+			  GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z4 channel.
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
+			  break;
+		  }
+		  case 6: { // Z4 (transmit) > Z1 (receive)
+			  GPIOB->ODR |= (1 << Z1Receive); // Turn on multiplexer for input Z4 channel.
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
+			  break;
+		  }
+		  case 7: { // Z1 (transmit) > Z4 (receive)
+			  GPIOB->ODR |= (1 << Z4Receive); // Turn on multiplexer for input Z4 channel.
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
+			  break;
+		  }
+		  case 8: { // All data complite.
+			  currentMode = 0;
+			  break;
+		  }
+	  }
+
+  /* USER CODE END TIM4_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim4);
+  /* USER CODE BEGIN TIM4_IRQn 1 */
+
+  /* USER CODE END TIM4_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

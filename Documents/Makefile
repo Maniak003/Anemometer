@@ -1,0 +1,3 @@
+
+RS485:	RS485.c
+	gcc RS485.c -o RS485

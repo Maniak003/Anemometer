@@ -42,6 +42,7 @@
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim4;
 DMA_HandleTypeDef hdma_tim2_ch1;
 
 UART_HandleTypeDef huart1;
@@ -58,6 +59,7 @@ static void MX_DMA_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -99,6 +101,7 @@ int main(void)
   MX_TIM1_Init();
   MX_USART1_UART_Init();
   MX_TIM2_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -107,24 +110,34 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   countPulse = MeassureCount;
   sumCounter2 = 0;
-  while (1)
-  {
-	  HAL_GPIO_TogglePin(GPIOA, LED_Pin);
-	  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
-	  noise_count = 4;
-	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
-	  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
-	  intTMRFlag = TRUE;
+  /* Turn off all multiplexer */
+  GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
+  /*
+   * currentMode
+   * Z1--Z2
+   * |	  |
+   * Z4__Z3
+   *
+   * 0 - Z1 >> Z2
+   * 1 - Z2 >> Z1
+   * 2 - Z2 >> Z3
+   * 3 - Z3 >> Z2
+   * 4 - Z3 >> Z4
+   * 5 - Z4 >> Z3
+   * 6 - Z4 >> Z1
+   * 7 - Z1 >> Z4
+   */
+  currentMode = 0;
+  HAL_TIM_Base_Start_IT(&htim4);
+  while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
-	  HAL_Delay(50);
-	  //count_tmr2 = __HAL_TIM_GET_COUNTER(&htim2);
-	  if (countPulse-- == 0) {
-		  countPulse = MeassureCount;
-		  sprintf(SndBuffer, "Phase : %lu\r\n", sumCounter2 / MeassureCount);
+	  HAL_Delay(1);
+	  if (readyFlag) {
+		  //sprintf(SndBuffer, "Z12: %d, Z21: %d, Z23: %d, Z32: %d, Z34: %d, Z43: %d, Z41: %d, Z14: %d\r\n"
+		//		  , Z12 % 1600, Z21 % 1600, Z23 % 1600, Z32 % 1600, Z34 % 1600, Z43 % 1600, Z41 % 1600, Z14 % 1600 );
+		  sprintf(SndBuffer, "Z12: %d\r\n", Z12 % 1600);
 		  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-		  sumCounter2 = 0;
-	  } else {
-		  sumCounter2 = sumCounter2 + count_tmr2 % 1600;
+		  readyFlag = FALSE;
 	  }
     /* USER CODE END WHILE */
 
@@ -232,7 +245,6 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   __HAL_TIM_ENABLE_OCxPRELOAD(&htim1, TIM_CHANNEL_1);
-  sConfigOC.OCMode = TIM_OCMODE_TIMING;
   if (HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
@@ -329,6 +341,51 @@ static void MX_TIM2_Init(void)
 }
 
 /**
+  * @brief TIM4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM4_Init(void)
+{
+
+  /* USER CODE BEGIN TIM4_Init 0 */
+
+  /* USER CODE END TIM4_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM4_Init 1 */
+
+  /* USER CODE END TIM4_Init 1 */
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 4;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 65535;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM4_Init 2 */
+
+  /* USER CODE END TIM4_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -391,7 +448,17 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, Z1Receive_Pin|Z2Receive_Pin|Z3Receive_Pin|Z4Receive_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : Z1Receive_Pin Z2Receive_Pin Z3Receive_Pin Z4Receive_Pin */
+  GPIO_InitStruct.Pin = Z1Receive_Pin|Z2Receive_Pin|Z3Receive_Pin|Z4Receive_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_Pin */
   GPIO_InitStruct.Pin = LED_Pin;
