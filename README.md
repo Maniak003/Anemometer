@@ -6,7 +6,7 @@
     <body class="logged-in env-production page-responsive page-blob" style="word-wrap: break-word;">
       <p> UltraSonic Anemometer</p>
       <a href="https://github.com/Maniak003/Anemometer/wiki/Description" rel="nofollow">
-        <img src="https://github.com/Maniak003/Anemometer/blob/main/picture/Screenshot_20210717-224149.png" alt="Th-232" style="max-width: 100%;">
+        <img src="https://github.com/Maniak003/Anemometer/blob/main/picture/Screenshot_20210717-224149.png" alt="Wind watcher" style="max-width: 100%;">
       </a>
       <a href="https://github.com/Maniak003/Anemometer/wiki/Description" rel="nofollow">Description</a>
     </body>
