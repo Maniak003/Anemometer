@@ -67,8 +67,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SensOut_Pin GPIO_PIN_0
-#define SensOut_GPIO_Port GPIOA
+#define SensorInput_Pin GPIO_PIN_0
+#define SensorInput_GPIO_Port GPIOA
 #define Z1Receive_Pin GPIO_PIN_1
 #define Z1Receive_GPIO_Port GPIOB
 #define Z2Receive_Pin GPIO_PIN_2
