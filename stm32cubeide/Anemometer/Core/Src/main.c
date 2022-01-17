@@ -134,7 +134,7 @@ int main(void)
 	  HAL_Delay(1);
 	  if (readyFlag) {
 		  //sprintf(SndBuffer, "Z12: %d, Z21: %d, Z23: %d, Z32: %d, Z34: %d, Z43: %d, Z41: %d, Z14: %d\r\n"
-		//		  , Z12 % 1600, Z21 % 1600, Z23 % 1600, Z32 % 1600, Z34 % 1600, Z43 % 1600, Z41 % 1600, Z14 % 1600 );
+		  //		, Z12 % 1600, Z21 % 1600, Z23 % 1600, Z32 % 1600, Z34 % 1600, Z43 % 1600, Z41 % 1600, Z14 % 1600 );
 		  sprintf(SndBuffer, "Z12: %d\r\n", Z12 % 1600);
 		  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 		  readyFlag = FALSE;

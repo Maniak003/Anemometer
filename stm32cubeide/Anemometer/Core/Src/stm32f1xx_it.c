@@ -265,6 +265,10 @@ void TIM4_IRQHandler(void)
 	  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 	  readyFlag = FALSE;
 	  noise_count = 2;
+	  /* Turn off all multiplexer */
+	  GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
+
+	  /* Restart timers */
 	  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
 	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
 	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_2);
@@ -272,11 +276,15 @@ void TIM4_IRQHandler(void)
 	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_4);
 
 	  /* Set all timer channels for output */
-	  GPIOA->CRH &= ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8 | GPIO_CRH_CNF9 | GPIO_CRH_MODE9 | GPIO_CRH_CNF10 | GPIO_CRH_MODE10 | GPIO_CRH_CNF11 | GPIO_CRH_MODE11);
-	  GPIOA->CRH |= (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1 | GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1 | GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1 | GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1);
+	  GPIOA->CRH &= ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8
+			  | GPIO_CRH_CNF9 | GPIO_CRH_MODE9
+			  | GPIO_CRH_CNF10 | GPIO_CRH_MODE10
+			  | GPIO_CRH_CNF11 | GPIO_CRH_MODE11);
+	  GPIOA->CRH |= (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1
+			  | GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1
+			  | GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1
+			  | GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1);
 
-	  /* Turn off all multiplexer */
-	  GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 	  switch (currentMode++) {
 		  case 0: { // Z1 (transmit) > Z2 (receive)
 			  GPIOA->CRH &= ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9 ); // Set Z2 port to input mode
