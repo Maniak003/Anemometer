@@ -275,66 +275,69 @@ void TIM4_IRQHandler(void)
 	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_3);
 	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_4);
 
-	  /* Set all timer channels for output */
+	  /* Set all timer channels for input mode */
 	  GPIOA->CRH &= ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8
 			  | GPIO_CRH_CNF9 | GPIO_CRH_MODE9
 			  | GPIO_CRH_CNF10 | GPIO_CRH_MODE10
 			  | GPIO_CRH_CNF11 | GPIO_CRH_MODE11);
+	  /*
 	  GPIOA->CRH |= (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1
 			  | GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1
 			  | GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1
 			  | GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1);
+		*/
 
 	  switch (currentMode++) {
 		  case 0: { // Z1 (transmit) > Z2 (receive)
-			  GPIOA->CRH &= ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9 ); // Set Z2 port to input mode
+			  setZ1transmit; // Set Z1 port to output mode
 			  GPIOB->ODR |= (1 << Z2Receive); // Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 			  break;
 		  }
 		  case 1: { // Z2 (transmit) > Z1 (receive)
-			  GPIOA->CRH &= ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8 ); // Set Z1 port to input mode
+			  setZ2transmit; // Set Z2 port to output mode
 			  GPIOB->ODR |= (1 << Z1Receive); // Turn on multiplexer for input Z1 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
 			  break;
 		  }
 		  case 2: { // Z2 (transmit) > Z3 (receive)
-			  GPIOA->CRH &= ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10 ); // Set Z3 port to input mode
+			  setZ2transmit; // Set Z2 port to output mode
 			  GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z3 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
 			  break;
 		  }
 		  case 3: { // Z3 (transmit) > Z2 (receive)
-			  GPIOA->CRH &= ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9 ); // Set Z2 port to input mode
+			  setZ3transmit; // Set Z3 port to output mode
 			  GPIOB->ODR |= (1 << Z2Receive); // Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
 			  break;
 		  }
 		  case 4: { // Z3 (transmit) > Z4 (receive)
-			  GPIOA->CRH &= ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11 ); // Set Z4 port to input mode
+			  setZ3transmit; // Set Z3 port to output mode
 			  GPIOB->ODR |= (uint16_t) (1 << Z4Receive); // Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
 			  break;
 		  }
 		  case 5: { // Z4 (transmit) > Z3 (receive)
-			  GPIOA->CRH &= ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10 ); // Set Z3 port to input mode
+			  setZ4transmit; // Set Z4 port to output mode
 			  GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 			  break;
 		  }
 		  case 6: { // Z4 (transmit) > Z1 (receive)
-			  GPIOA->CRH &= ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8 ); // Set Z1 port to input mode
+			  setZ4transmit;	// Set Z4 port to output mode
 			  GPIOB->ODR |= (1 << Z1Receive); // Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 			  break;
 		  }
 		  case 7: { // Z1 (transmit) > Z4 (receive)
-			  GPIOA->CRH &= ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11 ); // Set Z4 port to input mode
+			  //GPIOA->CRH |= (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1); // Set Z1 port to output mode
+			  setZ1transmit;	// Set Z1 port to output mode
 			  GPIOB->ODR |= (1 << Z4Receive); // Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 			  break;
 		  }
-		  case 8: { // All data complite.
+		  case 8: { // All data complete.
 			  currentMode = 0;
 			  break;
 		  }

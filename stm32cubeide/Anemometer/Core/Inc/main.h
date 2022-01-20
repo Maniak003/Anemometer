@@ -45,6 +45,10 @@ extern "C" {
 #define Z2Receive 2
 #define Z3Receive 10
 #define Z4Receive 11
+#define setZ1transmit GPIOA->CRH |= (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1)
+#define setZ2transmit GPIOA->CRH |= (GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1)
+#define setZ3transmit GPIOA->CRH |= (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1)
+#define setZ4transmit GPIOA->CRH |= (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
