@@ -139,7 +139,8 @@ int main(void)
 	  if (readyFlag) {
 		  //sprintf(SndBuffer, "Z12: %d, Z21: %d, Z23: %d, Z32: %d, Z34: %d, Z43: %d, Z41: %d, Z14: %d\r\n"
 		  //		, Z12 % 1600, Z21 % 1600, Z23 % 1600, Z32 % 1600, Z34 % 1600, Z43 % 1600, Z41 % 1600, Z14 % 1600 );
-		  sprintf(SndBuffer, "Z12: %d\r\n", Z12 % 1600);
+		  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+		  sprintf(SndBuffer, "Z12: %d\r\n", (int) ((Z12 % 1600) - (Z21 % 1600)));
 		  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 		  readyFlag = FALSE;
 	  }
@@ -401,7 +402,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 4;
+  htim4.Init.Prescaler = 32;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

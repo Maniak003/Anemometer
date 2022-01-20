@@ -209,8 +209,8 @@ void DMA1_Channel5_IRQHandler(void)
 	if (noise_count-- == 0) {
 		switch (currentMode) {
 			case 1: { // Z1 > Z2
+				HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 				Z12 = fastCounter & 0x0FFFF;
-				readyFlag = TRUE;
 				break;
 			}
 			case 2: { // Z2 > Z1
@@ -245,7 +245,6 @@ void DMA1_Channel5_IRQHandler(void)
 		HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
 		//__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
 		//HAL_GPIO_TogglePin(GPIOA, LED_Pin);
-		HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 	}
 
   /* USER CODE END DMA1_Channel5_IRQn 0 */
@@ -262,8 +261,6 @@ void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
 
-	  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-	  readyFlag = FALSE;
 	  noise_count = 2;
 	  /* Turn off all multiplexer */
 	  GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
@@ -289,21 +286,26 @@ void TIM4_IRQHandler(void)
 
 	  switch (currentMode++) {
 		  case 0: { // Z1 (transmit) > Z2 (receive)
+			  //readyFlag = FALSE;
+			  Z12 = 0;
 			  setZ1transmit; // Set Z1 port to output mode
 			  GPIOB->ODR |= (1 << Z2Receive); // Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 			  break;
 		  }
 		  case 1: { // Z2 (transmit) > Z1 (receive)
+			  Z21 = 0;
 			  setZ2transmit; // Set Z2 port to output mode
 			  GPIOB->ODR |= (1 << Z1Receive); // Turn on multiplexer for input Z1 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
 			  break;
 		  }
 		  case 2: { // Z2 (transmit) > Z3 (receive)
-			  setZ2transmit; // Set Z2 port to output mode
-			  GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z3 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
+			  readyFlag = TRUE;
+			  currentMode = 0;
+			  //setZ2transmit; // Set Z2 port to output mode
+			  //GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z3 channel.
+			  //HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
 			  break;
 		  }
 		  case 3: { // Z3 (transmit) > Z2 (receive)
@@ -338,6 +340,7 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 8: { // All data complete.
+			  readyFlag = TRUE;
 			  currentMode = 0;
 			  break;
 		  }
