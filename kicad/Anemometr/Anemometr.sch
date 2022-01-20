@@ -1487,7 +1487,7 @@ Z1
 Text GLabel 4450 4350 0    50   Input ~ 0
 Z1
 $Comp
-L My_Library:W5500 D5
+L Anemometr-rescue:W5500-My_Library D5
 U 1 1 61EEF122
 P 6150 8000
 F 0 "D5" H 6000 8100 50  0000 L CNN
@@ -1897,7 +1897,7 @@ Wire Wire Line
 	8150 8650 8150 8750
 Connection ~ 8150 8650
 $Comp
-L My_Library:H1102NL D6
+L Anemometr-rescue:H1102NL-My_Library D6
 U 1 1 61F6B654
 P 9550 7550
 F 0 "D6" H 9550 8115 50  0000 C CNN
@@ -1989,7 +1989,7 @@ F 3 "" H 9950 8750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J18
+L Anemometr-rescue:Conn-My_Library J18
 U 1 1 6201FB36
 P 11000 7250
 F 0 "J18" H 11028 7296 50  0001 L CNN
@@ -2000,7 +2000,7 @@ F 3 "~" H 11000 7250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J19
+L Anemometr-rescue:Conn-My_Library J19
 U 1 1 620202BB
 P 11000 7350
 F 0 "J19" H 11028 7396 50  0001 L CNN
@@ -2011,7 +2011,7 @@ F 3 "~" H 11000 7350 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J20
+L Anemometr-rescue:Conn-My_Library J20
 U 1 1 620208F4
 P 11000 7450
 F 0 "J20" H 11028 7496 50  0001 L CNN
@@ -2022,7 +2022,7 @@ F 3 "~" H 11000 7450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J21
+L Anemometr-rescue:Conn-My_Library J21
 U 1 1 62020F8F
 P 11000 7550
 F 0 "J21" H 11028 7596 50  0001 L CNN
@@ -2033,7 +2033,7 @@ F 3 "~" H 11000 7550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J22
+L Anemometr-rescue:Conn-My_Library J22
 U 1 1 620215DE
 P 11000 7650
 F 0 "J22" H 11028 7696 50  0001 L CNN
@@ -2044,7 +2044,7 @@ F 3 "~" H 11000 7650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J23
+L Anemometr-rescue:Conn-My_Library J23
 U 1 1 62021C50
 P 11000 7750
 F 0 "J23" H 11028 7796 50  0001 L CNN
@@ -2055,7 +2055,7 @@ F 3 "~" H 11000 7750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J24
+L Anemometr-rescue:Conn-My_Library J24
 U 1 1 62022327
 P 11000 7850
 F 0 "J24" H 11028 7896 50  0001 L CNN
@@ -2066,7 +2066,7 @@ F 3 "~" H 11000 7850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J25
+L Anemometr-rescue:Conn-My_Library J25
 U 1 1 62022978
 P 11000 7950
 F 0 "J25" H 11028 7996 50  0001 L CNN
@@ -2561,7 +2561,7 @@ Wire Wire Line
 Wire Wire Line
 	10400 6400 11100 6400
 $Comp
-L My_Library:SD4932B D12
+L Anemometr-rescue:SD4932B-My_Library D12
 U 1 1 629D5E4E
 P 10150 5750
 F 0 "D12" H 10150 6165 50  0000 C CNN
@@ -3051,7 +3051,7 @@ F 3 "~" H 3800 6200 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L My_Library:DA2257 D15
+L Anemometr-rescue:DA2257-My_Library D15
 U 1 1 622C6996
 P 11450 5400
 F 0 "D15" H 11300 5800 50  0000 C CNN
