@@ -57,6 +57,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_tim2_ch1;
+extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 /* USER CODE BEGIN EV */
 
@@ -206,10 +207,11 @@ void SysTick_Handler(void)
 void DMA1_Channel5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
+	HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 	if (noise_count-- == 0) {
 		switch (currentMode) {
 			case 1: { // Z1 > Z2
-				HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 				Z12 = fastCounter & 0x0FFFF;
 				break;
 			}
@@ -242,6 +244,8 @@ void DMA1_Channel5_IRQHandler(void)
 				break;
 			}
 		}
+		/* Turn off all multiplexer */
+		GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 		HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
 		//__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
 		//HAL_GPIO_TogglePin(GPIOA, LED_Pin);
@@ -255,18 +259,34 @@ void DMA1_Channel5_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+	HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+	HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+
+  /* USER CODE END TIM3_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM4 global interrupt.
   */
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
 
-	  noise_count = 4;
+	  noise_count = noseCNT;
 	  /* Turn off all multiplexer */
 	  GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 
 	  /* Restart timers */
-	  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
 	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
 	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_2);
 	  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_3);
@@ -329,7 +349,6 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 7: { // Z1 (transmit) > Z4 (receive)
-			  //GPIOA->CRH |= (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1); // Set Z1 port to output mode
 			  setZ1transmit;	// Set Z1 port to output mode
 			  GPIOB->ODR |= (1 << Z4Receive); // Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
@@ -341,6 +360,7 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 	  }
+//	  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
 
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
