@@ -40,7 +40,6 @@ extern "C" {
 /* USER CODE BEGIN ET */
 #define TRUE 1
 #define FALSE 0
-#define noseCNT 3
 #define timeAdge 2
 #define Z1Receive 1
 #define Z2Receive 2
@@ -93,14 +92,14 @@ void Error_Handler(void);
 #define LED_Pin GPIO_PIN_12
 #define LED_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-uint16_t noise_count, currentMode;
+uint16_t currentMode;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
 uint32_t sumCounter2, fastCounter;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-bool readyFlag;
+bool readyFlag, firstFlag;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

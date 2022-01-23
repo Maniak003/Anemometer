@@ -133,17 +133,22 @@ int main(void)
    * 6 - Z4 >> Z1
    * 7 - Z1 >> Z4
    */
+  sprintf(SndBuffer, "\r\n");
+  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
   currentMode = 0;
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim3);
+  HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
 	  HAL_Delay(1);
 	  if (readyFlag) {
-		  if (Z12 > 0 && Z21 > 0) {
+		  if (Z12 != 0 && Z21 != 0) {
 			  //sprintf(SndBuffer, "Z12: %d, Z21: %d, Z23: %d, Z32: %d, Z34: %d, Z43: %d, Z41: %d, Z14: %d\r\n"
 			  //		, Z12 % 1600, Z21 % 1600, Z23 % 1600, Z32 % 1600, Z34 % 1600, Z43 % 1600, Z41 % 1600, Z14 % 1600 );
-			  sprintf(SndBuffer, "Diff:%5d, Z12:%5d, Z21:%5d\r", (int) ((Z12 % 1600) - (Z21 % 1600)), Z12 % 1600, Z21 % 1600);
+			  //sprintf(SndBuffer, "Diff:%5d, Z12:%5d, Z21:%5d   \r", (int) ((Z12 % 1600) - (Z21 % 1600)), Z12 % 1600, Z21 % 1600);
+			  //sprintf(SndBuffer, "Y1:%5d, Z14:%5d, Z41:%5d   \r", Z14 - Z41, Z14, Z41);
+			  sprintf(SndBuffer, "X1:%5d, X2:%5d, Y1:%5d, Y2:%5d   \r", Z12 - Z21, Z34 - Z43, Z23 - Z32, Z41 - Z14);
 			  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  readyFlag = FALSE;
 		  }
@@ -362,6 +367,10 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_OnePulse_Init(&htim2, TIM_OPMODE_SINGLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sSlaveConfig.SlaveMode = TIM_SLAVEMODE_RESET;
   sSlaveConfig.InputTrigger = TIM_TS_ITR2;
   if (HAL_TIM_SlaveConfigSynchro(&htim2, &sSlaveConfig) != HAL_OK)
@@ -376,7 +385,7 @@ static void MX_TIM2_Init(void)
   }
   sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
-  sConfigIC.ICPrescaler = TIM_ICPSC_DIV8;
+  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
   sConfigIC.ICFilter = 0;
   if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
   {
@@ -411,7 +420,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 20000;
+  htim3.Init.Period = 30500;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -476,7 +485,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 8;
+  htim4.Init.Prescaler = 2;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
