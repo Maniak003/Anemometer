@@ -148,7 +148,7 @@ int main(void)
 			  //		, Z12 % 1600, Z21 % 1600, Z23 % 1600, Z32 % 1600, Z34 % 1600, Z43 % 1600, Z41 % 1600, Z14 % 1600 );
 			  //sprintf(SndBuffer, "Diff:%5d, Z12:%5d, Z21:%5d   \r", (int) ((Z12 % 1600) - (Z21 % 1600)), Z12 % 1600, Z21 % 1600);
 			  //sprintf(SndBuffer, "Y1:%5d, Z14:%5d, Z41:%5d   \r", Z14 - Z41, Z14, Z41);
-			  sprintf(SndBuffer, "X1:%5d, X2:%5d, Y1:%5d, Y2:%5d   \r", Z12 - Z21, Z34 - Z43, Z23 - Z32, Z41 - Z14);
+			  sprintf(SndBuffer, "X1:%5d, X2:%5d, Y1:%5d, Y2:%5d   \r", Z12 - Z21, Z43 - Z34, Z23 - Z32, Z14 - Z41);
 			  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  readyFlag = FALSE;
 		  }
