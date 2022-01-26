@@ -120,6 +120,18 @@ C 64 196 4 0 0 0 N
 C 64 310 4 0 0 0 N
 C 66 -204 4 0 0 0 N
 C 66 -92 4 0 0 0 N
+T 0 -250 225 24 0 0 0 CT1 Normal 0 C C
+T 0 -250 -175 24 0 0 0 CT2 Normal 0 C C
+T 0 250 -325 24 0 0 0 CT3 Normal 0 C C
+T 0 250 75 24 0 0 0 CT4 Normal 0 C C
+T 0 -250 -75 24 0 0 0 RD+ Normal 0 C C
+T 0 -250 -325 24 0 0 0 RD- Normal 0 C C
+T 0 250 -75 24 0 0 0 RX+ Normal 0 C C
+T 0 250 -225 24 0 0 0 RX- Normal 0 C C
+T 0 -250 325 24 0 0 0 TD+ Normal 0 C C
+T 0 -250 75 24 0 0 0 TD- Normal 0 C C
+T 0 250 325 24 0 0 0 TX+ Normal 0 C C
+T 0 250 175 24 0 0 0 TX- Normal 0 C C
 S -300 400 300 -400 0 1 0 f
 P 2 0 1 0 -300 -300 -200 -300 N
 P 2 0 1 0 -300 -200 -200 -200 N
