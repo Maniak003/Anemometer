@@ -136,6 +136,7 @@ int main(void)
   sprintf(SndBuffer, "\r\n");
   HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
   currentMode = 0;
+  runFlag = FALSE;
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
@@ -148,7 +149,7 @@ int main(void)
 			  //		, Z12 % 1600, Z21 % 1600, Z23 % 1600, Z32 % 1600, Z34 % 1600, Z43 % 1600, Z41 % 1600, Z14 % 1600 );
 			  //sprintf(SndBuffer, "Diff:%5d, Z12:%5d, Z21:%5d   \r", (int) ((Z12 % 1600) - (Z21 % 1600)), Z12 % 1600, Z21 % 1600);
 			  //sprintf(SndBuffer, "Y1:%5d, Z14:%5d, Z41:%5d   \r", Z14 - Z41, Z14, Z41);
-			  sprintf(SndBuffer, "X1:%5d, X2:%5d, Y1:%5d, Y2:%5d   \r", Z12 - Z21, Z43 - Z34, Z23 - Z32, Z14 - Z41);
+			  sprintf(SndBuffer, "X:%5d, Y:%5d   \r", X, Y);
 			  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  readyFlag = FALSE;
 		  }
@@ -280,7 +281,7 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_ENABLE;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_OC1;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_ENABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
   {
@@ -364,10 +365,6 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   if (HAL_TIM_IC_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_OnePulse_Init(&htim2, TIM_OPMODE_SINGLE) != HAL_OK)
   {
     Error_Handler();
   }

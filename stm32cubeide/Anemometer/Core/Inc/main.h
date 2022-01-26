@@ -92,14 +92,15 @@ void Error_Handler(void);
 #define LED_Pin GPIO_PIN_12
 #define LED_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-uint16_t currentMode;
+uint16_t currentMode, startCount;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
+int X, Y;
 uint32_t sumCounter2, fastCounter;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-bool readyFlag, firstFlag;
+bool readyFlag, runFlag;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
