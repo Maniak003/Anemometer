@@ -3276,4 +3276,11 @@ Wire Wire Line
 	8300 1800 8300 2300
 Wire Wire Line
 	9700 1800 9700 2000
+Wire Wire Line
+	11500 4900 8150 4900
+Wire Wire Line
+	8150 4900 8150 3500
+Wire Wire Line
+	8150 3500 8550 3500
+Connection ~ 8550 3500
 $EndSCHEMATC
