@@ -92,6 +92,10 @@ void Error_Handler(void);
 #define Z4_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_12
 #define LED_GPIO_Port GPIOA
+#define TMP117_SCL_Pin GPIO_PIN_8
+#define TMP117_SCL_GPIO_Port GPIOB
+#define TMP117_SDA_Pin GPIO_PIN_9
+#define TMP117_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 uint16_t currentMode, startCount;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
