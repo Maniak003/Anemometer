@@ -208,47 +208,46 @@ void DMA1_Channel5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
 	if (runFlag) {
-		runFlag = FALSE;
-		HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
-		/* Turn off all multiplexer */
-		GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
-		switch (currentMode) {
-			case 1: { // Z1 > Z2
-				Z12 = fastCounter & 0x0FFFF;
-				break;
+			HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
+			/* Turn off all multiplexer */
+			GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
+			switch (currentMode) {
+				case 1: { // Z1 > Z2
+					Z12 = fastCounter & 0x0FFFF;
+					break;
+				}
+				case 2: { // Z2 > Z1
+					Z21 = fastCounter & 0x0FFFF;
+					break;
+				}
+				case 3: { // Z2 > Z3
+					Z23 = fastCounter & 0x0FFFF;
+					break;
+				}
+				case 4: { // Z3 > Z2
+					Z32 = fastCounter & 0x0FFFF;
+					break;
+				}
+				case 5: { // Z3 > Z4
+					Z34 = fastCounter & 0x0FFFF;
+					break;
+				}
+				case 6: { // Z4 > Z3
+					Z43 = fastCounter & 0x0FFFF;
+					break;
+				}
+				case 7: { // Z4 > Z1
+					Z41 = fastCounter & 0x0FFFF;
+					break;
+				}
+				case 8: { // Z1 > Z4
+					Z14 = fastCounter & 0x0FFFF;
+					break;
+				}
 			}
-			case 2: { // Z2 > Z1
-				Z21 = fastCounter & 0x0FFFF;
-				break;
-			}
-			case 3: { // Z2 > Z3
-				Z23 = fastCounter & 0x0FFFF;
-				break;
-			}
-			case 4: { // Z3 > Z2
-				Z32 = fastCounter & 0x0FFFF;
-				break;
-			}
-			case 5: { // Z3 > Z4
-				Z34 = fastCounter & 0x0FFFF;
-				break;
-			}
-			case 6: { // Z4 > Z3
-				Z43 = fastCounter & 0x0FFFF;
-				break;
-			}
-			case 7: { // Z4 > Z1
-				Z41 = fastCounter & 0x0FFFF;
-				break;
-			}
-			case 8: { // Z1 > Z4
-				Z14 = fastCounter & 0x0FFFF;
-				break;
-			}
+			HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 		}
-		HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
-	}
 
   /* USER CODE END DMA1_Channel5_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_tim2_ch1);
@@ -316,8 +315,6 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 2: { // Z2 (transmit) > Z3 (receive)
-			  //readyFlag = TRUE;
-			  //currentMode = 0;
 			  setZ2transmit; // Set Z2 port to output mode
 			  GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z3 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
@@ -355,8 +352,8 @@ void TIM4_IRQHandler(void)
 		  }
 		  case 8: { // All data complete.
 			  readyFlag = TRUE;
-			  X = Z12 - Z21 + Z43 - Z34;
-			  Y = Z23 - Z32 + Z14 - Z41;
+			  X = (Z12 - Z21 + Z43 - Z34) / 2;
+			  Y = (Z23 - Z32 + Z14 - Z41) / 2;
 			  currentMode = 0;
 			  break;
 		  }

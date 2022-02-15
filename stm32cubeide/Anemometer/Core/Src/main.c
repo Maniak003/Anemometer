@@ -137,10 +137,9 @@ int main(void)
    * 6 - Z4 >> Z1
    * 7 - Z1 >> Z4
    */
-  sprintf(SndBuffer, "\r\n");
+  sprintf(SndBuffer, "\rAnemometer start.\r\n");
   HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
   currentMode = 0;
-  runFlag = FALSE;
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
@@ -149,14 +148,15 @@ int main(void)
 	  HAL_Delay(1);
 	  if (readyFlag) {
 		  if (Z12 != 0 && Z21 != 0) {
-			  //sprintf(SndBuffer, "Z12: %d, Z21: %d, Z23: %d, Z32: %d, Z34: %d, Z43: %d, Z41: %d, Z14: %d\r\n"
-			  //		, Z12 % 1600, Z21 % 1600, Z23 % 1600, Z32 % 1600, Z34 % 1600, Z43 % 1600, Z41 % 1600, Z14 % 1600 );
-			  //sprintf(SndBuffer, "Diff:%5d, Z12:%5d, Z21:%5d   \r", (int) ((Z12 % 1600) - (Z21 % 1600)), Z12 % 1600, Z21 % 1600);
+
+			  //X = Z12 - Z21 + Z43 - Z34;
+			  //Y = Z23 - Z32 + Z14 - Z41;
 
 			  /* Коррекция для тестирования */
-			  X = X + 145;
-			  Y = Y + 55;
+			  //X = X + 145;
+			  //Y = Y + 55;
 			  //sprintf(SndBuffer, "Y1:%5d, Z14:%5d, Z41:%5d   \r", Z14 - Z41, Z14, Z41);
+
 			  V = sqrt(pow(X, 2) + pow(Y, 2));  // Скорость
 			  if ( V != 0 ) {
 				  A = acos( X / V ) * 180 / 3.1415926; // Угол
@@ -167,6 +167,7 @@ int main(void)
 				  A = 0;
 			  }
 			  sprintf(SndBuffer, "X:%5d, Y:%5d, V:%6.1f, A:%4.0f   \r", X, Y, V, A);
+
 			  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  readyFlag = FALSE;
 		  }
