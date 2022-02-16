@@ -166,7 +166,7 @@ int main(void)
 			  } else {
 				  A = 0;
 			  }
-			  sprintf(SndBuffer, "X:%5d, Y:%5d, V:%6.1f, A:%4.0f   \r", X, Y, V, A);
+			  sprintf(SndBuffer, "X:%5.0f, Y:%5.0f, V:%6.1f, A:%4.0f   \r", X, Y, V, A);
 
 			  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  readyFlag = FALSE;

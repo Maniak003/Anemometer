@@ -100,8 +100,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 uint16_t currentMode, startCount;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
-int X, Y;
-double V, A;
+double X, Y, V, A;
 uint32_t sumCounter2, fastCounter;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
