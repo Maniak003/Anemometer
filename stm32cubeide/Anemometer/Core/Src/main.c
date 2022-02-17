@@ -166,7 +166,7 @@ int main(void)
 			  } else {
 				  A = 0;
 			  }
-			  sprintf(SndBuffer, "X:%5.0f, Y:%5.0f, V:%6.1f, A:%4.0f   \r", X, Y, V, A);
+			  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.1f, A:%4.0f   \r", X, Y, V, A);
 
 			  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  readyFlag = FALSE;
@@ -469,7 +469,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 30500;
+  htim3.Init.Period = 30000;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -534,7 +534,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 2;
+  htim4.Init.Prescaler = 4;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
