@@ -143,6 +143,9 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
+  measCount = MEASSURE_COUNT;
+  Xsum = 0;
+  Ysum = 0;
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
 	  HAL_Delay(1);
@@ -155,20 +158,28 @@ int main(void)
 			  /* Коррекция для тестирования */
 			  //X = X + 145;
 			  //Y = Y + 55;
-			  //sprintf(SndBuffer, "Y1:%5d, Z14:%5d, Z41:%5d   \r", Z14 - Z41, Z14, Z41);
+			  //sprintf(SndBuffer, "Z14:%7d, Z41:%7d, Z23:%7d, Z32:%7d   \r", Z14, Z41, Z23, Z32);
 
-			  V = sqrt(pow(X, 2) + pow(Y, 2));  // Скорость
-			  if ( V != 0 ) {
-				  A = acos( X / V ) * 180 / 3.1415926; // Угол
-				  if (Y < 0) {
-					  A = 360 - A; // III, IV квадранты
-				  }
+			  if (measCount-- != 0) {
+				  Xsum =+ X;
+				  Ysum =+ Y;
 			  } else {
-				  A = 0;
+				  measCount = MEASSURE_COUNT;
+				  Xsum = Xsum / MEASSURE_COUNT;
+				  Ysum = Ysum / MEASSURE_COUNT
+				  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
+				  if ( V != 0 ) {
+					  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
+					  if (Ysum < 0) {
+						  A = 360 - A; // III, IV квадранты
+					  }
+				  } else {
+					  A = 0;
+				  }
+				  V = V / SPEED_CALIBRATE;
+				  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.1f, A:%4.0f   \r", Xsum, Ysum, V, A);
+				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
-			  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.1f, A:%4.0f   \r", X, Y, V, A);
-
-			  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  readyFlag = FALSE;
 		  }
 	  }
@@ -469,7 +480,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 30000;
+  htim3.Init.Period = 30400;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -534,7 +545,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 4;
+  htim4.Init.Prescaler = 2;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

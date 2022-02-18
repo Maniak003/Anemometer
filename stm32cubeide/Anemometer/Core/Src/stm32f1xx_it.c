@@ -304,49 +304,53 @@ void TIM4_IRQHandler(void)
 	  switch (currentMode++) {
 		  case 0: { // Z1 (transmit) > Z2 (receive)
 			  setZ1transmit; // Set Z1 port to output mode
-			  GPIOB->ODR |= (1 << Z2Receive); // Turn on multiplexer for input Z2 channel.
+			  GPIOB->ODR |= (1 << Z2Receive); 				// Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 			  break;
 		  }
 		  case 1: { // Z2 (transmit) > Z1 (receive)
 			  setZ2transmit; // Set Z2 port to output mode
-			  GPIOB->ODR |= (1 << Z1Receive); // Turn on multiplexer for input Z1 channel.
+			  GPIOB->ODR |= (1 << Z1Receive); 				// Turn on multiplexer for input Z1 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
 			  break;
 		  }
 		  case 2: { // Z2 (transmit) > Z3 (receive)
+			  //TIM3->ARR = 31000;
 			  setZ2transmit; // Set Z2 port to output mode
-			  GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z3 channel.
+			  GPIOB->ODR |= (1 << Z3Receive); 				// Turn on multiplexer for input Z3 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
 			  break;
 		  }
 		  case 3: { // Z3 (transmit) > Z2 (receive)
+			  //TIM3->ARR = 31000;
 			  setZ3transmit; // Set Z3 port to output mode
-			  GPIOB->ODR |= (1 << Z2Receive); // Turn on multiplexer for input Z2 channel.
+			  GPIOB->ODR |= (1 << Z2Receive); 				// Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
 			  break;
 		  }
 		  case 4: { // Z3 (transmit) > Z4 (receive)
 			  setZ3transmit; // Set Z3 port to output mode
-			  GPIOB->ODR |= (uint16_t) (1 << Z4Receive); // Turn on multiplexer for input Z4 channel.
+			  GPIOB->ODR |= (uint16_t) (1 << Z4Receive); 	// Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
 			  break;
 		  }
 		  case 5: { // Z4 (transmit) > Z3 (receive)
 			  setZ4transmit; // Set Z4 port to output mode
-			  GPIOB->ODR |= (1 << Z3Receive); // Turn on multiplexer for input Z4 channel.
+			  GPIOB->ODR |= (1 << Z3Receive); 				// Turn on multiplexer for input Z3 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 			  break;
 		  }
 		  case 6: { // Z4 (transmit) > Z1 (receive)
+			  //TIM3->ARR = 30400;
 			  setZ4transmit;	// Set Z4 port to output mode
-			  GPIOB->ODR |= (1 << Z1Receive); // Turn on multiplexer for input Z4 channel.
+			  GPIOB->ODR |= (1 << Z1Receive); 				// Turn on multiplexer for input Z1 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 			  break;
 		  }
 		  case 7: { // Z1 (transmit) > Z4 (receive)
+			  //TIM3->ARR = 30400;
 			  setZ1transmit;	// Set Z1 port to output mode
-			  GPIOB->ODR |= (1 << Z4Receive); // Turn on multiplexer for input Z4 channel.
+			  GPIOB->ODR |= (1 << Z4Receive); 				// Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 			  break;
 		  }

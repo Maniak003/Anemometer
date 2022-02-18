@@ -50,7 +50,8 @@ extern "C" {
 #define setZ2transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9_0)) | (GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1)
 #define setZ3transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10_0)) | (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1)
 #define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
-#define MEASSURE_COUNT 4;
+#define MEASSURE_COUNT 10;
+#define SPEED_CALIBRATE 5.1;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -98,9 +99,9 @@ void Error_Handler(void);
 #define TMP117_SDA_Pin GPIO_PIN_9
 #define TMP117_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-uint16_t currentMode, startCount;
+uint16_t currentMode, startCount, measCount;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
-double X, Y, V, A;
+double X, Y, V, A, Xsum, Ysum;
 uint32_t sumCounter2, fastCounter;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
