@@ -1,3 +1,12 @@
-main.c:387:6:SystemClock_Config	72	static,ignoring_inline_asm
-main.c:81:5:main	160	static,ignoring_inline_asm
-main.c:827:6:Error_Handler	0	static,ignoring_inline_asm
+main.c:102:6:W5500_Unselect	0	static
+main.c:98:6:W5500_Select	0	static
+main.c:88:6:UART_Printf	272	static
+main.c:127:6:Callback_IPAssigned	8	static
+main.c:132:6:Callback_IPConflict	0	static
+main.c:110:6:W5500_WriteBuff	0	static
+main.c:121:6:W5500_WriteByte	16	static
+main.c:106:6:W5500_ReadBuff	0	static
+main.c:115:9:W5500_ReadByte	16	static
+main.c:391:6:SystemClock_Config	72	static,ignoring_inline_asm
+main.c:84:5:main	2272	static,ignoring_inline_asm
+main.c:869:6:Error_Handler	0	static,ignoring_inline_asm
