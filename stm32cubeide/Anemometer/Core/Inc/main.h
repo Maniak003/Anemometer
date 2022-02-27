@@ -35,6 +35,11 @@ extern "C" {
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
+#include "wizchip_conf.h"
+#include <dhcp.h>
+#include <dns.h>
+#include <socket.h>
+#include <stdarg.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -84,6 +89,8 @@ void Error_Handler(void);
 #define Z3Receive_GPIO_Port GPIOB
 #define Z4Receive_Pin GPIO_PIN_11
 #define Z4Receive_GPIO_Port GPIOB
+#define Eth_CS_Pin GPIO_PIN_12
+#define Eth_CS_GPIO_Port GPIOB
 #define Z1_Pin GPIO_PIN_8
 #define Z1_GPIO_Port GPIOA
 #define Z2_Pin GPIO_PIN_9
@@ -94,6 +101,10 @@ void Error_Handler(void);
 #define Z4_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_12
 #define LED_GPIO_Port GPIOA
+#define Eth_int_Pin GPIO_PIN_3
+#define Eth_int_GPIO_Port GPIOB
+#define Eth_rst_Pin GPIO_PIN_4
+#define Eth_rst_GPIO_Port GPIOB
 #define TMP117_SCL_Pin GPIO_PIN_8
 #define TMP117_SCL_GPIO_Port GPIOB
 #define TMP117_SDA_Pin GPIO_PIN_9
@@ -108,6 +119,15 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 bool readyFlag, runFlag;
+
+/* For W5500*/
+
+#define DHCP_SOCKET     0
+#define DNS_SOCKET      1
+#define HTTP_SOCKET     2
+#define W5500_RST_Pin	GPIO_PIN_4
+#define W5500_CS_Pin	GPIO_PIN_12
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

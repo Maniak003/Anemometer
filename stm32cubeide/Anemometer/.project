@@ -30,4 +30,26 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Core/Inc/wizchip_conf.h</name>
+			<type>1</type>
+			<location>/home/ed/work/Anemometer/stm32cubeide/Anemometer/Core/Inc/wizchip_conf.h</location>
+		</link>
+		<link>
+			<name>Core/Src/dhcp.c</name>
+			<type>1</type>
+			<location>/home/ed/work/Anemometer/stm32cubeide/Anemometer/Core/Src/dhcp.c</location>
+		</link>
+		<link>
+			<name>Core/Src/dns.c</name>
+			<type>1</type>
+			<location>/home/ed/work/Anemometer/stm32cubeide/Anemometer/Core/Src/dns.c</location>
+		</link>
+		<link>
+			<name>Core/Src/socket.c</name>
+			<type>1</type>
+			<location>/home/ed/work/Anemometer/stm32cubeide/Anemometer/Core/Src/socket.c</location>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -22,10 +22,16 @@ Core/Src/stm32f1xx_hal_msp.o: ../Core/Src/stm32f1xx_hal_msp.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
+ ../Core/Inc/wizchip_conf.h \
+ /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/W5500/w5500.h \
+ ../Core/Inc/wizchip_conf.h \
+ /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DHCP/dhcp.h \
+ /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DNS/dns.h \
+ /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/socket.h \
+ /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/wizchip_conf.h
 
 ../Core/Inc/main.h:
 
@@ -75,10 +81,22 @@ Core/Src/stm32f1xx_hal_msp.o: ../Core/Src/stm32f1xx_hal_msp.c \
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h:
-
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
+
+../Core/Inc/wizchip_conf.h:
+
+/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/W5500/w5500.h:
+
+../Core/Inc/wizchip_conf.h:
+
+/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DHCP/dhcp.h:
+
+/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DNS/dns.h:
+
+/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/socket.h:
+
+/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/wizchip_conf.h:

@@ -42,8 +42,6 @@
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 
-SPI_HandleTypeDef hspi2;
-
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
@@ -65,7 +63,6 @@ static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM4_Init(void);
-static void MX_SPI2_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
@@ -84,6 +81,191 @@ static void MX_I2C1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+/*
+void UART_Printf(const char* fmt, ...) {
+	char buff[256];
+	va_list args;
+	va_start(args, fmt);
+	vsnprintf(buff, sizeof(buff), fmt, args);
+	HAL_UART_Transmit(&huart1, (uint8_t*)buff, strlen(buff), HAL_MAX_DELAY);
+	va_end(args);
+}
+
+
+void W5500_Select(void) {
+	HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_RESET);
+}
+
+void W5500_Unselect(void) {
+	HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_SET);
+}
+
+void W5500_ReadBuff(uint8_t* buff, uint16_t len) {
+	HAL_SPI_Receive(&hspi2, buff, len, HAL_MAX_DELAY);
+}
+
+void W5500_WriteBuff(uint8_t* buff, uint16_t len) {
+	HAL_SPI_Transmit(&hspi2, buff, len, HAL_MAX_DELAY);
+}
+
+
+uint8_t W5500_ReadByte(void) {
+	uint8_t byte;
+	W5500_ReadBuff(&byte, sizeof(byte));
+	return byte;
+}
+
+void W5500_WriteByte(uint8_t byte) {
+	W5500_WriteBuff(&byte, sizeof(byte));
+}
+
+volatile bool ip_assigned = false;
+
+void Callback_IPAssigned(void) {
+    UART_Printf("Callback: IP assigned! Leased time: %d sec\r\n", getDHCPLeasetime());
+    ip_assigned = true;
+}
+
+void Callback_IPConflict(void) {
+    UART_Printf("Callback: IP conflict!\r\n");
+}
+
+// 1K should be enough, see https://forum.wiznet.io/t/topic/1612/2
+uint8_t dhcp_buffer[1024];
+// 1K seems to be enough for this buffer as well
+uint8_t dns_buffer[1024];
+*/
+/*
+void init_w5500() {
+    UART_Printf("\r\ninit() called!\r\n");
+
+    UART_Printf("Registering W5500 callbacks...\r\n");
+    reg_wizchip_cs_cbfunc(W5500_Select, W5500_Unselect);
+    reg_wizchip_spi_cbfunc(W5500_ReadByte, W5500_WriteByte);
+    reg_wizchip_spiburst_cbfunc(W5500_ReadBuff, W5500_WriteBuff);
+
+    UART_Printf("Calling wizchip_init()...\r\n");
+    uint8_t rx_tx_buff_sizes[] = {2, 2, 2, 2, 2, 2, 2, 2};
+    wizchip_init(rx_tx_buff_sizes, rx_tx_buff_sizes);
+
+    UART_Printf("Calling DHCP_init()...\r\n");
+    wiz_NetInfo net_info = {
+        .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
+        .dhcp = NETINFO_DHCP
+    };
+    // set MAC address before using DHCP
+    setSHAR(net_info.mac);
+    DHCP_init(DHCP_SOCKET, dhcp_buffer);
+
+    UART_Printf("Registering DHCP callbacks...\r\n");
+    reg_dhcp_cbfunc(
+        Callback_IPAssigned,
+        Callback_IPAssigned,
+        Callback_IPConflict
+    );
+
+    UART_Printf("Calling DHCP_run()...\r\n");
+    // actually should be called in a loop, e.g. by timer
+    uint32_t ctr = 10000;
+    while((!ip_assigned) && (ctr > 0)) {
+        DHCP_run();
+        ctr--;
+    }
+    if(!ip_assigned) {
+        UART_Printf("\r\nIP was not assigned :(\r\n");
+        return;
+    }
+
+    getIPfromDHCP(net_info.ip);
+    getGWfromDHCP(net_info.gw);
+    getSNfromDHCP(net_info.sn);
+
+    uint8_t dns[4];
+    getDNSfromDHCP(dns);
+
+    UART_Printf("IP:  %d.%d.%d.%d\r\nGW:  %d.%d.%d.%d\r\nNet: %d.%d.%d.%d\r\nDNS: %d.%d.%d.%d\r\n",
+        net_info.ip[0], net_info.ip[1], net_info.ip[2], net_info.ip[3],
+        net_info.gw[0], net_info.gw[1], net_info.gw[2], net_info.gw[3],
+        net_info.sn[0], net_info.sn[1], net_info.sn[2], net_info.sn[3],
+        dns[0], dns[1], dns[2], dns[3]
+    );
+
+    UART_Printf("Calling wizchip_setnetinfo()...\r\n");
+    wizchip_setnetinfo(&net_info);
+
+    UART_Printf("Calling DNS_init()...\r\n");
+    DNS_init(DNS_SOCKET, dns_buffer);
+
+    uint8_t addr[4];
+    {
+        char domain_name[] = "eax.me";
+        UART_Printf("Resolving domain name \"%s\"...\r\n", domain_name);
+        int8_t res = DNS_run(dns, (uint8_t*)&domain_name, addr);
+        if(res != 1) {
+            UART_Printf("DNS_run() failed, res = %d", res);
+            return;
+        }
+        UART_Printf("Result: %d.%d.%d.%d\r\n", addr[0], addr[1], addr[2], addr[3]);
+    }
+
+    UART_Printf("Creating socket...\r\n");
+    uint8_t http_socket = HTTP_SOCKET;
+    uint8_t code = socket(http_socket, Sn_MR_TCP, 10888, 0);
+    if(code != http_socket) {
+        UART_Printf("socket() failed, code = %d\r\n", code);
+        return;
+    }
+
+    UART_Printf("Socket created, connecting...\r\n");
+    code = connect(http_socket, addr, 80);
+    if(code != SOCK_OK) {
+        UART_Printf("connect() failed, code = %d\r\n", code);
+        close(http_socket);
+        return;
+    }
+
+    UART_Printf("Connected, sending HTTP request...\r\n");
+    {
+        char req[] = "GET / HTTP/1.0\r\nHost: eax.me\r\n\r\n";
+        uint16_t len = sizeof(req) - 1;
+        uint8_t* buff = (uint8_t*)&req;
+        while(len > 0) {
+            UART_Printf("Sending %d bytes...\r\n", len);
+            int32_t nbytes = send(http_socket, buff, len);
+            if(nbytes <= 0) {
+                UART_Printf("send() failed, %d returned\r\n", nbytes);
+                close(http_socket);
+                return;
+            }
+            UART_Printf("%d bytes sent!\r\n", nbytes);
+            len -= nbytes;
+        }
+    }
+
+    UART_Printf("Request sent. Reading response...\r\n");
+    {
+        char buff[32];
+        for(;;) {
+            int32_t nbytes = recv(http_socket, (uint8_t*)&buff, sizeof(buff)-1);
+            if(nbytes == SOCKERR_SOCKSTATUS) {
+                UART_Printf("\r\nConnection closed.\r\n");
+                break;
+            }
+
+            if(nbytes <= 0) {
+                UART_Printf("\r\nrecv() failed, %d returned\r\n", nbytes);
+                break;
+            }
+
+            buff[nbytes] = '\0';
+            UART_Printf("%s", buff);
+        }
+    }
+
+    UART_Printf("Closing socket.\r\n");
+    close(http_socket);
+}
+*/
 
   /* USER CODE END 1 */
 
@@ -110,7 +292,6 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM2_Init();
   MX_TIM4_Init();
-  MX_SPI2_Init();
   MX_TIM3_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
@@ -139,6 +320,14 @@ int main(void)
    */
   sprintf(SndBuffer, "\rAnemometer start.\r\n");
   HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);	// Reset W5500
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_RESET);
+  //HAL_Delay(10000);
+  //init_w5500();
+  sprintf(SndBuffer, "Init complete.\r\n");
+  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+
   currentMode = 0;
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim3);
@@ -146,6 +335,7 @@ int main(void)
   measCount = MEASSURE_COUNT;
   Xsum = 0;
   Ysum = 0;
+
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
 	  HAL_Delay(1);
@@ -259,44 +449,6 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
-
-}
-
-/**
-  * @brief SPI2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI2_Init(void)
-{
-
-  /* USER CODE BEGIN SPI2_Init 0 */
-
-  /* USER CODE END SPI2_Init 0 */
-
-  /* USER CODE BEGIN SPI2_Init 1 */
-
-  /* USER CODE END SPI2_Init 1 */
-  /* SPI2 parameter configuration*/
-  hspi2.Instance = SPI2;
-  hspi2.Init.Mode = SPI_MODE_MASTER;
-  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi2.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
-  hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi2.Init.CRCPolynomial = 10;
-  if (HAL_SPI_Init(&hspi2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI2_Init 2 */
-
-  /* USER CODE END SPI2_Init 2 */
 
 }
 
@@ -635,7 +787,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, Z1Receive_Pin|Z2Receive_Pin|Z3Receive_Pin|Z4Receive_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, Z1Receive_Pin|Z2Receive_Pin|Z3Receive_Pin|Z4Receive_Pin
+                          |Eth_CS_Pin|Eth_int_Pin|Eth_rst_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
@@ -645,6 +798,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Eth_CS_Pin Eth_int_Pin Eth_rst_Pin */
+  GPIO_InitStruct.Pin = Eth_CS_Pin|Eth_int_Pin|Eth_rst_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_Pin */
