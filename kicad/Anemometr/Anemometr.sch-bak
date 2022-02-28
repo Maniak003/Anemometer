@@ -2987,7 +2987,7 @@ Connection ~ 9000 5800
 Wire Wire Line
 	9000 5800 9500 5800
 $Comp
-L My_Library:T4932B D15
+L Anemometr-rescue:T4932B-My_Library D15
 U 1 1 621F62B7
 P 11100 5350
 F 0 "D15" H 11100 4985 50  0000 C CNN
@@ -3064,17 +3064,6 @@ F 2 "" H 8450 4600 50  0001 C CNN
 F 3 "" H 8450 4600 50  0001 C CNN
 	1    8450 4600
 	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x01_Female J1
-U 1 1 62105095
-P 10300 2900
-F 0 "J1" H 9800 2900 50  0001 C CNN
-F 1 "+5.5v" V 10400 2800 50  0000 L CNN
-F 2 "My-library:SMD-CONN" H 10300 2900 50  0001 C CNN
-F 3 "~" H 10300 2900 50  0001 C CNN
-	1    10300 2900
-	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R R44

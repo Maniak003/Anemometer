@@ -36,10 +36,10 @@ extern "C" {
 #include <stdbool.h>
 #include <math.h>
 #include "wizchip_conf.h"
-#include <dhcp.h>
-#include <dns.h>
-#include <socket.h>
-#include <stdarg.h>
+#include "dhcp.h"
+#include "dns.h"
+#include "socket.h"
+#include "stdarg.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -154,7 +154,7 @@ extern "C" {
 #endif
 //A20150601 : Define the unit of IO DATA.   
    typedef   uint8_t   iodata_t;
-   #include "W5500/w5500.h"
+   #include "w5500.h"
 #elif ( _WIZCHIP_ == W5300)
    #define _WIZCHIP_ID_                 "W5300\0"
 /**
