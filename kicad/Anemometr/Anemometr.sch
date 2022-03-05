@@ -2274,17 +2274,6 @@ F 3 "~" H 11500 5300 50  0001 C CNN
 	1    11500 5300
 	-1   0    0    1   
 $EndComp
-$Comp
-L Device:R R35
-U 1 1 629FDF7E
-P 11800 5450
-F 0 "R35" H 12050 5550 50  0000 R CNN
-F 1 "2k" H 12000 5450 50  0000 R CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 11730 5450 50  0001 C CNN
-F 3 "~" H 11800 5450 50  0001 C CNN
-	1    11800 5450
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	10200 5600 10300 5600
 Wire Wire Line
@@ -2342,10 +2331,6 @@ F 3 "" H 11650 5600 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Connection ~ 11650 5600
-Wire Wire Line
-	11650 5600 11800 5600
-Wire Wire Line
-	11650 5300 11800 5300
 Connection ~ 11650 5300
 Wire Wire Line
 	8050 6400 8050 5200
