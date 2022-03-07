@@ -127,6 +127,7 @@ bool readyFlag, runFlag;
 #define HTTP_SOCKET     2
 #define W5500_RST_Pin	GPIO_PIN_4
 #define W5500_CS_Pin	GPIO_PIN_12
+#define _DHCP_DEBUG_
 
 /* USER CODE END Private defines */
 

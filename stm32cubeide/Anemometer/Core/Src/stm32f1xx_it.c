@@ -186,6 +186,12 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
+    static uint16_t ticks = 0;
+    ticks++;
+    if(ticks == 1000) {
+        DHCP_time_handler();
+        ticks = 0;
+    }
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();

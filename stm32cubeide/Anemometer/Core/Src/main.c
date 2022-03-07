@@ -173,6 +173,7 @@ void init_w5500() {
     while((!ip_assigned) && (ctr > 0)) {
         DHCP_run();
         ctr--;
+        HAL_Delay(100);
     }
     if(!ip_assigned) {
         UART_Printf("\r\nIP was not assigned :(\r\n");
@@ -196,6 +197,7 @@ void init_w5500() {
     UART_Printf("Calling wizchip_setnetinfo()...\r\n");
     wizchip_setnetinfo(&net_info);
 
+/*
     UART_Printf("Calling DNS_init()...\r\n");
     DNS_init(DNS_SOCKET, dns_buffer);
 
@@ -267,6 +269,7 @@ void init_w5500() {
 
     UART_Printf("Closing socket.\r\n");
     close(http_socket);
+*/
 }
 
 
@@ -326,8 +329,8 @@ void init_w5500() {
   HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);	// Reset W5500
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
-  //HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_RESET);
-  HAL_Delay(3000);
+  HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_SET);
+  HAL_Delay(1000);
   init_w5500();
   sprintf(SndBuffer, "Init finish.\r\n");
   HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);

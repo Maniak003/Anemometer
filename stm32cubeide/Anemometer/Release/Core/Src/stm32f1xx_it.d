@@ -26,14 +26,8 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/wizchip_conf.h \
- /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/W5500/w5500.h \
- ../Core/Inc/wizchip_conf.h \
- /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DHCP/dhcp.h \
- /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DNS/dns.h \
- /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/socket.h \
- /home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/wizchip_conf.h \
- ../Core/Inc/stm32f1xx_it.h
+ ../Core/Inc/wizchip_conf.h ../Core/Inc/w5500.h ../Core/Inc/dhcp.h \
+ ../Core/Inc/dns.h ../Core/Inc/socket.h ../Core/Inc/stm32f1xx_it.h
 
 ../Core/Inc/main.h:
 
@@ -93,16 +87,12 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
 
 ../Core/Inc/wizchip_conf.h:
 
-/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/W5500/w5500.h:
+../Core/Inc/w5500.h:
 
-../Core/Inc/wizchip_conf.h:
+../Core/Inc/dhcp.h:
 
-/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DHCP/dhcp.h:
+../Core/Inc/dns.h:
 
-/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DNS/dns.h:
-
-/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/socket.h:
-
-/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet/wizchip_conf.h:
+../Core/Inc/socket.h:
 
 ../Core/Inc/stm32f1xx_it.h:
