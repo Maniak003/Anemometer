@@ -307,6 +307,7 @@ void init_w5500() {
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
   sumCounter2 = 0;
   /* Turn off all multiplexer */
   GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
@@ -330,11 +331,11 @@ void init_w5500() {
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);	// Reset W5500
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_SET);
-  HAL_Delay(1000);
+  HAL_Delay(2000);
   init_w5500();
   sprintf(SndBuffer, "Init finish.\r\n");
   HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-
+  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
   currentMode = 0;
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim3);
