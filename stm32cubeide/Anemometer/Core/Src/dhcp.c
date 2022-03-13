@@ -164,6 +164,7 @@ enum
    dhcpT2value             = 59,
    dhcpClassIdentifier     = 60,
    dhcpClientIdentifier    = 61,
+   dhcpZabbixServerIP	   = 224,
    endOption               = 255
 };
 
@@ -201,6 +202,7 @@ uint8_t DHCP_allocated_ip[4]  = {0, };    // IP address from DHCP
 uint8_t DHCP_allocated_gw[4]  = {0, };    // Gateway address from DHCP
 uint8_t DHCP_allocated_sn[4]  = {0, };    // Subnet mask from DHCP
 uint8_t DHCP_allocated_dns[4] = {0, };    // DNS address from DHCP
+uint8_t DHCP_allocated_zabbix[4] = {0, }; // Zabbix server option 224
 
 
 int8_t   dhcp_state        = STATE_DHCP_INIT;   // DHCP state
@@ -399,13 +401,14 @@ void send_DHCP_DISCOVER(void)
 	pDHCPMSG->OPT[k - (i+6+1)] = i+6; // length of hostname
 
 	pDHCPMSG->OPT[k++] = dhcpParamRequest;
-	pDHCPMSG->OPT[k++] = 0x06;	// length of request
+	pDHCPMSG->OPT[k++] = 0x07;	// length of request
 	pDHCPMSG->OPT[k++] = subnetMask;
 	pDHCPMSG->OPT[k++] = routersOnSubnet;
 	pDHCPMSG->OPT[k++] = dns;
 	pDHCPMSG->OPT[k++] = domainName;
 	pDHCPMSG->OPT[k++] = dhcpT1value;
 	pDHCPMSG->OPT[k++] = dhcpT2value;
+	pDHCPMSG->OPT[k++] = dhcpZabbixServerIP;
 	pDHCPMSG->OPT[k++] = endOption;
 
 	for (i = k; i < OPT_SIZE; i++) pDHCPMSG->OPT[i] = 0;
@@ -501,7 +504,7 @@ void send_DHCP_REQUEST(void)
 	pDHCPMSG->OPT[k - (i+6+1)] = i+6; // length of hostname
 	
 	pDHCPMSG->OPT[k++] = dhcpParamRequest;
-	pDHCPMSG->OPT[k++] = 0x08;
+	pDHCPMSG->OPT[k++] = 0x09;
 	pDHCPMSG->OPT[k++] = subnetMask;
 	pDHCPMSG->OPT[k++] = routersOnSubnet;
 	pDHCPMSG->OPT[k++] = dns;
@@ -510,6 +513,7 @@ void send_DHCP_REQUEST(void)
 	pDHCPMSG->OPT[k++] = dhcpT2value;
 	pDHCPMSG->OPT[k++] = performRouterDiscovery;
 	pDHCPMSG->OPT[k++] = staticRoute;
+	pDHCPMSG->OPT[k++] = dhcpZabbixServerIP;
 	pDHCPMSG->OPT[k++] = endOption;
 
 	for (i = k; i < OPT_SIZE; i++) pDHCPMSG->OPT[i] = 0;
@@ -658,6 +662,15 @@ int8_t parseDHCPMSG(void)
    				DHCP_allocated_gw[1] = *p++;
    				DHCP_allocated_gw[2] = *p++;
    				DHCP_allocated_gw[3] = *p++;
+   				p = p + (opt_len - 4);
+   				break;
+   			case dhcpZabbixServerIP :
+   				p++;
+   				opt_len = *p++;
+   				DHCP_allocated_zabbix[0] = *p++;
+   				DHCP_allocated_zabbix[1] = *p++;
+   				DHCP_allocated_zabbix[2] = *p++;
+   				DHCP_allocated_zabbix[3] = *p++;
    				p = p + (opt_len - 4);
    				break;
    			case dns :
@@ -988,6 +1001,14 @@ void getGWfromDHCP(uint8_t* ip)
 	ip[1] =DHCP_allocated_gw[1];
 	ip[2] =DHCP_allocated_gw[2];
 	ip[3] =DHCP_allocated_gw[3];			
+}
+
+void getZABBIXfromDHCP(uint8_t* ip)
+{
+	ip[0] =DHCP_allocated_zabbix[0];
+	ip[1] =DHCP_allocated_zabbix[1];
+	ip[2] =DHCP_allocated_zabbix[2];
+	ip[3] =DHCP_allocated_zabbix[3];
 }
 
 void getSNfromDHCP(uint8_t* ip)

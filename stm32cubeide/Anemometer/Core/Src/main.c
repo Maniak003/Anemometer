@@ -136,7 +136,99 @@ void Callback_IPConflict(void) {
 // 1K should be enough, see https://forum.wiznet.io/t/topic/1612/2
 uint8_t dhcp_buffer[1024];
 // 1K seems to be enough for this buffer as well
-uint8_t dns_buffer[1024];
+//uint8_t dns_buffer[1024];
+
+/*
+ * addr -- IP address zabbix server, dhcp option 224.
+ * Settings for isc-dhcp-server:
+ * 		option zabbix-server-ip code 224 = ip-address ;
+ * 		host anemometr {
+ *      	hardware ethernet 00:11:22:33:44:ea;
+ *      	fixed-address 192.168.1.24;
+ *       	option zabbix-server-ip 192.168.1.6;
+ * 		}
+ *
+ * key -- Zabbix key: {ALTIM_DIRECT, ALTIM_SPEED}
+ *
+ * value -- Float value of key.
+*/
+uint8_t sendToZabbix(uint8_t * addr, char * key, float value) {
+    UART_Printf("Creating socket...\r\n");
+    uint8_t tcp_socket = TCP_SOCKET;
+    uint8_t code = socket(tcp_socket, Sn_MR_TCP, 10888, 0);
+    if(code != tcp_socket) {
+        UART_Printf("socket() failed, code = %d\r\n", code);
+        return(-1);
+    }
+
+    UART_Printf("Socket created, connecting...\r\n");
+    code = connect(tcp_socket, addr, ZABBIXPORT);
+    if(code != SOCK_OK) {
+        UART_Printf("connect() failed, code = %d\r\n", code);
+        close(tcp_socket);
+        return(-2);
+    }
+
+    UART_Printf("Connected, sending ZABBIX request...\r\n");
+    {
+    	char req[ZABBIXMAXLEN];
+    	char str[ZABBIXMAXLEN - 13];
+    	sprintf(str, "{\"request\":\"sender data\",\"data\":[{\"host\":\"Ed\",\"key\":\"%s\",\"value\":\"%f\"}]}", key, value);
+    	req[0] = 'Z';
+    	req[1] = 'B';
+		req[2] = 'X';
+		req[3] = 'D';
+		req[4] = 0x01;
+		req[5] = strlen(str);
+		req[6] = 0;
+		req[7] = 0;
+		req[8] = 0;
+		req[9] = 0;
+		req[10] = 0;
+		req[11] = 0;
+		req[12] = 0;
+		strcpy(req + 13, str);
+        //char req[] = "ZBXD\1\0\0\0\0\0\0\0\0{\"request\":\"sender data\",\"data\":[{\"host\":\"Ed\",\"key\":\"ALTIM_DIRECT\",\"value\":\"10\"}]}";
+        uint8_t len = req[5] + 13;
+        uint8_t* buff = (uint8_t*)&req;
+        while(len > 0) {
+            UART_Printf("Sending %d bytes, data length %d bytes...\r\n", len, req[5]);
+            int32_t nbytes = send(tcp_socket, buff, len);
+            if(nbytes <= 0) {
+                UART_Printf("send() failed, %d returned\r\n", nbytes);
+                close(tcp_socket);
+                return(-3);
+            }
+            UART_Printf("%d bytes sent!\r\n", nbytes);
+            len -= nbytes;
+        }
+    }
+
+    UART_Printf("Request sent. Reading response...\r\n");
+    {
+        char buff[32];
+        for(;;) {
+            int32_t nbytes = recv(tcp_socket, (uint8_t*)&buff, sizeof(buff)-1);
+            if(nbytes == SOCKERR_SOCKSTATUS) {
+                UART_Printf("\r\nConnection closed.\r\n");
+                break;
+            }
+
+            if(nbytes <= 0) {
+                UART_Printf("\r\nrecv() failed, %d returned\r\n", nbytes);
+                break;
+            }
+
+            buff[nbytes] = '\0';
+            UART_Printf("%s", buff);
+        }
+    }
+
+    UART_Printf("Closing socket.\r\n");
+    close(tcp_socket);
+    return(0);
+}
+
 
 
 void init_w5500() {
@@ -183,20 +275,23 @@ void init_w5500() {
     getIPfromDHCP(net_info.ip);
     getGWfromDHCP(net_info.gw);
     getSNfromDHCP(net_info.sn);
+    getZABBIXfromDHCP(net_info.zabbix);
 
-    uint8_t dns[4];
-    getDNSfromDHCP(dns);
+    //uint8_t dns[4];
+    //getDNSfromDHCP(dns);
 
-    UART_Printf("IP:  %d.%d.%d.%d\r\nGW:  %d.%d.%d.%d\r\nNet: %d.%d.%d.%d\r\nDNS: %d.%d.%d.%d\r\n",
+    UART_Printf("IP:  %d.%d.%d.%d\r\nGW:  %d.%d.%d.%d\r\nNet: %d.%d.%d.%d\r\nZabbix: %d.%d.%d.%d\r\n",
         net_info.ip[0], net_info.ip[1], net_info.ip[2], net_info.ip[3],
         net_info.gw[0], net_info.gw[1], net_info.gw[2], net_info.gw[3],
         net_info.sn[0], net_info.sn[1], net_info.sn[2], net_info.sn[3],
-        dns[0], dns[1], dns[2], dns[3]
+        net_info.zabbix[0], net_info.zabbix[1], net_info.zabbix[2], net_info.zabbix[3]
     );
 
     UART_Printf("Calling wizchip_setnetinfo()...\r\n");
     wizchip_setnetinfo(&net_info);
 
+    // Test request.
+    sendToZabbix(net_info.zabbix, "ALTIM_DIRECT", 11);
 /*
     UART_Printf("Calling DNS_init()...\r\n");
     DNS_init(DNS_SOCKET, dns_buffer);
@@ -212,63 +307,6 @@ void init_w5500() {
         }
         UART_Printf("Result: %d.%d.%d.%d\r\n", addr[0], addr[1], addr[2], addr[3]);
     }
-
-    UART_Printf("Creating socket...\r\n");
-    uint8_t http_socket = HTTP_SOCKET;
-    uint8_t code = socket(http_socket, Sn_MR_TCP, 10888, 0);
-    if(code != http_socket) {
-        UART_Printf("socket() failed, code = %d\r\n", code);
-        return;
-    }
-
-    UART_Printf("Socket created, connecting...\r\n");
-    code = connect(http_socket, addr, 80);
-    if(code != SOCK_OK) {
-        UART_Printf("connect() failed, code = %d\r\n", code);
-        close(http_socket);
-        return;
-    }
-
-    UART_Printf("Connected, sending HTTP request...\r\n");
-    {
-        char req[] = "GET / HTTP/1.0\r\nHost: eax.me\r\n\r\n";
-        uint16_t len = sizeof(req) - 1;
-        uint8_t* buff = (uint8_t*)&req;
-        while(len > 0) {
-            UART_Printf("Sending %d bytes...\r\n", len);
-            int32_t nbytes = send(http_socket, buff, len);
-            if(nbytes <= 0) {
-                UART_Printf("send() failed, %d returned\r\n", nbytes);
-                close(http_socket);
-                return;
-            }
-            UART_Printf("%d bytes sent!\r\n", nbytes);
-            len -= nbytes;
-        }
-    }
-
-    UART_Printf("Request sent. Reading response...\r\n");
-    {
-        char buff[32];
-        for(;;) {
-            int32_t nbytes = recv(http_socket, (uint8_t*)&buff, sizeof(buff)-1);
-            if(nbytes == SOCKERR_SOCKSTATUS) {
-                UART_Printf("\r\nConnection closed.\r\n");
-                break;
-            }
-
-            if(nbytes <= 0) {
-                UART_Printf("\r\nrecv() failed, %d returned\r\n", nbytes);
-                break;
-            }
-
-            buff[nbytes] = '\0';
-            UART_Printf("%s", buff);
-        }
-    }
-
-    UART_Printf("Closing socket.\r\n");
-    close(http_socket);
 */
 }
 
@@ -326,16 +364,14 @@ void init_w5500() {
    * 6 - Z4 >> Z1
    * 7 - Z1 >> Z4
    */
-  sprintf(SndBuffer, "\rAnemometer start.\r\n");
-  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+  HAL_UART_Transmit(&huart1, (uint8_t *) "\rAnemometer start.\r\n", sizeof("\rAnemometer start.\r\n"), HAL_MAX_DELAY);
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);	// Reset W5500
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_SET);
   HAL_Delay(2000);
   init_w5500();
-  sprintf(SndBuffer, "Init finish.\r\n");
-  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+  HAL_UART_Transmit(&huart1, (uint8_t *) "Init finish.\r\n", sizeof("Init finish.\r\n"), HAL_MAX_DELAY);
+  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
   currentMode = 0;
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim3);

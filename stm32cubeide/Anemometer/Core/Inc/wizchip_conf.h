@@ -425,6 +425,7 @@ typedef struct wiz_NetInfo_t
    uint8_t sn[4];   ///< Subnet Mask 
    uint8_t gw[4];   ///< Gateway IP Address
    uint8_t dns[4];  ///< DNS server IP Address
+   uint8_t zabbix[4]; // Zabbix server IP address
    dhcp_mode dhcp;  ///< 1 - Static, 2 - DHCP
 }wiz_NetInfo;
 
