@@ -138,6 +138,11 @@ void getIPfromDHCP(uint8_t* ip);
  */
 void getGWfromDHCP(uint8_t* ip);
 /*
+ * @brief Get zabbix server value
+ * @param ip  - IP zabbix server to be returned
+ */
+void getZABBIXfromDHCP(uint8_t* ip);
+/*
  * @brief Get Subnet mask value
  * @param ip  - Subnet mask to be returned
  */

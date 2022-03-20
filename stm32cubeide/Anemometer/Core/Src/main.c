@@ -55,6 +55,10 @@ UART_HandleTypeDef huart1;
 /* USER CODE BEGIN PV */
 char SndBuffer[100] = {0,};
 uint32_t fastCounter;
+    wiz_NetInfo net_info = {
+        .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
+        .dhcp = NETINFO_DHCP
+    };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -90,7 +94,7 @@ void UART_Printf(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
 	vsnprintf(buff, sizeof(buff), fmt, args);
-	HAL_UART_Transmit(&huart1, (uint8_t*)buff, strlen(buff), HAL_MAX_DELAY);
+	HAL_UART_Transmit(&huart1, (uint8_t*) buff, strlen(buff), HAL_MAX_DELAY);
 	va_end(args);
 }
 
@@ -152,7 +156,7 @@ uint8_t dhcp_buffer[1024];
  *
  * value -- Float value of key.
 */
-uint8_t sendToZabbix(uint8_t * addr, char * key, float value) {
+uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
     UART_Printf("Creating socket...\r\n");
     uint8_t tcp_socket = TCP_SOCKET;
     uint8_t code = socket(tcp_socket, Sn_MR_TCP, 10888, 0);
@@ -173,7 +177,7 @@ uint8_t sendToZabbix(uint8_t * addr, char * key, float value) {
     {
     	char req[ZABBIXMAXLEN];
     	char str[ZABBIXMAXLEN - 13];
-    	sprintf(str, "{\"request\":\"sender data\",\"data\":[{\"host\":\"Ed\",\"key\":\"%s\",\"value\":\"%f\"}]}", key, value);
+    	sprintf(str, "{\"request\":\"sender data\",\"data\":[{\"host\":\"%s\",\"key\":\"%s\",\"value\":\"%f\"}]}", host, key, value);
     	req[0] = 'Z';
     	req[1] = 'B';
 		req[2] = 'X';
@@ -244,10 +248,10 @@ void init_w5500() {
     wizchip_init(rx_tx_buff_sizes, rx_tx_buff_sizes);
 
     UART_Printf("Calling DHCP_init()...\r\n");
-    wiz_NetInfo net_info = {
-        .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
-        .dhcp = NETINFO_DHCP
-    };
+//    wiz_NetInfo net_info = {
+//        .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
+//        .dhcp = NETINFO_DHCP
+//    };
     // set MAC address before using DHCP
     setSHAR(net_info.mac);
     DHCP_init(DHCP_SOCKET, dhcp_buffer);
@@ -291,7 +295,8 @@ void init_w5500() {
     wizchip_setnetinfo(&net_info);
 
     // Test request.
-    sendToZabbix(net_info.zabbix, "ALTIM_DIRECT", 11);
+    //sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", 11);
+    sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 2.5);
 /*
     UART_Printf("Calling DNS_init()...\r\n");
     DNS_init(DNS_SOCKET, dns_buffer);
@@ -402,15 +407,18 @@ void init_w5500() {
 				  Xsum = Xsum / MEASSURE_COUNT;
 				  Ysum = Ysum / MEASSURE_COUNT
 				  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
+				  V = V / SPEED_CALIBRATE;
 				  if ( V != 0 ) {
 					  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
 					  if (Ysum < 0) {
 						  A = 360 - A; // III, IV квадранты
 					  }
+					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", V);
+					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", A);
 				  } else {
 					  A = 0;
+					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 0);
 				  }
-				  V = V / SPEED_CALIBRATE;
 				  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.1f, A:%4.0f   \r", Xsum, Ysum, V, A);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }

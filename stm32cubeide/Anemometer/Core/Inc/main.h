@@ -35,6 +35,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
+#include <string.h>
 #include "wizchip_conf.h"
 #include "dhcp.h"
 #include "dns.h"
