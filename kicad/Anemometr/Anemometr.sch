@@ -2950,7 +2950,7 @@ F 3 "" H 8850 4250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:TPS54328DDA D17
+L Anemometr-rescue:TPS54328DDA-My_Library D17
 U 1 1 6272872B
 P 8950 3900
 F 0 "D17" H 8950 4550 50  0000 C CNN
