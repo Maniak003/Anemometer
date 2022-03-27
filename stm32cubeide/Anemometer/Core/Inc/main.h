@@ -56,8 +56,14 @@ extern "C" {
 #define setZ2transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9_0)) | (GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1)
 #define setZ3transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10_0)) | (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1)
 #define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
-#define MEASSURE_COUNT 10;
-#define SPEED_CALIBRATE 5.1;
+#define MEASSURE_COUNT 50;
+#define SPEED_CALIBRATE 50;
+#define CORRECTION_12 37640;
+#define CORRECTION_34 38450;
+#define CORRECTION_14 37600;
+#define CORRECTION_23 38500;
+#define CORRECTION_X 17
+#define CORRECTION_Y 32
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

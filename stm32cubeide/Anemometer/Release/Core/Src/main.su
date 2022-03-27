@@ -9,6 +9,6 @@ main.c:110:6:W5500_ReadBuff	0	static
 main.c:119:9:W5500_ReadByte	16	static
 main.c:159:9:sendToZabbix.8643.part.0.constprop	280	static
 main.c:159:9:sendToZabbix.constprop	16	static
-main.c:439:6:SystemClock_Config	72	static,ignoring_inline_asm
-main.c:88:5:main	1240	static,ignoring_inline_asm
-main.c:917:6:Error_Handler	0	static,ignoring_inline_asm
+main.c:447:6:SystemClock_Config	72	static,ignoring_inline_asm
+main.c:88:5:main	1248	static,ignoring_inline_asm
+main.c:925:6:Error_Handler	0	static,ignoring_inline_asm

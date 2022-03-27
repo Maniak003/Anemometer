@@ -296,7 +296,7 @@ void init_w5500() {
 
     // Test request.
     //sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", 11);
-    sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 2.5);
+    //sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 2.5);
 /*
     UART_Printf("Calling DNS_init()...\r\n");
     DNS_init(DNS_SOCKET, dns_buffer);
@@ -391,23 +391,30 @@ void init_w5500() {
 	  if (readyFlag) {
 		  if (Z12 != 0 && Z21 != 0) {
 
-			  //X = Z12 - Z21 + Z43 - Z34;
-			  //Y = Z23 - Z32 + Z14 - Z41;
+			  X = (Z12 - Z21 + Z43 - Z34) / 2;
+			  Y = (Z23 - Z32 + Z14 - Z41) / 2;
 
 			  /* Коррекция для тестирования */
 			  //X = X + 145;
 			  //Y = Y + 55;
+			  // Y
+			  //sprintf(SndBuffer, "Y1:%7d, Y2:%7d   \r", Z14 - Z41, Z23 - Z32);
 			  //sprintf(SndBuffer, "Z14:%7d, Z41:%7d, Z23:%7d, Z32:%7d   \r", Z14, Z41, Z23, Z32);
+			  // X
+			  //sprintf(SndBuffer, "Z12:%7d, Z21:%7d, Z43:%7d, Z34:%7d   \r", Z12, Z21, Z43, Z34);
+			  //sprintf(SndBuffer, "X:%7.0f, Y:%7.0f   \r", X, Y);
+			  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 
 			  if (measCount-- != 0) {
-				  Xsum =+ X;
-				  Ysum =+ Y;
+				  Xsum = Xsum + X;
+				  Ysum = Ysum + Y;
 			  } else {
 				  measCount = MEASSURE_COUNT;
 				  Xsum = Xsum / MEASSURE_COUNT;
-				  Ysum = Ysum / MEASSURE_COUNT
+				  Ysum = Ysum / MEASSURE_COUNT;
+				  Xsum = (Xsum + CORRECTION_X) / SPEED_CALIBRATE;
+				  Ysum = (Ysum + CORRECTION_Y) / SPEED_CALIBRATE;
 				  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
-				  V = V / SPEED_CALIBRATE;
 				  if ( V != 0 ) {
 					  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
 					  if (Ysum < 0) {
@@ -419,9 +426,10 @@ void init_w5500() {
 					  A = 0;
 					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 0);
 				  }
-				  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.1f, A:%4.0f   \r", Xsum, Ysum, V, A);
+				  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.3f, A:%4.0f   \r", Xsum, Ysum, V, A);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
+
 			  readyFlag = FALSE;
 		  }
 	  }
@@ -722,7 +730,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 30400;
+  htim3.Init.Period = 30800;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
