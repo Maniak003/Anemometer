@@ -384,6 +384,7 @@ void init_w5500() {
   measCount = MEASSURE_COUNT;
   Xsum = 0;
   Ysum = 0;
+  Vmax = 0;
 
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
@@ -408,6 +409,10 @@ void init_w5500() {
 			  if (measCount-- != 0) {
 				  Xsum = Xsum + X;
 				  Ysum = Ysum + Y;
+				  V = sqrt(pow(X, 2) + pow(Y, 2));
+				  if ( V > Vmax ) {
+					  Vmax = V;
+				  }
 			  } else {
 				  measCount = MEASSURE_COUNT;
 				  Xsum = Xsum / MEASSURE_COUNT;
@@ -416,16 +421,20 @@ void init_w5500() {
 				  Ysum = (Ysum + CORRECTION_Y) / SPEED_CALIBRATE;
 				  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
 				  if ( V != 0 ) {
+					  Vmax = Vmax / SPEED_CALIBRATE;
 					  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
 					  if (Ysum < 0) {
 						  A = 360 - A; // III, IV квадранты
 					  }
 					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", V);
 					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", A);
+					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
 				  } else {
 					  A = 0;
 					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 0);
+					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
 				  }
+				  Vmax = 0;
 				  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.3f, A:%4.0f   \r", Xsum, Ysum, V, A);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
