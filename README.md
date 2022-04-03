@@ -8,7 +8,7 @@
       <a href="https://github.com/Maniak003/Anemometer/wiki" rel="nofollow">
         <img src="https://github.com/Maniak003/Anemometer/blob/main/Documents/result.png" alt="Wind watcher" style="max-width: 100%;">
       </a>
-      <a href="https://github.com/Maniak003/Anemometer/wiki" rel="nofollow">
+      <a href="https://github.com/Maniak003/Anemometer/wiki/ZabbixSetting" rel="nofollow">
         <img src="https://github.com/Maniak003/Anemometer/blob/main/Documents/zabbix.png" alt="Wind watcher" style="max-width: 100%;">
       </a>
       <a href="https://github.com/Maniak003/Anemometer/wiki/Description" rel="nofollow">
