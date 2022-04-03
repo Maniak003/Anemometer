@@ -57,13 +57,14 @@ extern "C" {
 #define setZ3transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10_0)) | (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1)
 #define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
 #define MEASSURE_COUNT 50;
-#define SPEED_CALIBRATE 50;
+#define SPEED_CALIBRATE 53;
 #define CORRECTION_12 37640;
 #define CORRECTION_34 38450;
 #define CORRECTION_14 37600;
 #define CORRECTION_23 38500;
 #define CORRECTION_X 17
 #define CORRECTION_Y 32
+//#define ZABBIX_DEBUG
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -125,7 +126,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-bool readyFlag, runFlag;
+bool readyFlag, runFlag, firstTime;
 
 /* For W5500*/
 

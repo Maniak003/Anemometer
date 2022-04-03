@@ -90,12 +90,14 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
 void UART_Printf(const char* fmt, ...) {
+#ifdef ZABBIX_DEBUG
 	char buff[256];
 	va_list args;
 	va_start(args, fmt);
 	vsnprintf(buff, sizeof(buff), fmt, args);
 	HAL_UART_Transmit(&huart1, (uint8_t*) buff, strlen(buff), HAL_MAX_DELAY);
 	va_end(args);
+#endif
 }
 
 
@@ -385,6 +387,7 @@ void init_w5500() {
   Xsum = 0;
   Ysum = 0;
   Vmax = 0;
+  firstTime = TRUE;
 
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
@@ -426,17 +429,24 @@ void init_w5500() {
 					  if (Ysum < 0) {
 						  A = 360 - A; // III, IV квадранты
 					  }
-					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", V);
-					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", A);
-					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
+					  if ( ! firstTime ) {  // Первый раз пропускаем для инициализации переменных.
+						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", V);
+						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", A);
+						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
+					  }
 				  } else {
 					  A = 0;
-					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 0);
-					  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
+					  if ( ! firstTime ) {
+						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 0);
+						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
+					  }
+				  }
+				  if ( ! firstTime ) {
+					  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.3f, Vmax:%8.3f, A:%4.0f   \r", Xsum, Ysum, V, Vmax, A);
+					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  }
 				  Vmax = 0;
-				  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.3f, A:%4.0f   \r", Xsum, Ysum, V, A);
-				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+				  firstTime = FALSE;
 			  }
 
 			  readyFlag = FALSE;
