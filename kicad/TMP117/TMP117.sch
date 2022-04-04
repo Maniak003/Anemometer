@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L TMP117-rescue:TMP117-My_Library D1
+L TMP117-rescue:TMP117-My_Library-TMP117-rescue D1
 U 1 1 623AF833
 P 5450 2500
 F 0 "D1" H 5600 2850 50  0000 C CNN
@@ -48,7 +48,7 @@ F 3 "" H 5450 1850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L TMP117-rescue:Conn-My_Library J1
+L TMP117-rescue:Conn-My_Library-TMP117-rescue J1
 U 1 1 623B0AA1
 P 4800 1850
 F 0 "J1" H 4742 1665 50  0001 C CNN
@@ -59,7 +59,7 @@ F 3 "~" H 4800 1850 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L TMP117-rescue:Conn-My_Library J2
+L TMP117-rescue:Conn-My_Library-TMP117-rescue J2
 U 1 1 623B0F07
 P 4800 2400
 F 0 "J2" H 4742 2215 50  0001 C CNN
@@ -70,7 +70,7 @@ F 3 "~" H 4800 2400 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L TMP117-rescue:Conn-My_Library J3
+L TMP117-rescue:Conn-My_Library-TMP117-rescue J3
 U 1 1 623B1137
 P 4800 2650
 F 0 "J3" H 4742 2465 50  0001 C CNN
@@ -81,7 +81,7 @@ F 3 "~" H 4800 2650 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L TMP117-rescue:Conn-My_Library J4
+L TMP117-rescue:Conn-My_Library-TMP117-rescue J4
 U 1 1 623B1419
 P 4800 3050
 F 0 "J4" H 4742 2865 50  0001 C CNN
