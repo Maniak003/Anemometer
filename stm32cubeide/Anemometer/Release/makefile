@@ -70,7 +70,8 @@ Anemometer.bin \
 
 
 # All Target
-all: main-build
+all:
+	+@$(MAKE) --no-print-directory main-build && $(MAKE) --no-print-directory post-build
 
 # Main-build Target
 main-build: Anemometer.elf secondary-outputs
@@ -101,6 +102,10 @@ clean:
 	-$(RM) *
 	-@echo ' '
 
+post-build:
+	arm-none-eabi-objcopy -O ihex Anemometer.elf Anemometer.hex
+	-@echo ' '
+
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
@@ -111,6 +116,6 @@ warn-no-linker-script-specified:
 	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
 
 .PHONY: all clean dependents fail-specified-linker-script-missing warn-no-linker-script-specified
-.SECONDARY:
+.SECONDARY: post-build
 
 -include ../makefile.targets
