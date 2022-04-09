@@ -5,7 +5,11 @@ if [ -f anemometr.zip ]; then
 fi
 mv Anemometr-B_Cu.gbr Bottom.gbr
 mv Anemometr-B_Mask.gbr MaskBottom.gbr
-mv Anemometr.drl NCData.drl
+if [ -f Anemometr-PTH.drl ]; then
+	mv Anemometr-PTH.drl NCData.drl
+else
+	mv Anemometr.drl NCData.drl
+fi
 mv Anemometr-F_Cu.gbr Top.gbr
 mv Anemometr-F_Mask.gbr MaskTop.gbr
 mv Anemometr-Edge_Cuts.gbr Border.gbr
