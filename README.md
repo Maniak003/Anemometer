@@ -4,7 +4,7 @@
     <meta charset="utf-8">
   </head>
     <body class="logged-in env-production page-responsive page-blob" style="word-wrap: break-word;">
-      <p> UltraSonic Anemometer. The project is at the very beginning. </p>
+      <p> UltraSonic Anemometer. </p>
       <a href="https://github.com/Maniak003/Anemometer/wiki" rel="nofollow">
         <img src="https://github.com/Maniak003/Anemometer/blob/main/Documents/result.png" alt="Wind watcher" style="max-width: 100%;">
       </a>
