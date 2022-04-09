@@ -53,7 +53,9 @@ DMA_HandleTypeDef hdma_tim2_ch1;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+HAL_StatusTypeDef	flash_ok;
 char SndBuffer[100] = {0,};
+char uart_buffer[10] = {0,};
 uint32_t fastCounter;
     wiz_NetInfo net_info = {
         .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
@@ -88,6 +90,144 @@ static void MX_SPI2_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
+
+	void rwFlash(uint8_t rwFlag) {
+		uint32_t pageAdr = 0x800FC00; //.
+		uint32_t magicKey;
+		uint64_t dataForSave;
+		magicKey = *(__IO uint32_t*) pageAdr;
+		if ((magicKey != 0x12349876) || (rwFlag == 1)) { // rwFlag == 1 for wrtite data to flash
+			magicKey = 0x12349876;
+			//sprintf(SndBuffer, "\r\nWrite FLASH.\r\n");
+			//HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			if (rwFlag == 0) { // For first initial
+				C_12 = CALIBRATE_START;
+				C_34 = CALIBRATE_START;
+				C_14 = CALIBRATE_START;
+				C_23 = CALIBRATE_START;
+				DX1 = 0;
+				DX2 = 0;
+				DY1 = 0;
+				DY2 = 0;
+			}
+			FLASH_EraseInitTypeDef EraseInitStruct;
+			uint32_t PAGEError = 0;
+			EraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
+			EraseInitStruct.PageAddress = pageAdr; //
+			EraseInitStruct.NbPages     = 1;
+
+			flash_ok = HAL_ERROR;
+			// Unlock flash
+			while(flash_ok != HAL_OK) {
+			  flash_ok = HAL_FLASH_Unlock();
+			}
+			if (HAL_FLASHEx_Erase(&EraseInitStruct, &PAGEError) == HAL_OK) {
+				dataForSave = (uint64_t) magicKey;
+				flash_ok = HAL_ERROR;
+				while(flash_ok != HAL_OK){
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr, dataForSave); // Write  magic key
+				}
+				dataForSave = (uint64_t) (C_12 | ((uint64_t) C_34 << 16) | ((uint64_t) C_14 << 32) | ((uint64_t) C_23 << 48));
+				flash_ok = HAL_ERROR;
+				while(flash_ok != HAL_OK){
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr + 16, dataForSave); // Write C_12 C_34 C_14 C_23
+				}
+				flash_ok = HAL_ERROR;
+				while(flash_ok != HAL_OK){
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 24, DX1); // Write DX1
+				}
+				flash_ok = HAL_ERROR;
+				while(flash_ok != HAL_OK){
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DX2); // Write DX2
+				}
+				flash_ok = HAL_ERROR;
+				while(flash_ok != HAL_OK){
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 32, DY1); // Write DY1
+				}
+				flash_ok = HAL_ERROR;
+				while(flash_ok != HAL_OK){
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, DY2); // Write DY2
+				}
+			}
+			// Lock flash
+			flash_ok = HAL_ERROR;
+			while(flash_ok != HAL_OK){
+				flash_ok = HAL_FLASH_Lock();
+			}
+		} else {
+			//sprintf(SndBuffer, "\r\nMagick key: %x.\r\n", (uint) magicKey);
+			//HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			C_12 = *(__IO uint16_t*) (pageAdr + 16);
+			C_34 = *(__IO uint16_t*) (pageAdr + 18);
+			C_14 = *(__IO uint16_t*) (pageAdr + 20);
+			C_23 = *(__IO uint16_t*) (pageAdr + 22);
+			sprintf(SndBuffer, "C_12: %5d, C_34: %5d, C_14: %5d, C_23: %5d.\r\n", C_12, C_34, C_14, C_23);
+			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			DX1 = *(__IO int*) (pageAdr + 24);
+			DX2 = *(__IO int*) (pageAdr + 28);
+			DY1 = *(__IO int*) (pageAdr + 32);
+			DY2 = *(__IO int*) (pageAdr + 36);
+			sprintf(SndBuffer, "DX1: %5d, DX2: %5d, DY1: %5d, DY2: %5d.\r\n", DX1, DX2, DY1, DY2);
+			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+		}
+	}
+
+
+/*
+int  writeSector(uint32_t Address, void * values, uint16_t size) {
+	uint16_t *AddressPtr;
+	uint16_t *valuePtr;
+	AddressPtr = (uint16_t *)Address;
+	valuePtr=(uint16_t *)values;
+	size = size / 2;  // incoming value is expressed in bytes, not 16 bit words
+	while(size) {
+		// unlock the flash
+		// Key 1 : 0x45670123
+		// Key 2 : 0xCDEF89AB
+		FLASH->KEYR = 0x45670123;
+		FLASH->KEYR = 0xCDEF89AB;
+		FLASH->CR &= ~BIT1; // ensure PER is low
+		FLASH->CR |= BIT0;  // set the PG bit
+		*(AddressPtr) = *(valuePtr);
+		while(FLASH->SR & BIT0); // wait while busy
+		if (FLASH->SR & BIT2)
+			return -1; // flash not erased to begin with
+		if (FLASH->SR & BIT4)
+			return -2; // write protect error
+		AddressPtr++;
+		valuePtr++;
+		size--;
+	}
+	return 0;
+}
+void eraseSector(uint32_t SectorStartAddress)
+{
+	FLASH->KEYR = 0x45670123;
+	FLASH->KEYR = 0xCDEF89AB;
+	FLASH->CR &= ~BIT0;  // Ensure PG bit is low
+	FLASH->CR |= BIT1; // set the PER bit
+	FLASH->AR = SectorStartAddress;
+	FLASH->CR |= BIT6; // set the start bit
+	while(FLASH->SR & BIT0); // wait while busy
+}
+void readSector(uint32_t SectorStartAddress, void * values, uint16_t size)
+{
+	uint16_t *AddressPtr;
+	uint16_t *valuePtr;
+	AddressPtr = (uint16_t *)SectorStartAddress;
+	valuePtr=(uint16_t *)values;
+	size = size/2; // incoming value is expressed in bytes, not 16 bit words
+	while(size)
+	{
+		*((uint16_t *)valuePtr)=*((uint16_t *)AddressPtr);
+		valuePtr++;
+		AddressPtr++;
+		size--;
+	}
+}
+*/
+
 
 void UART_Printf(const char* fmt, ...) {
 #ifdef ZABBIX_DEBUG
@@ -205,23 +345,23 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
                 close(tcp_socket);
                 return(-3);
             }
-            UART_Printf("%d bytes sent!\r\n", nbytes);
+            UART_Printf("%d b sent!\r\n", nbytes);
             len -= nbytes;
         }
     }
 
-    UART_Printf("Request sent. Reading response...\r\n");
+    UART_Printf("Read.\r\n");
     {
         char buff[32];
         for(;;) {
             int32_t nbytes = recv(tcp_socket, (uint8_t*)&buff, sizeof(buff)-1);
             if(nbytes == SOCKERR_SOCKSTATUS) {
-                UART_Printf("\r\nConnection closed.\r\n");
+                UART_Printf("\r\nDisconnect.\r\n");
                 break;
             }
 
             if(nbytes <= 0) {
-                UART_Printf("\r\nrecv() failed, %d returned\r\n", nbytes);
+                UART_Printf("\r\nrecv() failed, %d\r\n", nbytes);
                 break;
             }
 
@@ -372,22 +512,34 @@ void init_w5500() {
    * 7 - Z1 >> Z4
    */
   HAL_UART_Transmit(&huart1, (uint8_t *) "\rAnemometer start.\r\n", sizeof("\rAnemometer start.\r\n"), HAL_MAX_DELAY);
+#ifdef ZABBIX_ENABLE
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);	// Reset W5500
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_SET);
   HAL_Delay(2000);
   init_w5500();
-  HAL_UART_Transmit(&huart1, (uint8_t *) "Init finish.\r\n", sizeof("Init finish.\r\n"), HAL_MAX_DELAY);
+#endif
   HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
   currentMode = 0;
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
   measCount = MEASSURE_COUNT;
+  rwFlash(0);
+//  C_12 = 37640;
+//  C_34 = 38450;
+//  C_14 = 37600;
+//  C_23 = 38500;
+
   Xsum = 0;
   Ysum = 0;
   Vmax = 0;
   firstTime = TRUE;
+  calibrate12 = FALSE;
+  calibrate34 = FALSE;
+  calibrate14 = FALSE;
+  calibrate23 = FALSE;
+  HAL_UART_Transmit(&huart1, (uint8_t *) "Init finish.\r\n", sizeof("Init finish.\r\n"), HAL_MAX_DELAY);
 
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
@@ -395,8 +547,8 @@ void init_w5500() {
 	  if (readyFlag) {
 		  if (Z12 != 0 && Z21 != 0) {
 
-			  X = (Z12 - Z21 + Z43 - Z34) / 2;
-			  Y = (Z23 - Z32 + Z14 - Z41) / 2;
+			  X = (Z12 - Z21 - DX1 + Z34 - Z43 - DX2) / 2;
+			  Y = (Z23 - Z32 - DY2 + Z14 - Z41 - DY1) / 2;
 
 			  /* Коррекция для тестирования */
 			  //X = X + 145;
@@ -407,7 +559,53 @@ void init_w5500() {
 			  // X
 			  //sprintf(SndBuffer, "Z12:%7d, Z21:%7d, Z43:%7d, Z34:%7d   \r", Z12, Z21, Z43, Z34);
 			  //sprintf(SndBuffer, "X:%7.0f, Y:%7.0f   \r", X, Y);
+			  // X + Y
+			  //sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
 			  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 1600)) {
+				  sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
+				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+				  if ( calibrate12 && (abs(Z12 - 800) > CALIBRATE_ACURACY) ) {
+					  C_12++;
+				  } else {
+					  calibrate12 = FALSE;
+				  }
+				  if ( calibrate34 && (abs(Z34 - 800) > CALIBRATE_ACURACY) ) {
+					  C_34++;
+				  } else {
+					  calibrate34 = FALSE;
+				  }
+				  if ( calibrate14 && (abs(Z14 - 800) > CALIBRATE_ACURACY) ) {
+					  C_14++;
+				  } else {
+					  calibrate14 = FALSE;
+				  }
+				  if ( calibrate23 && (abs(Z23 - 800) > CALIBRATE_ACURACY) ) {
+					  C_23++;
+				  } else {
+					  calibrate23 = FALSE;
+				  }
+				  calibrateCount++;
+			  } else {
+				  calibrate12 = FALSE;
+				  calibrate34 = FALSE;
+				  calibrate14 = FALSE;
+				  calibrate23 = FALSE;
+				  if (calibrateCount > 0) {
+					  strncpy(SndBuffer,(char *) 0, sizeof(SndBuffer));
+					  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
+					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+					  DX1 = Z12 - Z21;
+					  DX2 = Z34 - Z43;
+					  DY1 = Z14 - Z41;
+					  DY2 = Z23 - Z32;
+					  rwFlash(1);
+					  strncpy(SndBuffer, 0, sizeof(SndBuffer));
+					  sprintf(SndBuffer, "DX1:%5d, DX2:%5d, DY1:%5d, DY2:%5d\r\n", DX1, DX2, DY1, DY2);
+					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+					  calibrateCount = 0;
+				  }
+			  }
 
 			  if (measCount-- != 0) {
 				  Xsum = Xsum + X;
@@ -420,8 +618,8 @@ void init_w5500() {
 				  measCount = MEASSURE_COUNT;
 				  Xsum = Xsum / MEASSURE_COUNT;
 				  Ysum = Ysum / MEASSURE_COUNT;
-				  Xsum = (Xsum + CORRECTION_X) / SPEED_CALIBRATE;
-				  Ysum = (Ysum + CORRECTION_Y) / SPEED_CALIBRATE;
+				  Xsum = Xsum / SPEED_CALIBRATE;
+				  Ysum = Ysum / SPEED_CALIBRATE;
 				  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
 				  if ( V != 0 ) {
 					  Vmax = Vmax / SPEED_CALIBRATE;
@@ -429,19 +627,23 @@ void init_w5500() {
 					  if (Ysum < 0) {
 						  A = 360 - A; // III, IV квадранты
 					  }
+#ifdef ZABBIX_ENABLE
 					  if ( ! firstTime ) {  // Первый раз пропускаем для инициализации переменных.
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", V);
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", A);
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
 					  }
+#endif
 				  } else {
 					  A = 0;
+#ifdef ZABBIX_ENABLE
 					  if ( ! firstTime ) {
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 0);
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
 					  }
+#endif
 				  }
-				  if ( ! firstTime ) {
+				  if ( ! firstTime && !(calibrate12 || calibrate34 || calibrate14 || calibrate23)) {
 					  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.3f, Vmax:%8.3f, A:%4.0f   \r", Xsum, Ysum, V, Vmax, A);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  }
@@ -450,6 +652,21 @@ void init_w5500() {
 			  }
 
 			  readyFlag = FALSE;
+		  }
+		  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
+			  if (uart_buffer[0] == 'c' || uart_buffer[0] == 'C') {
+				  HAL_UART_Transmit(&huart1, (uint8_t *) "\r\nStart callibrate \r\n", sizeof("\r\nStart callibrate \r\n"), 1000);
+				  calibrate12 = TRUE;
+				  calibrate34 = TRUE;
+				  calibrate14 = TRUE;
+				  calibrate23 = TRUE;
+				  calibrateCount = 0;
+				  C_12 = CALIBRATE_START;
+				  C_34 = CALIBRATE_START;
+				  C_14 = CALIBRATE_START;
+				  C_23 = CALIBRATE_START;
+			  }
+			  uart_buffer[0] = 0x00;
 		  }
 	  }
     /* USER CODE END WHILE */

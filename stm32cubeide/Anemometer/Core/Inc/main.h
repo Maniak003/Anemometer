@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
 #include <string.h>
@@ -45,6 +46,14 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+#define BIT0 0x01
+#define BIT1 0x02
+#define BIT2 0x04
+#define BIT3 0x08
+#define BIT4 0x10
+#define BIT5 0x20
+#define BIT6 0x40
+#define BIT7 0x80
 #define TRUE 1
 #define FALSE 0
 #define timeAdge 2
@@ -58,12 +67,6 @@ extern "C" {
 #define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
 #define MEASSURE_COUNT 50;
 #define SPEED_CALIBRATE 53;
-#define CORRECTION_12 37640;
-#define CORRECTION_34 38450;
-#define CORRECTION_14 37600;
-#define CORRECTION_23 38500;
-#define CORRECTION_X 17
-#define CORRECTION_Y 32
 //#define ZABBIX_DEBUG
 /* USER CODE END ET */
 
@@ -120,13 +123,18 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 uint16_t currentMode, startCount, measCount;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
+uint16_t C_12, C_34, C_14, C_23;
+int DX1, DX2, DY1, DY2;
+uint16_t calibrateCount;
+#define CALIBRATE_ACURACY 5
+#define CALIBRATE_START 25000
 double X, Y, V, A, Xsum, Ysum, Vmax;
 uint32_t sumCounter2, fastCounter;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-bool readyFlag, runFlag, firstTime;
+bool readyFlag, runFlag, firstTime, calibrate12, calibrate34, calibrate14, calibrate23;
 
 /* For W5500*/
 
@@ -137,6 +145,7 @@ bool readyFlag, runFlag, firstTime;
 #define W5500_CS_Pin	GPIO_PIN_12
 #define _DHCP_DEBUG_
 
+#define ZABBIX_ENABLE
 #define ZABBIXAGHOST	"Anemometr"
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128

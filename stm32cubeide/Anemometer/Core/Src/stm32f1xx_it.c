@@ -214,46 +214,48 @@ void DMA1_Channel5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
 	if (runFlag) {
-			runFlag = FALSE;
-			HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
-			/* Turn off all multiplexer */
-			GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
-			switch (currentMode) {
-				case 1: { // Z1 > Z2
-					Z12 = fastCounter & 0x0FFFF;
-					break;
-				}
-				case 2: { // Z2 > Z1
-					Z21 = fastCounter & 0x0FFFF;
-					break;
-				}
-				case 3: { // Z2 > Z3
-					Z23 = fastCounter & 0x0FFFF;
-					break;
-				}
-				case 4: { // Z3 > Z2
-					Z32 = fastCounter & 0x0FFFF;
-					break;
-				}
-				case 5: { // Z3 > Z4
-					Z34 = fastCounter & 0x0FFFF;
-					break;
-				}
-				case 6: { // Z4 > Z3
-					Z43 = fastCounter & 0x0FFFF;
-					break;
-				}
-				case 7: { // Z4 > Z1
-					Z41 = fastCounter & 0x0FFFF;
-					break;
-				}
-				case 8: { // Z1 > Z4
-					Z14 = fastCounter & 0x0FFFF;
-					break;
-				}
-			}
+		if ( (GPIOA->IDR & GPIO_PIN_0) != 0 ) {  // Начало измерения по фронту.
+				runFlag = FALSE;
+				HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
 			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+				/* Turn off all multiplexer */
+				GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
+				switch (currentMode) {
+					case 1: { // Z1 > Z2
+						Z12 = fastCounter & 0x0FFFF;
+						break;
+					}
+					case 2: { // Z2 > Z1
+						Z21 = fastCounter & 0x0FFFF;
+						break;
+					}
+					case 3: { // Z2 > Z3
+						Z23 = fastCounter & 0x0FFFF;
+						break;
+					}
+					case 4: { // Z3 > Z2
+						Z32 = fastCounter & 0x0FFFF;
+						break;
+					}
+					case 5: { // Z3 > Z4
+						Z34 = fastCounter & 0x0FFFF;
+						break;
+					}
+					case 6: { // Z4 > Z3
+						Z43 = fastCounter & 0x0FFFF;
+						break;
+					}
+					case 7: { // Z4 > Z1
+						Z41 = fastCounter & 0x0FFFF;
+						break;
+					}
+					case 8: { // Z1 > Z4
+						Z14 = fastCounter & 0x0FFFF;
+						break;
+					}
+				}
+			}
 		}
 
   /* USER CODE END DMA1_Channel5_IRQn 0 */
@@ -273,8 +275,8 @@ void TIM3_IRQHandler(void)
 	//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 //	if (startCount-- == 0) {
 		runFlag = TRUE;
-		//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 //	}
 
   /* USER CODE END TIM3_IRQn 0 */
@@ -316,7 +318,7 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 1: { // Z2 (transmit) > Z1 (receive)
-			  TIM3->ARR = CORRECTION_23;
+			  TIM3->ARR = C_23;
 			  setZ2transmit; // Set Z2 port to output mode
 			  GPIOB->ODR |= (1 << Z1Receive); 				// Turn on multiplexer for input Z1 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
@@ -331,7 +333,7 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 3: { // Z3 (transmit) > Z2 (receive)
-			  TIM3->ARR = CORRECTION_34;
+			  TIM3->ARR = C_34;
 			  setZ3transmit; // Set Z3 port to output mode
 			  GPIOB->ODR |= (1 << Z2Receive); 				// Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
@@ -344,7 +346,7 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 5: { // Z4 (transmit) > Z3 (receive)
-			  TIM3->ARR = CORRECTION_14;
+			  TIM3->ARR = C_14;
 			  setZ4transmit; // Set Z4 port to output mode
 			  GPIOB->ODR |= (1 << Z3Receive); 				// Turn on multiplexer for input Z3 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
@@ -358,7 +360,7 @@ void TIM4_IRQHandler(void)
 		  }
 		  case 7: { // Z1 (transmit) > Z4 (receive)
 			  //TIM3->CNT = CORRECTION_14;
-			  TIM3->ARR = CORRECTION_12;
+			  TIM3->ARR = C_12;
 			  setZ1transmit;	// Set Z1 port to output mode
 			  GPIOB->ODR |= (1 << Z4Receive); 				// Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
