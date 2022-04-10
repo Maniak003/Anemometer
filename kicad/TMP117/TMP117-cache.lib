@@ -36,11 +36,11 @@ X ~ 2 0 -150 50 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# TMP117-rescue_Conn-My_Library-TMP117-rescue
+# TMP117-rescue_Conn-My_Library-TMP117-rescue-TMP117-rescue
 #
-DEF TMP117-rescue_Conn-My_Library-TMP117-rescue J 0 40 N N 1 F N
+DEF TMP117-rescue_Conn-My_Library-TMP117-rescue-TMP117-rescue J 0 40 N N 1 F N
 F0 "J" 0 100 50 H V C CNN
-F1 "TMP117-rescue_Conn-My_Library-TMP117-rescue" 0 -100 50 H V C CNN
+F1 "TMP117-rescue_Conn-My_Library-TMP117-rescue-TMP117-rescue" 0 -100 50 H V C CNN
 F2 "My-library:SMD-CONN" 50 -150 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -52,11 +52,11 @@ X ~ 1 -100 0 79 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# TMP117-rescue_TMP117-My_Library-TMP117-rescue
+# TMP117-rescue_TMP117-My_Library-TMP117-rescue-TMP117-rescue
 #
-DEF TMP117-rescue_TMP117-My_Library-TMP117-rescue D 0 40 Y Y 1 F N
+DEF TMP117-rescue_TMP117-My_Library-TMP117-rescue-TMP117-rescue D 0 40 Y Y 1 F N
 F0 "D" 100 300 50 H V C CNN
-F1 "TMP117-rescue_TMP117-My_Library-TMP117-rescue" 200 -350 50 H V C CNN
+F1 "TMP117-rescue_TMP117-My_Library-TMP117-rescue-TMP117-rescue" 200 -350 50 H V C CNN
 F2 "My-library:TMP117" -200 -200 50 H I C CNN
 F3 "" -200 -200 50 H I C CNN
 DRAW

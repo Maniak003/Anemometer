@@ -27,7 +27,8 @@ Core/Src/stm32f1xx_hal_msp.o: ../Core/Src/stm32f1xx_hal_msp.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  ../Core/Inc/wizchip_conf.h ../Core/Inc/w5500.h ../Core/Inc/dhcp.h \
- ../Core/Inc/dns.h ../Core/Inc/socket.h
+ ../Core/Inc/dns.h ../Core/Inc/socket.h ../Core/Inc/tmp117.h \
+ ../Core/Inc/main.h
 
 ../Core/Inc/main.h:
 
@@ -94,3 +95,7 @@ Core/Src/stm32f1xx_hal_msp.o: ../Core/Src/stm32f1xx_hal_msp.c \
 ../Core/Inc/dns.h:
 
 ../Core/Inc/socket.h:
+
+../Core/Inc/tmp117.h:
+
+../Core/Inc/main.h:

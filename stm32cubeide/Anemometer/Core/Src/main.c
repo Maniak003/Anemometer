@@ -539,6 +539,9 @@ void init_w5500() {
   calibrate34 = FALSE;
   calibrate14 = FALSE;
   calibrate23 = FALSE;
+#ifdef TMP117_ENABLE
+  //TMP117_Initialization_DEFAULT(hi2c1);
+#endif
   HAL_UART_Transmit(&huart1, (uint8_t *) "Init finish.\r\n", sizeof("Init finish.\r\n"), HAL_MAX_DELAY);
 
   while (1) {
@@ -592,7 +595,7 @@ void init_w5500() {
 				  calibrate14 = FALSE;
 				  calibrate23 = FALSE;
 				  if (calibrateCount > 0) {
-					  strncpy(SndBuffer,(char *) 0, sizeof(SndBuffer));
+					  memset(SndBuffer, 0, sizeof(SndBuffer));
 					  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 					  DX1 = Z12 - Z21;
@@ -600,7 +603,7 @@ void init_w5500() {
 					  DY1 = Z14 - Z41;
 					  DY2 = Z23 - Z32;
 					  rwFlash(1);
-					  strncpy(SndBuffer, 0, sizeof(SndBuffer));
+					  memset(SndBuffer, 0, sizeof(SndBuffer));
 					  sprintf(SndBuffer, "DX1:%5d, DX2:%5d, DY1:%5d, DY2:%5d\r\n", DX1, DX2, DY1, DY2);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 					  calibrateCount = 0;
@@ -615,6 +618,9 @@ void init_w5500() {
 					  Vmax = V;
 				  }
 			  } else {
+#ifdef TMP117_ENABLE
+				  temperature = TMP117_get_Temperature(hi2c1);
+#endif
 				  measCount = MEASSURE_COUNT;
 				  Xsum = Xsum / MEASSURE_COUNT;
 				  Ysum = Ysum / MEASSURE_COUNT;
@@ -632,6 +638,7 @@ void init_w5500() {
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", V);
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", A);
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
+						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_TEMPERATURE", temperature);
 					  }
 #endif
 				  } else {
@@ -640,17 +647,17 @@ void init_w5500() {
 					  if ( ! firstTime ) {
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 0);
 						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
+						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_TEMPERATURE", temperature);
 					  }
 #endif
 				  }
 				  if ( ! firstTime && !(calibrate12 || calibrate34 || calibrate14 || calibrate23)) {
-					  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.3f, Vmax:%8.3f, A:%4.0f   \r", Xsum, Ysum, V, Vmax, A);
+					  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.3f, Vmax:%8.3f, A:%4.0f, T:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  }
 				  Vmax = 0;
 				  firstTime = FALSE;
 			  }
-
 			  readyFlag = FALSE;
 		  }
 		  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {

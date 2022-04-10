@@ -14,6 +14,7 @@ C_SRCS += \
 ../Core/Src/syscalls.c \
 ../Core/Src/sysmem.c \
 ../Core/Src/system_stm32f1xx.c \
+../Core/Src/tmp117.c \
 ../Core/Src/w5500.c \
 ../Core/Src/wizchip_conf.c 
 
@@ -27,6 +28,7 @@ C_DEPS += \
 ./Core/Src/syscalls.d \
 ./Core/Src/sysmem.d \
 ./Core/Src/system_stm32f1xx.d \
+./Core/Src/tmp117.d \
 ./Core/Src/w5500.d \
 ./Core/Src/wizchip_conf.d 
 
@@ -40,6 +42,7 @@ OBJS += \
 ./Core/Src/syscalls.o \
 ./Core/Src/sysmem.o \
 ./Core/Src/system_stm32f1xx.o \
+./Core/Src/tmp117.o \
 ./Core/Src/w5500.o \
 ./Core/Src/wizchip_conf.o 
 
@@ -63,6 +66,8 @@ Core/Src/sysmem.o: ../Core/Src/sysmem.c Core/Src/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m3 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DNS -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DHCP -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/sysmem.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Core/Src/system_stm32f1xx.o: ../Core/Src/system_stm32f1xx.c Core/Src/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m3 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DNS -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DHCP -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/system_stm32f1xx.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
+Core/Src/tmp117.o: ../Core/Src/tmp117.c Core/Src/subdir.mk
+	arm-none-eabi-gcc "$<" -mcpu=cortex-m3 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DNS -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DHCP -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/tmp117.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Core/Src/w5500.o: ../Core/Src/w5500.c Core/Src/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m3 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DNS -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Internet/DHCP -I/home/ed/work/Anemometer/stm32cubeide/W5500_lib/ioLibrary_Driver-master/Ethernet -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/w5500.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Core/Src/wizchip_conf.o: ../Core/Src/wizchip_conf.c Core/Src/subdir.mk
