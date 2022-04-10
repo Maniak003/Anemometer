@@ -1,0 +1,74 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# Conn-My_Library
+#
+DEF Conn-My_Library J 0 40 N N 1 F N
+F0 "J" 0 100 50 H V C CNN
+F1 "Conn-My_Library" 0 -100 50 H V C CNN
+F2 "My-library:SMD-CONN" 50 -150 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*
+$ENDFPLIST
+DRAW
+A 0 0 20 901 -901 1 1 6 N 0 20 0 -20
+X ~ 1 -100 0 79 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Conn-My_Library-TMP117-rescue-TMP117-rescue
+#
+DEF Conn-My_Library-TMP117-rescue-TMP117-rescue J 0 40 N N 1 F N
+F0 "J" 0 100 50 H V C CNN
+F1 "Conn-My_Library-TMP117-rescue-TMP117-rescue" 0 -100 50 H V C CNN
+F2 "My-library:SMD-CONN" 50 -150 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*
+$ENDFPLIST
+DRAW
+A 0 0 20 901 -901 1 1 6 N 0 20 0 -20
+X ~ 1 -100 0 79 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# TMP117-My_Library
+#
+DEF TMP117-My_Library D 0 40 Y Y 1 F N
+F0 "D" 100 300 50 H V C CNN
+F1 "TMP117-My_Library" 200 -350 50 H V C CNN
+F2 "My-library:TMP117" -200 -200 50 H I C CNN
+F3 "" -200 -200 50 H I C CNN
+DRAW
+S -250 250 300 -300 0 1 0 f
+X SCL 1 -350 100 100 R 50 50 1 1 I
+X Gnd 2 0 -400 100 U 50 50 1 1 I
+X Alert 3 400 100 100 L 50 50 1 1 I
+X Add0 4 400 -100 100 L 50 50 1 1 I
+X Vcc 5 0 350 100 D 50 50 1 1 I
+X SDA 6 -350 -150 100 R 50 50 1 1 I
+X ~ 7 -150 -400 100 U 50 50 1 1 N
+ENDDRAW
+ENDDEF
+#
+# TMP117-My_Library-TMP117-rescue-TMP117-rescue
+#
+DEF TMP117-My_Library-TMP117-rescue-TMP117-rescue D 0 40 Y Y 1 F N
+F0 "D" 100 300 50 H V C CNN
+F1 "TMP117-My_Library-TMP117-rescue-TMP117-rescue" 200 -350 50 H V C CNN
+F2 "My-library:TMP117" -200 -200 50 H I C CNN
+F3 "" -200 -200 50 H I C CNN
+DRAW
+S -250 250 300 -300 0 1 0 f
+X SCL 1 -350 100 100 R 50 50 1 1 I
+X Gnd 2 0 -400 100 U 50 50 1 1 I
+X Alert 3 400 100 100 L 50 50 1 1 I
+X Add0 4 400 -100 100 L 50 50 1 1 I
+X Vcc 5 0 350 100 D 50 50 1 1 I
+X SDA 6 -350 -150 100 R 50 50 1 1 I
+X ~ 7 -150 -400 100 U 50 50 1 1 w
+ENDDRAW
+ENDDEF
+#
+#End Library
