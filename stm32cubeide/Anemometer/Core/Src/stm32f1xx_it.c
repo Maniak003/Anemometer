@@ -275,8 +275,6 @@ void TIM3_IRQHandler(void)
 	//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 //	if (startCount-- == 0) {
 		runFlag = TRUE;
-		HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 //	}
 
   /* USER CODE END TIM3_IRQn 0 */

@@ -613,6 +613,7 @@ void init_w5500() {
 			  if (measCount-- != 0) {
 				  Xsum = Xsum + X;
 				  Ysum = Ysum + Y;
+				  /* Поиск максимальной скорости */
 				  V = sqrt(pow(X, 2) + pow(Y, 2));
 				  if ( V > Vmax ) {
 					  Vmax = V;
@@ -660,6 +661,7 @@ void init_w5500() {
 			  }
 			  readyFlag = FALSE;
 		  }
+		  /* Подготовка запуска процедуры калибровки */
 		  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
 			  if (uart_buffer[0] == 'c' || uart_buffer[0] == 'C') {
 				  HAL_UART_Transmit(&huart1, (uint8_t *) "\r\nStart callibrate \r\n", sizeof("\r\nStart callibrate \r\n"), 1000);
