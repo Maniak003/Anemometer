@@ -68,7 +68,7 @@ extern "C" {
 #define setZ3transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10_0)) | (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1)
 #define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
 #define MEASSURE_COUNT 50;
-#define SPEED_CALIBRATE 53;
+#define SPEED_CALIBRATE 35; // cos(atg(17/15))*53
 //#define ZABBIX_DEBUG
 /* USER CODE END ET */
 

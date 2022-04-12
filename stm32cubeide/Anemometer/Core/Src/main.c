@@ -550,7 +550,7 @@ void init_w5500() {
 	  if (readyFlag) {
 		  if (Z12 != 0 && Z21 != 0) {
 
-			  X = (Z12 - Z21 - DX1 + Z34 - Z43 - DX2) / 2;
+			  X = (Z12 - Z21 - DX1 + Z43 - Z34 - DX2) / 2;
 			  Y = (Z23 - Z32 - DY2 + Z14 - Z41 - DY1) / 2;
 
 			  /* Коррекция для тестирования */
@@ -599,7 +599,7 @@ void init_w5500() {
 					  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 					  DX1 = Z12 - Z21;
-					  DX2 = Z34 - Z43;
+					  DX2 = Z43 - Z34;
 					  DY1 = Z14 - Z41;
 					  DY2 = Z23 - Z32;
 					  rwFlash(1);
