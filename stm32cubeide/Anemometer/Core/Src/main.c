@@ -653,7 +653,7 @@ void init_w5500() {
 #endif
 				  }
 				  if ( ! firstTime && !(calibrate12 || calibrate34 || calibrate14 || calibrate23)) {
-					  sprintf(SndBuffer, "X:%7.0f, Y:%7.0f, V:%8.3f, Vmax:%8.3f, A:%4.0f, T:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature);
+					  sprintf(SndBuffer, "X:%7.2f, Y:%7.2f, V:%7.2f, Vmax:%7.2f, A:%4.0f, T:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  }
 				  Vmax = 0;
