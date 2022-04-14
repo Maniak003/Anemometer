@@ -1,3 +1,4 @@
+"Core/Src/BME280.o"
 "Core/Src/dhcp.o"
 "Core/Src/dns.o"
 "Core/Src/main.o"

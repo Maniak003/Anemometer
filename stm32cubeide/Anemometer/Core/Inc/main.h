@@ -32,6 +32,9 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+//#define TMP117_ENABLE
+#define BME280_ENABLE
+#include <stm32f1xx_hal_i2c.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -42,8 +45,12 @@ extern "C" {
 #include "dns.h"
 #include "socket.h"
 #include "stdarg.h"
+#ifdef TMP117_ENABLE
 #include "tmp117.h"
-#include <stm32f1xx_hal_i2c.h>
+#endif
+#ifdef BME280_ENABLE
+#include "BME280.h"
+#endif
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -131,7 +138,7 @@ uint16_t calibrateCount;
 #define CALIBRATE_ACURACY 5
 #define CALIBRATE_START 25000
 double X, Y, V, A, Xsum, Ysum, Vmax;
-float temperature;
+float temperature, pressure, humidity;
 uint32_t sumCounter2, fastCounter;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
@@ -149,8 +156,7 @@ bool readyFlag, runFlag, firstTime, calibrate12, calibrate34, calibrate14, calib
 #define _DHCP_DEBUG_
 
 #define ZABBIX_ENABLE
-#define TMP117_ENABLE
-#define ZABBIXAGHOST	"Anemometr"
+#define ZABBIXAGHOST	"Ed"
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128
 

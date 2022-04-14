@@ -229,16 +229,16 @@ void readSector(uint32_t SectorStartAddress, void * values, uint16_t size)
 */
 
 
-void UART_Printf(const char* fmt, ...) {
 #ifdef ZABBIX_DEBUG
+void UART_Printf(const char* fmt, ...) {
 	char buff[256];
 	va_list args;
 	va_start(args, fmt);
 	vsnprintf(buff, sizeof(buff), fmt, args);
 	HAL_UART_Transmit(&huart1, (uint8_t*) buff, strlen(buff), HAL_MAX_DELAY);
 	va_end(args);
-#endif
 }
+#endif
 
 
 void W5500_Select(void) {
@@ -271,12 +271,16 @@ void W5500_WriteByte(uint8_t byte) {
 volatile bool ip_assigned = false;
 
 void Callback_IPAssigned(void) {
-    UART_Printf("Callback: IP assigned! Leased time: %d sec\r\n", getDHCPLeasetime());
+#ifdef ZABBIX_DEBUG
+	UART_Printf("Callback: IP assigned! Leased time: %d sec\r\n", getDHCPLeasetime());
+#endif
     ip_assigned = true;
 }
 
 void Callback_IPConflict(void) {
+#ifdef ZABBIX_DEBUG
     UART_Printf("Callback: IP conflict!\r\n");
+#endif
 }
 
 // 1K should be enough, see https://forum.wiznet.io/t/topic/1612/2
@@ -299,23 +303,31 @@ uint8_t dhcp_buffer[1024];
  * value -- Float value of key.
 */
 uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
+#ifdef ZABBIX_DEBUG
     UART_Printf("Creating socket...\r\n");
+#endif
     uint8_t tcp_socket = TCP_SOCKET;
     uint8_t code = socket(tcp_socket, Sn_MR_TCP, 10888, 0);
     if(code != tcp_socket) {
+	#ifdef ZABBIX_DEBUG
         UART_Printf("socket() failed, code = %d\r\n", code);
+	#endif
         return(-1);
     }
-
+#ifdef ZABBIX_DEBUG
     UART_Printf("Socket created, connecting...\r\n");
+#endif
     code = connect(tcp_socket, addr, ZABBIXPORT);
     if(code != SOCK_OK) {
+	#ifdef ZABBIX_DEBUG
         UART_Printf("connect() failed, code = %d\r\n", code);
+	#endif
         close(tcp_socket);
         return(-2);
     }
-
+#ifdef ZABBIX_DEBUG
     UART_Printf("Connected, sending ZABBIX request...\r\n");
+#endif
     {
     	char req[ZABBIXMAXLEN];
     	char str[ZABBIXMAXLEN - 13];
@@ -338,39 +350,53 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
         uint8_t len = req[5] + 13;
         uint8_t* buff = (uint8_t*)&req;
         while(len > 0) {
+		#ifdef ZABBIX_DEBUG
             UART_Printf("Sending %d bytes, data length %d bytes...\r\n", len, req[5]);
+		#endif
             int32_t nbytes = send(tcp_socket, buff, len);
             if(nbytes <= 0) {
+			#ifdef ZABBIX_DEBUG
                 UART_Printf("send() failed, %d returned\r\n", nbytes);
+			#endif
                 close(tcp_socket);
                 return(-3);
             }
+			#ifdef ZABBIX_DEBUG
             UART_Printf("%d b sent!\r\n", nbytes);
+			#endif
             len -= nbytes;
         }
     }
-
+#ifdef ZABBIX_DEBUG
     UART_Printf("Read.\r\n");
+#endif
     {
         char buff[32];
         for(;;) {
             int32_t nbytes = recv(tcp_socket, (uint8_t*)&buff, sizeof(buff)-1);
             if(nbytes == SOCKERR_SOCKSTATUS) {
+			#ifdef ZABBIX_DEBUG
                 UART_Printf("\r\nDisconnect.\r\n");
+			#endif
                 break;
             }
 
             if(nbytes <= 0) {
+			#ifdef ZABBIX_DEBUG
                 UART_Printf("\r\nrecv() failed, %d\r\n", nbytes);
+			#endif
                 break;
             }
 
             buff[nbytes] = '\0';
+			#ifdef ZABBIX_DEBUG
             UART_Printf("%s", buff);
+			#endif
         }
     }
-
+	#ifdef ZABBIX_DEBUG
     UART_Printf("Closing socket.\r\n");
+	#endif
     close(tcp_socket);
     return(0);
 }
@@ -378,18 +404,21 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
 
 
 void init_w5500() {
+	#ifdef ZABBIX_DEBUG
     UART_Printf("\r\ninit() called!\r\n");
-
     UART_Printf("Registering W5500 callbacks...\r\n");
+	#endif
     reg_wizchip_cs_cbfunc(W5500_Select, W5500_Unselect);
     reg_wizchip_spi_cbfunc(W5500_ReadByte, W5500_WriteByte);
     reg_wizchip_spiburst_cbfunc(W5500_ReadBuff, W5500_WriteBuff);
-
+	#ifdef ZABBIX_DEBUG
     UART_Printf("Calling wizchip_init()...\r\n");
+	#endif
     uint8_t rx_tx_buff_sizes[] = {2, 2, 2, 2, 2, 2, 2, 2};
     wizchip_init(rx_tx_buff_sizes, rx_tx_buff_sizes);
-
+	#ifdef ZABBIX_DEBUG
     UART_Printf("Calling DHCP_init()...\r\n");
+	#endif
 //    wiz_NetInfo net_info = {
 //        .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
 //        .dhcp = NETINFO_DHCP
@@ -397,15 +426,17 @@ void init_w5500() {
     // set MAC address before using DHCP
     setSHAR(net_info.mac);
     DHCP_init(DHCP_SOCKET, dhcp_buffer);
-
+	#ifdef ZABBIX_DEBUG
     UART_Printf("Registering DHCP callbacks...\r\n");
+	#endif
     reg_dhcp_cbfunc(
         Callback_IPAssigned,
         Callback_IPAssigned,
         Callback_IPConflict
     );
-
+	#ifdef ZABBIX_DEBUG
     UART_Printf("Calling DHCP_run()...\r\n");
+	#endif
     // actually should be called in a loop, e.g. by timer
     uint32_t ctr = 10000;
     while((!ip_assigned) && (ctr > 0)) {
@@ -414,7 +445,9 @@ void init_w5500() {
         HAL_Delay(100);
     }
     if(!ip_assigned) {
+		#ifdef ZABBIX_DEBUG
         UART_Printf("\r\nIP was not assigned :(\r\n");
+		#endif
         return;
     }
 
@@ -425,15 +458,15 @@ void init_w5500() {
 
     //uint8_t dns[4];
     //getDNSfromDHCP(dns);
-
+	#ifdef ZABBIX_DEBUG
     UART_Printf("IP:  %d.%d.%d.%d\r\nGW:  %d.%d.%d.%d\r\nNet: %d.%d.%d.%d\r\nZabbix: %d.%d.%d.%d\r\n",
         net_info.ip[0], net_info.ip[1], net_info.ip[2], net_info.ip[3],
         net_info.gw[0], net_info.gw[1], net_info.gw[2], net_info.gw[3],
         net_info.sn[0], net_info.sn[1], net_info.sn[2], net_info.sn[3],
         net_info.zabbix[0], net_info.zabbix[1], net_info.zabbix[2], net_info.zabbix[3]
     );
-
     UART_Printf("Calling wizchip_setnetinfo()...\r\n");
+	#endif
     wizchip_setnetinfo(&net_info);
 
     // Test request.
@@ -539,6 +572,9 @@ void init_w5500() {
   calibrate34 = FALSE;
   calibrate14 = FALSE;
   calibrate23 = FALSE;
+#ifdef BME280_ENABLE
+  BME280_Init();
+#endif
 #ifdef TMP117_ENABLE
   //TMP117_Initialization_DEFAULT(hi2c1);
 #endif
@@ -553,10 +589,6 @@ void init_w5500() {
 			  X = (Z12 - Z21 - DX1 + Z43 - Z34 - DX2) / 2;
 			  Y = (Z23 - Z32 - DY2 + Z14 - Z41 - DY1) / 2;
 
-			  /* Коррекция для тестирования */
-			  //X = X + 145;
-			  //Y = Y + 55;
-			  // Y
 			  //sprintf(SndBuffer, "Y1:%7d, Y2:%7d   \r", Z14 - Z41, Z23 - Z32);
 			  //sprintf(SndBuffer, "Z14:%7d, Z41:%7d, Z23:%7d, Z32:%7d   \r", Z14, Z41, Z23, Z32);
 			  // X
@@ -565,6 +597,8 @@ void init_w5500() {
 			  // X + Y
 			  //sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
 			  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+
+			  /* Процедура калибровки */
 			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 1600)) {
 				  sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
@@ -598,6 +632,7 @@ void init_w5500() {
 					  memset(SndBuffer, 0, sizeof(SndBuffer));
 					  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+					  /* Вычисление поправок */
 					  DX1 = Z12 - Z21;
 					  DX2 = Z43 - Z34;
 					  DY1 = Z14 - Z41;
@@ -619,9 +654,14 @@ void init_w5500() {
 					  Vmax = V;
 				  }
 			  } else {
-#ifdef TMP117_ENABLE
+				#ifdef TMP117_ENABLE
 				  temperature = TMP117_get_Temperature(hi2c1);
-#endif
+				#endif
+				#ifdef BME280_ENABLE
+				  temperature = BME280_ReadTemperature();
+				  pressure = BME280_ReadPressure();
+				  humidity = BME280_ReadHumidity();
+				#endif
 				  measCount = MEASSURE_COUNT;
 				  Xsum = Xsum / MEASSURE_COUNT;
 				  Ysum = Ysum / MEASSURE_COUNT;
@@ -634,26 +674,31 @@ void init_w5500() {
 					  if (Ysum < 0) {
 						  A = 360 - A; // III, IV квадранты
 					  }
-#ifdef ZABBIX_ENABLE
+					#ifdef ZABBIX_ENABLE
+					#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
+					  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_TEMPERATURE", temperature);
+						#ifdef BME280_ENABLE
+						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_PRESSURE", pressure);
+						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_HUMIDITY", humidity);
+						#endif
+					#endif
 					  if ( ! firstTime ) {  // Первый раз пропускаем для инициализации переменных.
-						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", V);
-						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", A);
-						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
-						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_TEMPERATURE", temperature);
+						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_SPEED", V);
+						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_DIRECT", A);
+						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_MAXSPEED", Vmax);
 					  }
-#endif
+					#endif
 				  } else {
 					  A = 0;
-#ifdef ZABBIX_ENABLE
+					#ifdef ZABBIX_ENABLE
 					  if ( ! firstTime ) {
-						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 0);
-						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_MAXSPEED", Vmax);
-						  sendToZabbix(net_info.zabbix, "Ed", "ALTIM_TEMPERATURE", temperature);
+						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_SPEED", 0);
+						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_MAXSPEED", Vmax);
 					  }
-#endif
+					#endif
 				  }
 				  if ( ! firstTime && !(calibrate12 || calibrate34 || calibrate14 || calibrate23)) {
-					  sprintf(SndBuffer, "X:%7.2f, Y:%7.2f, V:%7.2f, Vmax:%7.2f, A:%4.0f, T:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature);
+					  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature, pressure, humidity);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  }
 				  Vmax = 0;
@@ -663,7 +708,7 @@ void init_w5500() {
 		  }
 		  /* Подготовка запуска процедуры калибровки */
 		  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
-			  if (uart_buffer[0] == 'c' || uart_buffer[0] == 'C') {
+			  if (uart_buffer[0] == 'c' || uart_buffer[0] == 'C') {  // Клавиша C нажата ?
 				  HAL_UART_Transmit(&huart1, (uint8_t *) "\r\nStart callibrate \r\n", sizeof("\r\nStart callibrate \r\n"), 1000);
 				  calibrate12 = TRUE;
 				  calibrate34 = TRUE;

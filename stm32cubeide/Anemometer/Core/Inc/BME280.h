@@ -1,15 +1,15 @@
 #ifndef BME280_H_
 #define BME280_H_
 //------------------------------------------------
-#include "stm32f4xx_hal.h"
+#include "stm32f1xx_hal.h"
 #include <string.h>
 #include <math.h>
 //------------------------------------------------
-#define LED_GPIO_PORT GPIOA
-#define LED_PIN GPIO_PIN_5
-#define LED_ON HAL_GPIO_WritePin(LED_GPIO_PORT, LED_PIN, GPIO_PIN_SET)
-#define LED_OFF HAL_GPIO_WritePin(LED_GPIO_PORT, LED_PIN, GPIO_PIN_RESET)
-#define LED_TGL HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_PIN)
+//#define LED_GPIO_PORT GPIOA
+//#define LED_PIN GPIO_PIN_5
+//#define LED_ON HAL_GPIO_WritePin(LED_GPIO_PORT, LED_PIN, GPIO_PIN_SET)
+//#define LED_OFF HAL_GPIO_WritePin(LED_GPIO_PORT, LED_PIN, GPIO_PIN_RESET)
+//#define LED_TGL HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_PIN)
 //------------------------------------------------
 #define SEALEVELPRESSURE_HPA (1013.25)
 #define SEALEVELPRESSURE_PA (1013250)
