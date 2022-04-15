@@ -137,6 +137,9 @@ int DX1, DX2, DY1, DY2;
 uint16_t calibrateCount;
 #define CALIBRATE_ACURACY 5
 #define CALIBRATE_START 25000
+#define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
+#define INIT_FINISH_TEXT "Init finish.\r\n"
+#define START_TEXT "\rAnemometer start.\r\n"
 double X, Y, V, A, Xsum, Ysum, Vmax;
 float temperature, pressure, humidity;
 uint32_t sumCounter2, fastCounter;

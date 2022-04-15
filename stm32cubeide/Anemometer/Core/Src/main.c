@@ -55,7 +55,7 @@ UART_HandleTypeDef huart1;
 /* USER CODE BEGIN PV */
 HAL_StatusTypeDef	flash_ok;
 char uart_buffer[10] = {0,};
-char SndBuffer[100] = {0,};
+char SndBuffer[200] = {0,};
 uint32_t fastCounter;
     wiz_NetInfo net_info = {
         .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
@@ -544,7 +544,7 @@ void init_w5500() {
    * 6 - Z4 >> Z1
    * 7 - Z1 >> Z4
    */
-  HAL_UART_Transmit(&huart1, (uint8_t *) "\rAnemometer start.\r\n", sizeof("\rAnemometer start.\r\n"), HAL_MAX_DELAY);
+  HAL_UART_Transmit(&huart1, (uint8_t *) START_TEXT, sizeof(START_TEXT), HAL_MAX_DELAY);
 #ifdef ZABBIX_ENABLE
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);	// Reset W5500
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
@@ -576,7 +576,7 @@ void init_w5500() {
 #endif
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
-  HAL_UART_Transmit(&huart1, (uint8_t *) "Init finish.\r\n", sizeof("Init finish.\r\n"), HAL_MAX_DELAY);
+  HAL_UART_Transmit(&huart1, (uint8_t *) INIT_FINISH_TEXT, sizeof(INIT_FINISH_TEXT), HAL_MAX_DELAY);
   HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
 
   while (1) {
@@ -636,11 +636,12 @@ void init_w5500() {
 					  DX2 = Z43 - Z34;
 					  DY1 = Z14 - Z41;
 					  DY2 = Z23 - Z32;
-					  rwFlash(1);
+					  rwFlash(1);  // Запись данных калибровки во Flash.
 					  memset(SndBuffer, 0, sizeof(SndBuffer));
 					  sprintf(SndBuffer, "DX1:%5d, DX2:%5d, DY1:%5d, DY2:%5d\r\n", DX1, DX2, DY1, DY2);
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 					  calibrateCount = 0;
+					  firstTime = TRUE;
 				  }
 			  }
 
@@ -709,8 +710,8 @@ void init_w5500() {
 		  }
 		  /* Подготовка запуска процедуры калибровки */
 		  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
-			  if (uart_buffer[0] == 'c' || uart_buffer[0] == 'C') {  // Клавиша C нажата ?
-				  HAL_UART_Transmit(&huart1, (uint8_t *) "\r\nStart callibrate \r\n", sizeof("\r\nStart callibrate \r\n"), 1000);
+			  if (uart_buffer[0] == 'c' ) {  // Клавиша C нажата ?
+				  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_TEXT, sizeof(CALIBRATE_TEXT), 1000);
 				  calibrate12 = TRUE;
 				  calibrate34 = TRUE;
 				  calibrate14 = TRUE;
