@@ -660,7 +660,7 @@ void init_w5500() {
 					#endif
 					#ifdef BME280_ENABLE
 					  temperature = BME280_ReadTemperature();
-					  pressure = BME280_ReadPressure();
+					  pressure = BME280_ReadPressure() * 0.000750061683f;
 					  humidity = BME280_ReadHumidity();
 					#endif
 					  measCount = MEASSURE_COUNT;
