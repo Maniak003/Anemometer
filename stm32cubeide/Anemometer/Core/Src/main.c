@@ -367,6 +367,7 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
             len -= nbytes;
         }
     }
+    /* Read data from Zabbix
 #ifdef ZABBIX_DEBUG
     UART_Printf("Read.\r\n");
 #endif
@@ -394,6 +395,7 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
 			#endif
         }
     }
+    */
 	#ifdef ZABBIX_DEBUG
     UART_Printf("Closing socket.\r\n");
 	#endif
@@ -663,19 +665,7 @@ void init_w5500() {
 					  pressure = BME280_ReadPressure() * 0.000750061683f;
 					  humidity = BME280_ReadHumidity();
 					#endif
-					  measCount = MEASSURE_COUNT;
-					  Xsum = Xsum / MEASSURE_COUNT;
-					  Ysum = Ysum / MEASSURE_COUNT;
-					  Xsum = Xsum / SPEED_CALIBRATE;
-					  Ysum = Ysum / SPEED_CALIBRATE;
-					  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
-					  if ( V != 0 ) {
-						  Vmax = Vmax / SPEED_CALIBRATE;
-						  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
-						  if (Ysum < 0) {
-							  A = 360 - A; // III, IV квадранты
-						  }
-						#ifdef ZABBIX_ENABLE
+					#ifdef ZABBIX_ENABLE
 						#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
 						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_TEMPERATURE", temperature);
 							#ifdef BME280_ENABLE
@@ -683,6 +673,20 @@ void init_w5500() {
 							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_HUMIDITY", humidity);
 							#endif
 						#endif
+					#endif
+					  measCount = MEASSURE_COUNT;
+					  Xsum = Xsum / MEASSURE_COUNT;
+					  Ysum = Ysum / MEASSURE_COUNT;
+					  Xsum = Xsum / SPEED_CALIBRATE;
+					  Ysum = Ysum / SPEED_CALIBRATE;
+					  Vmax = Vmax / SPEED_CALIBRATE;
+					  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
+					  if ( V != 0 ) {
+						  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
+						  if (Ysum < 0) {
+							  A = 360 - A; // III, IV квадранты
+						  }
+						#ifdef ZABBIX_ENABLE
 						  if ( (! firstTime) && (V < 40) && (Vmax < 40) ) {  // Первый раз пропускаем для инициализации переменных.
 							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_SPEED", V);
 							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_DIRECT", A);
