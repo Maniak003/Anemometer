@@ -165,6 +165,7 @@ enum
    dhcpClassIdentifier     = 60,
    dhcpClientIdentifier    = 61,
    dhcpZabbixServerIP	   = 224,
+   dhcpZabbixHostName	   = 225,
    endOption               = 255
 };
 
@@ -203,6 +204,7 @@ uint8_t DHCP_allocated_gw[4]  = {0, };    // Gateway address from DHCP
 uint8_t DHCP_allocated_sn[4]  = {0, };    // Subnet mask from DHCP
 uint8_t DHCP_allocated_dns[4] = {0, };    // DNS address from DHCP
 uint8_t DHCP_allocated_zabbix[4] = {0, }; // Zabbix server option 224
+uint8_t DHCP_allocated_hostname[256] = {0, }; // Host-name option 12
 
 
 int8_t   dhcp_state        = STATE_DHCP_INIT;   // DHCP state
@@ -401,7 +403,7 @@ void send_DHCP_DISCOVER(void)
 	pDHCPMSG->OPT[k - (i+6+1)] = i+6; // length of hostname
 
 	pDHCPMSG->OPT[k++] = dhcpParamRequest;
-	pDHCPMSG->OPT[k++] = 0x07;	// length of request
+	pDHCPMSG->OPT[k++] = 0x08;	// length of request
 	pDHCPMSG->OPT[k++] = subnetMask;
 	pDHCPMSG->OPT[k++] = routersOnSubnet;
 	pDHCPMSG->OPT[k++] = dns;
@@ -409,6 +411,7 @@ void send_DHCP_DISCOVER(void)
 	pDHCPMSG->OPT[k++] = dhcpT1value;
 	pDHCPMSG->OPT[k++] = dhcpT2value;
 	pDHCPMSG->OPT[k++] = dhcpZabbixServerIP;
+	pDHCPMSG->OPT[k++] = dhcpZabbixHostName;
 	pDHCPMSG->OPT[k++] = endOption;
 
 	for (i = k; i < OPT_SIZE; i++) pDHCPMSG->OPT[i] = 0;
@@ -504,7 +507,7 @@ void send_DHCP_REQUEST(void)
 	pDHCPMSG->OPT[k - (i+6+1)] = i+6; // length of hostname
 	
 	pDHCPMSG->OPT[k++] = dhcpParamRequest;
-	pDHCPMSG->OPT[k++] = 0x09;
+	pDHCPMSG->OPT[k++] = 0x0a;
 	pDHCPMSG->OPT[k++] = subnetMask;
 	pDHCPMSG->OPT[k++] = routersOnSubnet;
 	pDHCPMSG->OPT[k++] = dns;
@@ -514,6 +517,7 @@ void send_DHCP_REQUEST(void)
 	pDHCPMSG->OPT[k++] = performRouterDiscovery;
 	pDHCPMSG->OPT[k++] = staticRoute;
 	pDHCPMSG->OPT[k++] = dhcpZabbixServerIP;
+	pDHCPMSG->OPT[k++] = dhcpZabbixHostName;
 	pDHCPMSG->OPT[k++] = endOption;
 
 	for (i = k; i < OPT_SIZE; i++) pDHCPMSG->OPT[i] = 0;
@@ -705,6 +709,15 @@ int8_t parseDHCPMSG(void)
                 DHCP_REAL_SIP[1]=svr_addr[1];
                 DHCP_REAL_SIP[2]=svr_addr[2];
                 DHCP_REAL_SIP[3]=svr_addr[3];
+   				break;
+   			case dhcpZabbixHostName :
+   				p++;
+   				opt_len = *p++;
+   				int iii;
+   				for (iii = 0; iii < opt_len; iii++) {
+   					DHCP_allocated_hostname[iii] = *p++;
+   				}
+   				DHCP_allocated_hostname[iii] = '\0';
    				break;
    			default :
    				p++;
@@ -1010,6 +1023,19 @@ void getZABBIXfromDHCP(uint8_t* ip)
 	ip[1] =DHCP_allocated_zabbix[1];
 	ip[2] =DHCP_allocated_zabbix[2];
 	ip[3] =DHCP_allocated_zabbix[3];
+}
+
+void getHostNamefromDHCP(uint8_t * host)
+{
+	int iii;
+	for (iii = 0; iii < 255; iii++) {
+		host[iii] = DHCP_allocated_hostname[iii];
+		if (DHCP_allocated_hostname[iii] == '\0') {
+			break;
+		}
+	}
+	//host[0] = 'A';
+	//host[1] = '\0';
 }
 
 void getSNfromDHCP(uint8_t* ip)

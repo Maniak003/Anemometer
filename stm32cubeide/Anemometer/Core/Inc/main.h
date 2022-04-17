@@ -76,7 +76,6 @@ extern "C" {
 #define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
 #define MEASSURE_COUNT 50;
 #define SPEED_CALIBRATE 35; // cos(atg(17/15))*53
-//#define ZABBIX_DEBUG
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -158,10 +157,12 @@ bool readyFlag, runFlag, firstTime, calibrate12, calibrate34, calibrate14, calib
 #define W5500_CS_Pin	GPIO_PIN_12
 #define _DHCP_DEBUG_
 
+//#define ZABBIX_DEBUG
 #define ZABBIX_ENABLE
-#define ZABBIXAGHOST	"Ed"
+#define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128
+char ZabbixHostName[255];
 
 /* USER CODE END Private defines */
 

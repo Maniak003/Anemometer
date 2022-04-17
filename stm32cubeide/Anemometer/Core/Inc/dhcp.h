@@ -142,6 +142,9 @@ void getGWfromDHCP(uint8_t* ip);
  * @param ip  - IP zabbix server to be returned
  */
 void getZABBIXfromDHCP(uint8_t* ip);
+
+/* Get hostname */
+void getHostNamefromDHCP(uint8_t * host);
 /*
  * @brief Get Subnet mask value
  * @param ip  - Subnet mask to be returned

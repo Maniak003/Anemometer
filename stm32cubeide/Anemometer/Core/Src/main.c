@@ -57,10 +57,10 @@ HAL_StatusTypeDef	flash_ok;
 char uart_buffer[10] = {0,};
 char SndBuffer[200] = {0,};
 uint32_t fastCounter;
-    wiz_NetInfo net_info = {
-        .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
-        .dhcp = NETINFO_DHCP
-    };
+wiz_NetInfo net_info = {
+	.mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
+	.dhcp = NETINFO_DHCP
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -292,10 +292,12 @@ uint8_t dhcp_buffer[1024];
  * addr -- IP address zabbix server, dhcp option 224.
  * Settings for isc-dhcp-server:
  * 		option zabbix-server-ip code 224 = ip-address ;
+ * 		option zabix-host-name code 225 = string ;
  * 		host anemometr {
  *      	hardware ethernet 00:11:22:33:44:ea;
  *      	fixed-address 192.168.1.24;
  *       	option zabbix-server-ip 192.168.1.6;
+ *       	option zabix-host-name "Ed";
  * 		}
  *
  * key -- Zabbix key: {ALTIM_DIRECT, ALTIM_SPEED}
@@ -331,7 +333,7 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
     {
     	char req[ZABBIXMAXLEN];
     	char str[ZABBIXMAXLEN - 13];
-    	sprintf(str, "{\"request\":\"sender data\",\"data\":[{\"host\":\"%s\",\"key\":\"%s\",\"value\":\"%f\"}]}", host, key, value);
+    	sprintf(str, "{\"request\":\"sender data\",\"data\":[{\"host\":\"%.20s\",\"key\":\"%s\",\"value\":\"%f\"}]}", host, key, value);
     	req[0] = 'Z';
     	req[1] = 'B';
 		req[2] = 'X';
@@ -457,15 +459,22 @@ void init_w5500() {
     getGWfromDHCP(net_info.gw);
     getSNfromDHCP(net_info.sn);
     getZABBIXfromDHCP(net_info.zabbix);
+    getHostNamefromDHCP(net_info.hostname);
+    if (net_info.hostname[0] == '\0') {
+    	sprintf(ZabbixHostName, "%s", ZABBIXAGHOST);
+    } else {
+    	sprintf(ZabbixHostName, "%s", net_info.hostname);
+    }
 
     //uint8_t dns[4];
     //getDNSfromDHCP(dns);
 	#ifdef ZABBIX_DEBUG
-    UART_Printf("IP:  %d.%d.%d.%d\r\nGW:  %d.%d.%d.%d\r\nNet: %d.%d.%d.%d\r\nZabbix: %d.%d.%d.%d\r\n",
+    UART_Printf("IP:  %d.%d.%d.%d\r\nGW:  %d.%d.%d.%d\r\nNet: %d.%d.%d.%d\r\nZabbix: %d.%d.%d.%d\r\nHostName:%s\r\n",
         net_info.ip[0], net_info.ip[1], net_info.ip[2], net_info.ip[3],
         net_info.gw[0], net_info.gw[1], net_info.gw[2], net_info.gw[3],
         net_info.sn[0], net_info.sn[1], net_info.sn[2], net_info.sn[3],
-        net_info.zabbix[0], net_info.zabbix[1], net_info.zabbix[2], net_info.zabbix[3]
+        net_info.zabbix[0], net_info.zabbix[1], net_info.zabbix[2], net_info.zabbix[3],
+		ZabbixHostName
     );
     UART_Printf("Calling wizchip_setnetinfo()...\r\n");
 	#endif
@@ -667,10 +676,10 @@ void init_w5500() {
 					#endif
 					#ifdef ZABBIX_ENABLE
 						#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
-						  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_TEMPERATURE", temperature);
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
 							#ifdef BME280_ENABLE
-							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_PRESSURE", pressure);
-							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_HUMIDITY", humidity);
+							  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_PRESSURE", pressure);
+							  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_HUMIDITY", humidity);
 							#endif
 						#endif
 					#endif
@@ -688,17 +697,17 @@ void init_w5500() {
 						  }
 						#ifdef ZABBIX_ENABLE
 						  if ( (! firstTime) && (V < 40) && (Vmax < 40) ) {  // Первый раз пропускаем для инициализации переменных.
-							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_SPEED", V);
-							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_DIRECT", A);
-							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_MAXSPEED", Vmax);
+							  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
+							  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
+							  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
 						  }
 						#endif
 					  } else {
 						  A = 0;
 						#ifdef ZABBIX_ENABLE
 						  if ( (! firstTime) && (Vmax < 40) ) {
-							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_SPEED", 0);
-							  sendToZabbix(net_info.zabbix, ZABBIXAGHOST, "ALTIM_MAXSPEED", Vmax);
+							  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
+							  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
 						  }
 						#endif
 					  }
