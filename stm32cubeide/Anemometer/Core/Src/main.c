@@ -15,6 +15,9 @@
   *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
+
+  Clock timers must be 64MHz.
+
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
@@ -537,6 +540,7 @@ void init_w5500() {
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+  readyFlag = TRUE;
   sumCounter2 = 0;
   /* Turn off all multiplexer */
   GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
@@ -588,6 +592,7 @@ void init_w5500() {
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
   HAL_UART_Transmit(&huart1, (uint8_t *) INIT_FINISH_TEXT, sizeof(INIT_FINISH_TEXT), HAL_MAX_DELAY);
+  readyFlag = FALSE;
   HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
 
   while (1) {
