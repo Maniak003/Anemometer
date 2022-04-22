@@ -365,8 +365,6 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 8: { // All data complete.
-//			  X = (Z12 - Z21 + Z43 - Z34) / 2;
-//			  Y = (Z23 - Z32 + Z14 - Z41) / 2;
 			  currentMode = 0;
 			  readyFlag = TRUE;
 			  break;

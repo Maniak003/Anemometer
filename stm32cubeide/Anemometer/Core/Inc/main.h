@@ -74,7 +74,7 @@ extern "C" {
 #define setZ2transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9_0)) | (GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1)
 #define setZ3transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10_0)) | (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1)
 #define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
-#define MEASSURE_COUNT 50;
+#define MEASSURE_COUNT 100;
 #define SPEED_CALIBRATE 35; // cos(atg(17/15))*53
 /* USER CODE END ET */
 
@@ -132,9 +132,24 @@ void Error_Handler(void);
 uint16_t currentMode, startCount, measCount;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
 uint16_t C_12, C_34, C_14, C_23;
-int DX1, DX2, DY1, DY2;
-uint16_t calibrateCount;
-#define CALIBRATE_ACURACY 5
+union {
+	float f;
+	uint32_t u;
+} DX1;
+union {
+	float f;
+	uint32_t u;
+} DX2;
+union {
+	float f;
+	uint32_t u;
+} DY1;
+union {
+	float f;
+	uint32_t u;
+} DY2;
+uint16_t calibrateCount, calibrateMode;
+#define CALIBRATE_ACURACY 3
 #define CALIBRATE_START 25000
 #define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"

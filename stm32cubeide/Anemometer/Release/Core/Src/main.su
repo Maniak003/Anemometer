@@ -6,8 +6,8 @@ main.c:259:6:W5500_WriteBuff	0	static
 main.c:270:6:W5500_WriteByte	16	static
 main.c:255:6:W5500_ReadBuff	0	static
 main.c:264:9:W5500_ReadByte	16	static
-main.c:98:7:rwFlash	56	static
+main.c:98:7:rwFlash	72	static
 main.c:310:9:sendToZabbix.constprop	280	static
-main.c:757:6:SystemClock_Config	72	static,ignoring_inline_asm
+main.c:777:6:SystemClock_Config	72	static,ignoring_inline_asm
 main.c:93:5:main	1248	static,ignoring_inline_asm
-main.c:1235:6:Error_Handler	0	static,ignoring_inline_asm
+main.c:1255:6:Error_Handler	0	static,ignoring_inline_asm
