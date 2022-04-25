@@ -74,8 +74,13 @@ extern "C" {
 #define setZ2transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9_0)) | (GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1)
 #define setZ3transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10_0)) | (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1)
 #define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
+#define setZ1receive GPIOB->ODR |= (1 << Z1Receive)
+#define setZ2receive GPIOB->ODR |= (1 << Z2Receive)
+#define setZ3receive GPIOB->ODR |= (1 << Z3Receive)
+#define setZ4receive GPIOB->ODR |= (1 << Z4Receive)
 #define MEASSURE_COUNT 100
 #define SPEED_CALIBRATE 35 // cos(atg(17/15))*53
+//#define SYSTICK_DISABLE
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -164,7 +169,6 @@ TIM_HandleTypeDef htim4;
 bool readyFlag, runFlag, firstTime, calibrate12, calibrate34, calibrate14, calibrate23;
 
 /* For W5500*/
-
 #define DHCP_SOCKET     0
 #define DNS_SOCKET      1
 #define TCP_SOCKET     2

@@ -186,9 +186,12 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
+	/*
+	 * Это прерывание сильно мешает, надо бы его выключить на время измерения
+	 */
     static uint16_t ticks = 0;
     ticks++;
-    if(readyFlag && (ticks >= 1000)) {
+    if(ticks >= 1000) {
         DHCP_time_handler();
         ticks = 0;
     }
@@ -213,10 +216,13 @@ void SysTick_Handler(void)
 void DMA1_Channel5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
-	if (runFlag) {
-		if ( (GPIOA->IDR & GPIO_PIN_0) != 0 ) {  // Начало измерения по фронту.
+	if (runFlag) {								// Разрешено измерение ?
+		if ( (GPIOA->IDR & GPIO_PIN_0) != 0 ) {  // Ждем фронт импульса.
 				runFlag = FALSE;
 				HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
+				#ifdef SYSTICK_DISABLE
+					SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
+				#endif
 			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 				/* Turn off all multiplexer */
@@ -274,7 +280,7 @@ void TIM3_IRQHandler(void)
 	//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 	//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 //	if (startCount-- == 0) {
-		runFlag = TRUE;
+		runFlag = TRUE;		// Сработал таймер сброса таймера захвата, начинаем измерение.
 //	}
 
   /* USER CODE END TIM3_IRQn 0 */
@@ -309,68 +315,92 @@ void TIM4_IRQHandler(void)
 				  | (GPIO_CRH_CNF8_0 | GPIO_CRH_CNF9_0 | GPIO_CRH_CNF10_0 | GPIO_CRH_CNF11_0);
 
 	  switch (currentMode++) {
-		  case 0: { // Z1 (transmit) > Z2 (receive)
-			  setZ1transmit; // Set Z1 port to output mode
-			  GPIOB->ODR |= (1 << Z2Receive); 				// Turn on multiplexer for input Z2 channel.
+		  case 0: { 					// Z1 (transmit) > Z2 (receive)
+			#ifdef SYSTICK_DISABLE
+			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+			#endif
+			  setZ1transmit; 			// Set Z1 port to output mode
+			  setZ2receive; 			// Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 			  break;
 		  }
-		  case 1: { // Z2 (transmit) > Z1 (receive)
-			  TIM3->ARR = C_23;
-			  setZ2transmit; // Set Z2 port to output mode
-			  GPIOB->ODR |= (1 << Z1Receive); 				// Turn on multiplexer for input Z1 channel.
+		  case 1: { 					// Z2 (transmit) > Z1 (receive)
+			#ifdef SYSTICK_DISABLE
+			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+			#endif
+			  TIM3->ARR = C_23; 		// Коррекция для таймера запуска измерения Z23, Z32
+			  setZ2transmit; 			// Set Z2 port to output mode
+			  setZ1receive; 			// Turn on multiplexer for input Z1 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
 			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  break;
 		  }
-		  case 2: { // Z2 (transmit) > Z3 (receive)
-			  setZ2transmit; // Set Z2 port to output mode
-			  GPIOB->ODR |= (1 << Z3Receive); 				// Turn on multiplexer for input Z3 channel.
+		  case 2: { 					// Z2 (transmit) > Z3 (receive)
+			#ifdef SYSTICK_DISABLE
+			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+			#endif
+			  setZ2transmit; 			// Set Z2 port to output mode
+			  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
 			  break;
 		  }
-		  case 3: { // Z3 (transmit) > Z2 (receive)
-			  TIM3->ARR = C_34;
-			  setZ3transmit; // Set Z3 port to output mode
-			  GPIOB->ODR |= (1 << Z2Receive); 				// Turn on multiplexer for input Z2 channel.
+		  case 3: { 					// Z3 (transmit) > Z2 (receive)
+			#ifdef SYSTICK_DISABLE
+			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+			#endif
+			  TIM3->ARR = C_34; 		// Коррекция для таймера запуска измерения Z34, Z43
+			  setZ3transmit; 			// Set Z3 port to output mode
+			  setZ2receive; 			// Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
 			  break;
 		  }
-		  case 4: { // Z3 (transmit) > Z4 (receive)
-			  setZ3transmit; // Set Z3 port to output mode
-			  GPIOB->ODR |= (uint16_t) (1 << Z4Receive); 	// Turn on multiplexer for input Z4 channel.
+		  case 4: { 					// Z3 (transmit) > Z4 (receive)
+			#ifdef SYSTICK_DISABLE
+			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+			#endif
+			  setZ3transmit; 			// Set Z3 port to output mode
+			  setZ4receive; 			// Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
 			  break;
 		  }
-		  case 5: { // Z4 (transmit) > Z3 (receive)
-			  TIM3->ARR = C_14;
-			  setZ4transmit; // Set Z4 port to output mode
-			  GPIOB->ODR |= (1 << Z3Receive); 				// Turn on multiplexer for input Z3 channel.
+		  case 5: { 					// Z4 (transmit) > Z3 (receive)
+			#ifdef SYSTICK_DISABLE
+			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+			#endif
+			  TIM3->ARR = C_14; 		// Коррекция для таймера запуска измерения Z14, Z41
+			  setZ4transmit; 			// Set Z4 port to output mode
+			  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 			  break;
 		  }
-		  case 6: { // Z4 (transmit) > Z1 (receive)
-			  setZ4transmit;	// Set Z4 port to output mode
-			  GPIOB->ODR |= (1 << Z1Receive); 				// Turn on multiplexer for input Z1 channel.
+		  case 6: { 					// Z4 (transmit) > Z1 (receive)
+			#ifdef SYSTICK_DISABLE
+			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+			#endif
+			  setZ4transmit;			// Set Z4 port to output mode
+			  setZ1receive; 			// Turn on multiplexer for input Z1 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 			  break;
 		  }
-		  case 7: { // Z1 (transmit) > Z4 (receive)
-			  //TIM3->CNT = CORRECTION_14;
-			  TIM3->ARR = C_12;
-			  setZ1transmit;	// Set Z1 port to output mode
-			  GPIOB->ODR |= (1 << Z4Receive); 				// Turn on multiplexer for input Z4 channel.
+		  case 7: { 					// Z1 (transmit) > Z4 (receive)
+			#ifdef SYSTICK_DISABLE
+			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+			#endif
+			  TIM3->ARR = C_12; 		// Коррекция для таймера запуска измерения Z12, Z21
+			  setZ1transmit;			// Set Z1 port to output mode
+			  setZ4receive; 			// Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 			  break;
 		  }
-		  case 8: { // All data complete.
+		  case 8: { 					// All data complete.
 			  currentMode = 0;
 			  readyFlag = TRUE;
 			  break;
 		  }
 	  }
-	  runFlag = FALSE;
+	  runFlag = FALSE;					// Запрещаем запись результата захвата
+	  /* Запускаем таймер захвата */
 	  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
 
   /* USER CODE END TIM4_IRQn 0 */
