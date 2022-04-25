@@ -80,7 +80,7 @@ extern "C" {
 #define setZ4receive GPIOB->ODR |= (1 << Z4Receive)
 #define MEASSURE_COUNT 100
 #define SPEED_CALIBRATE 35 // cos(atg(17/15))*53
-//#define SYSTICK_DISABLE
+#define SYSTICK_DISABLE
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
