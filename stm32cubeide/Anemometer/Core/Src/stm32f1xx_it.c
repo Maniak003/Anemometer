@@ -186,9 +186,6 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-	/*
-	 * Это прерывание сильно мешает, надо бы его выключить на время измерения
-	 */
     static uint16_t ticks = 0;
     ticks++;
     if(ticks >= 1000) {
@@ -395,7 +392,43 @@ void TIM4_IRQHandler(void)
 		  }
 		  case 8: { 					// All data complete.
 			  currentMode = 0;
-			  readyFlag = TRUE;
+			  if (calibrateMode == 0) { // Normal mode
+				  if (measCount > MEASSURE_COUNT) {
+					  Vmax = 0;
+					  Xsum = 0;
+					  Ysum = 0;
+					  for (int ii = 0; ii < MEASSURE_COUNT; ii++) {
+						  Xsum = Xsum + resul_arrayX[ii];
+						  Ysum = Ysum + resul_arrayY[ii];
+						  V = sqrt(pow(resul_arrayX[ii], 2) + pow(resul_arrayY[ii], 2));
+						  if ( V > Vmax) {
+							  Vmax = V;
+						  }
+					  }
+					  Xsum = Xsum / MEASSURE_COUNT;
+					  Ysum = Ysum / MEASSURE_COUNT;
+					  Xsum = Xsum / SPEED_CALIBRATE;
+					  Ysum = Ysum / SPEED_CALIBRATE;
+					  Vmax = Vmax / SPEED_CALIBRATE;
+					  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
+					  if ( V == 0) {
+						  A = 0;
+					  } else {
+						  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
+						  if (Ysum < 0) {
+							  A = 360 - A; // III, IV квадранты
+						  }
+					  }
+					  measCount = 0;
+					  readyFlag = TRUE;
+				  } else {
+					  resul_arrayX[measCount] = (Z12 - Z21 - DX1.f + Z43 - Z34 - DX2.f) / 2;
+					  resul_arrayY[measCount] = (Z23 - Z32 - DY2.f + Z14 - Z41 - DY1.f) / 2;
+					  measCount++;
+				  }
+			  } else {					// Calibrate mode
+				  readyFlag = TRUE;
+			  }
 			  break;
 		  }
 	  }

@@ -160,6 +160,8 @@ uint16_t calibrateCount, calibrateMode;
 #define INIT_FINISH_TEXT "Init finish.\r\n"
 #define START_TEXT "\rAnemometer start.\r\n"
 double X, Y, V, A, Xsum, Ysum, Vmax;
+float resul_arrayX[MEASSURE_COUNT];
+float resul_arrayY[MEASSURE_COUNT];
 float temperature, pressure, humidity;
 uint32_t sumCounter2, fastCounter;
 TIM_HandleTypeDef htim1;
@@ -171,7 +173,7 @@ bool readyFlag, runFlag, firstTime, calibrate12, calibrate34, calibrate14, calib
 /* For W5500*/
 #define DHCP_SOCKET     0
 #define DNS_SOCKET      1
-#define TCP_SOCKET     2
+#define TCP_SOCKET		2
 #define W5500_RST_Pin	GPIO_PIN_4
 #define W5500_CS_Pin	GPIO_PIN_12
 #define _DHCP_DEBUG_

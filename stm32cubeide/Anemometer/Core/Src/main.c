@@ -579,6 +579,13 @@ void init_w5500() {
   Xsum = 0;
   Ysum = 0;
   Vmax = 0;
+  /*
+   *	Очистка массива результатов.
+   */
+  for (int ii = 0; ii < MEASSURE_COUNT; ii++) {
+	  resul_arrayX[ii] = 0;
+	  resul_arrayY[ii] = 0;
+  }
   calibrate12 = FALSE;
   calibrate34 = FALSE;
   calibrate14 = FALSE;
@@ -602,7 +609,7 @@ void init_w5500() {
 
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
-	  HAL_Delay(1);
+	  //HAL_Delay(1);
 	  if (readyFlag) {
 		  readyFlag = FALSE;
 		  if (Z12 != 0 && Z21 != 0) {
@@ -674,94 +681,63 @@ void init_w5500() {
 					  }
 				  }
 			  } else {
-				 // if (!(calibrate12 || calibrate34 || calibrate14 || calibrate23) && calibrateCount == 0) {  // Если выполняется калибровка, ничего не делаем.
-					  X = (Z12 - Z21 - DX1.f + Z43 - Z34 - DX2.f) / 2;
-					  Y = (Z23 - Z32 - DY2.f + Z14 - Z41 - DY1.f) / 2;
-					  if (measCount-- != 0) {
-						  Xsum = Xsum + X;
-						  Ysum = Ysum + Y;
-						  /* Поиск максимальной скорости */
-						  V = sqrt(pow(X, 2) + pow(Y, 2));
-						  if ( V > Vmax ) {
-							  Vmax = V;
-						  }
-					  } else {
-						#ifdef TMP117_ENABLE
-						  temperature = TMP117_get_Temperature(hi2c1);
-						#endif
+				#ifdef TMP117_ENABLE
+				  temperature = TMP117_get_Temperature(hi2c1);
+				#endif
+				#ifdef BME280_ENABLE
+				  temperature = BME280_ReadTemperature();
+				  pressure = BME280_ReadPressure() * 0.000750061683f;
+				  humidity = BME280_ReadHumidity();
+				#endif
+				#ifdef ZABBIX_ENABLE
+					#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
 						#ifdef BME280_ENABLE
-						  temperature = BME280_ReadTemperature();
-						  pressure = BME280_ReadPressure() * 0.000750061683f;
-						  humidity = BME280_ReadHumidity();
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_PRESSURE", pressure);
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_HUMIDITY", humidity);
 						#endif
-						#ifdef ZABBIX_ENABLE
-							#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
-							  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
-								#ifdef BME280_ENABLE
-								  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_PRESSURE", pressure);
-								  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_HUMIDITY", humidity);
-								#endif
-							#endif
-						#endif
-						  measCount = MEASSURE_COUNT;
-						  Xsum = Xsum / MEASSURE_COUNT;
-						  Ysum = Ysum / MEASSURE_COUNT;
-						  Xsum = Xsum / SPEED_CALIBRATE;
-						  Ysum = Ysum / SPEED_CALIBRATE;
-						  Vmax = Vmax / SPEED_CALIBRATE;
-						  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
-						  if ( V != 0 ) {
-							  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
-							  if (Ysum < 0) {
-								  A = 360 - A; // III, IV квадранты
-							  }
-							#ifdef ZABBIX_ENABLE
-							  if ( (! firstTime) && (V < 40) && (Vmax < 40) ) {  // Первый раз пропускаем для инициализации переменных.
-								  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
-								  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
-								  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
-							  }
-							#endif
-						  } else {
-							  A = 0;
-							#ifdef ZABBIX_ENABLE
-							  if ( (! firstTime) && (Vmax < 40) ) {
-								  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
-								  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
-							  }
-							#endif
-						  }
-						  if ( ! firstTime ) {
-							  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature, pressure, humidity);
-							  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-						  }
-						  Vmax = 0;
-						  firstTime = FALSE;
+					#endif
+				  if ( A != 0 ) {
+					  if ( (! firstTime) && (V < 40) && (Vmax < 40) ) {  // Первый раз пропускаем для инициализации переменных.
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
 					  }
-				  //}
+				  } else {
+					  if ( (! firstTime) && (Vmax < 40) ) {
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
+					  }
+				  }
+				#endif
+				  if ( ! firstTime ) {
+					  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature, pressure, humidity);
+					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+				  }
+				  firstTime = FALSE;
 			  }
 		  }
-		  /* Подготовка запуска процедуры калибровки */
-		  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
-			  if (uart_buffer[0] == 'c' ) {  // Клавиша C нажата ?
-				  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_TEXT, sizeof(CALIBRATE_TEXT), 1000);
-				  calibrate12 = TRUE;
-				  calibrate34 = TRUE;
-				  calibrate14 = TRUE;
-				  calibrate23 = TRUE;
-				  calibrateCount = 0;
-				  C_12 = CALIBRATE_START;
-				  C_34 = CALIBRATE_START;
-				  C_14 = CALIBRATE_START;
-				  C_23 = CALIBRATE_START;
-				  DX1.u = 0;
-				  DX2.u = 0;
-				  DY1.u = 0;
-				  DY2.u = 0;
-				  calibrateMode = MEASSURE_COUNT;
-			  }
-			  uart_buffer[0] = 0x00;
+	  }
+	  /* Подготовка запуска процедуры калибровки */
+	  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
+		  if (uart_buffer[0] == 'c' ) {  // Клавиша C нажата ?
+			  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_TEXT, sizeof(CALIBRATE_TEXT), 1000);
+			  calibrate12 = TRUE;
+			  calibrate34 = TRUE;
+			  calibrate14 = TRUE;
+			  calibrate23 = TRUE;
+			  calibrateCount = 0;
+			  C_12 = CALIBRATE_START;
+			  C_34 = CALIBRATE_START;
+			  C_14 = CALIBRATE_START;
+			  C_23 = CALIBRATE_START;
+			  DX1.u = 0;
+			  DX2.u = 0;
+			  DY1.u = 0;
+			  DY2.u = 0;
+			  calibrateMode = MEASSURE_COUNT;
 		  }
+		  uart_buffer[0] = 0x00;
 	  }
     /* USER CODE END WHILE */
 
