@@ -575,7 +575,12 @@ void init_w5500() {
   firstTime = TRUE;
   currentMode = 0;
   HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
-  measCount = MEASSURE_COUNT;
+  measCount = 0;
+  /*
+   * calibrateMode == 0 -- Нормальный режим
+   * calibrateMode > 0 -- Режим калибровки
+   */
+  calibrateMode = 0;
   Xsum = 0;
   Ysum = 0;
   Vmax = 0;
@@ -600,16 +605,12 @@ void init_w5500() {
   HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
   HAL_UART_Transmit(&huart1, (uint8_t *) INIT_FINISH_TEXT, sizeof(INIT_FINISH_TEXT), HAL_MAX_DELAY);
   readyFlag = FALSE;
-  /*
-   * currentMode == 0 -- Нормальный режим
-   * currentMode > 0 -- Режим калибровки
-   */
   currentMode = 0;
   HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
 
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
-	  //HAL_Delay(1);
+	  HAL_Delay(1);
 	  if (readyFlag) {
 		  readyFlag = FALSE;
 		  if (Z12 != 0 && Z21 != 0) {
@@ -717,28 +718,31 @@ void init_w5500() {
 				  firstTime = FALSE;
 			  }
 		  }
-	  }
-	  /* Подготовка запуска процедуры калибровки */
-	  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
-		  if (uart_buffer[0] == 'c' ) {  // Клавиша C нажата ?
-			  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_TEXT, sizeof(CALIBRATE_TEXT), 1000);
-			  calibrate12 = TRUE;
-			  calibrate34 = TRUE;
-			  calibrate14 = TRUE;
-			  calibrate23 = TRUE;
-			  calibrateCount = 0;
-			  C_12 = CALIBRATE_START;
-			  C_34 = CALIBRATE_START;
-			  C_14 = CALIBRATE_START;
-			  C_23 = CALIBRATE_START;
-			  DX1.u = 0;
-			  DX2.u = 0;
-			  DY1.u = 0;
-			  DY2.u = 0;
-			  calibrateMode = MEASSURE_COUNT;
+		  /*
+		   * Подготовка запуска процедуры калибровки
+		   */
+		  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
+			  if (uart_buffer[0] == 'c' ) {  // Клавиша c нажата ?
+				  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_TEXT, sizeof(CALIBRATE_TEXT), 1000);
+				  calibrate12 = TRUE;
+				  calibrate34 = TRUE;
+				  calibrate14 = TRUE;
+				  calibrate23 = TRUE;
+				  calibrateCount = 0;
+				  C_12 = CALIBRATE_START;
+				  C_34 = CALIBRATE_START;
+				  C_14 = CALIBRATE_START;
+				  C_23 = CALIBRATE_START;
+				  DX1.u = 0;
+				  DX2.u = 0;
+				  DY1.u = 0;
+				  DY2.u = 0;
+				  calibrateMode = MEASSURE_COUNT;
+			  }
+			  uart_buffer[0] = 0x00;
 		  }
-		  uart_buffer[0] = 0x00;
 	  }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

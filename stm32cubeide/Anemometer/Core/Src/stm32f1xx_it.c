@@ -391,9 +391,10 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 8: { 					// All data complete.
+			HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			  currentMode = 0;
 			  if (calibrateMode == 0) { // Normal mode
-				  if (measCount > MEASSURE_COUNT) {
+				  if (measCount == MEASSURE_COUNT - 1) {
 					  Vmax = 0;
 					  Xsum = 0;
 					  Ysum = 0;
@@ -429,6 +430,7 @@ void TIM4_IRQHandler(void)
 			  } else {					// Calibrate mode
 				  readyFlag = TRUE;
 			  }
+			HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  break;
 		  }
 	  }
