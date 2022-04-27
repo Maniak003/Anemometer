@@ -79,7 +79,7 @@ extern "C" {
 #define setZ3receive GPIOB->ODR |= (1 << Z3Receive)
 #define setZ4receive GPIOB->ODR |= (1 << Z4Receive)
 #define MEASSURE_COUNT 100
-#define SPEED_CALIBRATE 35 // cos(atg(17/15))*53
+#define SPEED_CALIBRATE 38.53f // cos(atg(17/18))*53
 //#define SYSTICK_DISABLE
 /* USER CODE END ET */
 
@@ -136,7 +136,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 uint16_t currentMode, startCount, measCount;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
-uint16_t C_12, C_34, C_14, C_23;
+uint16_t C_12, C_34, C_14, C_23, BC_12, BC_34, BC_14, BC_23;
 union {
 	float f;
 	uint32_t u;
@@ -156,6 +156,7 @@ union {
 uint16_t calibrateCount, calibrateMode;
 #define CALIBRATE_ACURACY 3
 #define CALIBRATE_START 25000
+#define BODY_CALIBRATE_START 1000
 #define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"
 #define START_TEXT "\rAnemometer start.\r\n"
