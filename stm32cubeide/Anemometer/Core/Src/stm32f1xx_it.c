@@ -395,6 +395,7 @@ void TIM4_IRQHandler(void)
 			  currentMode = 0;
 			  if (calibrateMode == 0) { // Normal mode
 				  if (measCount == MEASSURE_COUNT - 1) {
+					  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим изинрения на время обработки
 					  Vmax = 0;
 					  Xsum = 0;
 					  Ysum = 0;
@@ -428,6 +429,7 @@ void TIM4_IRQHandler(void)
 					  measCount++;
 				  }
 			  } else {					// Calibrate mode
+				  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим изинрения на время обработки
 				  readyFlag = TRUE;
 			  }
 			HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);

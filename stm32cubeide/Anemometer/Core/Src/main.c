@@ -650,6 +650,7 @@ void init_w5500() {
 						  calibrate23 = FALSE;
 					  }
 					  calibrateCount++;
+					  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 				  } else {
 					  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount >= 1600)) {
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
@@ -716,6 +717,7 @@ void init_w5500() {
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  }
 				  firstTime = FALSE;
+				  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 			  }
 		  }
 		  /*
