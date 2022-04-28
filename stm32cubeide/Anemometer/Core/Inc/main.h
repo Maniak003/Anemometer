@@ -55,6 +55,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+
 #define BIT0 0x01
 #define BIT1 0x02
 #define BIT2 0x04
@@ -79,7 +80,7 @@ extern "C" {
 #define setZ3receive GPIOB->ODR |= (1 << Z3Receive)
 #define setZ4receive GPIOB->ODR |= (1 << Z4Receive)
 #define MEASSURE_COUNT 100
-#define SPEED_CALIBRATE 38.53f // cos(atg(17/18))*53
+#define SPEED_CALIBRATE 42.19f // cos(atg(17/18)) * (49.52/330000 - 49.52/331000) / (1/64000000) * 2
 //#define SYSTICK_DISABLE
 /* USER CODE END ET */
 
