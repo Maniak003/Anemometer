@@ -391,7 +391,7 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 8: { 					// All data complete.
-			HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			  currentMode = 0;
 			  if (calibrateMode == 0) { // Normal mode
 				  if (measCount == MEASSURE_COUNT - 1) {
@@ -432,7 +432,7 @@ void TIM4_IRQHandler(void)
 				  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим изинрения на время обработки
 				  readyFlag = TRUE;
 			  }
-			HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  break;
 		  }
 	  }
