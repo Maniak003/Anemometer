@@ -613,136 +613,157 @@ void init_w5500() {
 	  HAL_Delay(1);
 	  if (readyFlag) {
 		  readyFlag = FALSE;
-		  if (Z12 != 0 && Z21 != 0) {
-			  if (calibrateMode > 0) {
+		  if (calibrateMode > 0) {
+			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+			  //sprintf(SndBuffer, "Y1:%7d, Y2:%7d   \r", Z14 - Z41, Z23 - Z32);
+			  //sprintf(SndBuffer, "Z14:%7d, Z41:%7d, Z23:%7d, Z32:%7d   \r", Z14, Z41, Z23, Z32);
+			  // X
+			  //sprintf(SndBuffer, "Z12:%7d, Z21:%7d, Z43:%7d, Z34:%7d   \r", Z12, Z21, Z43, Z34);
+			  //sprintf(SndBuffer, "X:%7.0f, Y:%7.0f   \r", X, Y);
+			  // X + Y
+			  //sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
+			  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 
-				  //sprintf(SndBuffer, "Y1:%7d, Y2:%7d   \r", Z14 - Z41, Z23 - Z32);
-				  //sprintf(SndBuffer, "Z14:%7d, Z41:%7d, Z23:%7d, Z32:%7d   \r", Z14, Z41, Z23, Z32);
-				  // X
-				  //sprintf(SndBuffer, "Z12:%7d, Z21:%7d, Z43:%7d, Z34:%7d   \r", Z12, Z21, Z43, Z34);
-				  //sprintf(SndBuffer, "X:%7.0f, Y:%7.0f   \r", X, Y);
-				  // X + Y
-				  //sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
-				  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-
-				  /* Процедура калибровки */
-				  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 1600)) {
-					  sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
-					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-					  if ( calibrate12 && (abs(Z12 - 800) > CALIBRATE_ACURACY) ) {
+			  /* Процедура калибровки */
+			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 1600)) {
+				  sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
+				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+				  if ( calibrate12 && (abs(Z12 - 800) > CALIBRATE_ACURACY) ) {
+					  if (Z12 > 800) {
 						  C_12++;
 					  } else {
-						  calibrate12 = FALSE;
+						  C_12--;
 					  }
-					  if ( calibrate34 && (abs(Z34 - 800) > CALIBRATE_ACURACY) ) {
+				  } else {
+					  calibrate12 = FALSE;
+				  }
+				  if ( calibrate34 && (abs(Z34 - 800) > CALIBRATE_ACURACY) ) {
+					  if (Z34 > 800) {
 						  C_34++;
 					  } else {
-						  calibrate34 = FALSE;
+						  C_34--;
 					  }
-					  if ( calibrate14 && (abs(Z14 - 800) > CALIBRATE_ACURACY) ) {
+				  } else {
+					  calibrate34 = FALSE;
+				  }
+				  if ( calibrate14 && (abs(Z14 - 800) > CALIBRATE_ACURACY) ) {
+					  if(Z14 > 800) {
 						  C_14++;
 					  } else {
-						  calibrate14 = FALSE;
+						  C_14--;
 					  }
-					  if ( calibrate23 && (abs(Z23 - 800) > CALIBRATE_ACURACY) ) {
-						  C_23++;
+				  } else {
+					  calibrate14 = FALSE;
+				  }
+				  if ( calibrate23 && (abs(Z23 - 800) > CALIBRATE_ACURACY) ) {
+					  if(Z23 > 800) {
+					  C_23++;
 					  } else {
-						  calibrate23 = FALSE;
+						  C_23--;
 					  }
-					  calibrateCount++;
-					  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 				  } else {
-					  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount >= 1600)) {
-						  memset(SndBuffer, 0, sizeof(SndBuffer));
-						  sprintf(SndBuffer, "\r\nCalibrate ERROR.\r\n");
-						  /* System restart if calibrate error. */
-						  HAL_NVIC_SystemReset();
-					  }
-					  if (calibrateMode > 0) {
-						  DX1.f = DX1.f + (float) (Z12 - Z21);
-						  DX2.f = DX2.f + (float) (Z43 - Z34);
-						  DY1.f = DY1.f + (float) (Z14 - Z41);
-						  DY2.f = DY2.f + (float) (Z23 - Z32);
-						  calibrateMode--;
-						  if (calibrateMode == 0) {
-							  memset(SndBuffer, 0, sizeof(SndBuffer));
-							  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
-							  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-							  /* Вычисление поправок */
-							  DX1.f = DX1.f / (float) MEASSURE_COUNT;
-							  DX2.f = DX2.f / (float) MEASSURE_COUNT;
-							  DY1.f = DY1.f / (float) MEASSURE_COUNT;
-							  DY2.f = DY2.f / (float) MEASSURE_COUNT;
-							  rwFlash(1);  // Запись данных калибровки во Flash.
-							  memset(SndBuffer, 0, sizeof(SndBuffer));
-							  sprintf(SndBuffer, "\r\nDX1:%5.2f, DX2:%5.2f, DY1:%5.2f, DY2:%5.2f\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
-							  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-							  calibrateCount = 0;
-							  firstTime = TRUE;
-						  }
-					  }
+					  calibrate23 = FALSE;
 				  }
+				  calibrateCount++;
+				  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 			  } else {
-				#ifdef TMP117_ENABLE
-				  temperature = TMP117_get_Temperature(hi2c1);
-				#endif
-				#ifdef BME280_ENABLE
-				  temperature = BME280_ReadTemperature();
-				  pressure = BME280_ReadPressure() * 0.000750061683f;
-				  humidity = BME280_ReadHumidity();
-				#endif
-				#ifdef ZABBIX_ENABLE
-					#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
-					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
-						#ifdef BME280_ENABLE
-						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_PRESSURE", pressure);
-						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_HUMIDITY", humidity);
-						#endif
-					#endif
-				  if ( A != 0 ) {
-					  if ( (! firstTime) && (V < 40) && (Vmax < 40) ) {  // Первый раз пропускаем для инициализации переменных.
-						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
-						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
-						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
-					  }
-				  } else {
-					  if ( (! firstTime) && (Vmax < 40) ) {
-						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
-						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
-					  }
-				  }
-				#endif
-				  if ( ! firstTime ) {
-					  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature, pressure, humidity);
+				  if (/*(calibrate12 || calibrate34 || calibrate14 || calibrate23) &&*/ (calibrateCount >= 1600)) {
+					  memset(SndBuffer, 0, sizeof(SndBuffer));
+					  sprintf(SndBuffer, "\r\nCalibrate ERROR.\r\n");
 					  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+					  /* System restart if calibrate error. */
+					  HAL_NVIC_SystemReset();
 				  }
-				  firstTime = FALSE;
+				  if (calibrateMode > 0) {
+					  DX1.f = DX1.f + (float) (Z12 - Z21);
+					  DX2.f = DX2.f + (float) (Z43 - Z34);
+					  DY1.f = DY1.f + (float) (Z14 - Z41);
+					  DY2.f = DY2.f + (float) (Z23 - Z32);
+					  calibrateMode--;
+					  if (calibrateMode == 0) {
+						  memset(SndBuffer, 0, sizeof(SndBuffer));
+						  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
+						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+						  /* Вычисление поправок */
+						  DX1.f = DX1.f / (float) MEASSURE_COUNT;
+						  DX2.f = DX2.f / (float) MEASSURE_COUNT;
+						  DY1.f = DY1.f / (float) MEASSURE_COUNT;
+						  DY2.f = DY2.f / (float) MEASSURE_COUNT;
+						  rwFlash(1);  // Запись данных калибровки во Flash.
+						  memset(SndBuffer, 0, sizeof(SndBuffer));
+						  sprintf(SndBuffer, "\r\nDX1:%5.2f, DX2:%5.2f, DY1:%5.2f, DY2:%5.2f\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
+						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+						  calibrateCount = 0;
+						  firstTime = TRUE;
+					  }
+				  }
 				  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 			  }
-		  }
-		  /*
-		   * Подготовка запуска процедуры калибровки
-		   */
-		  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
-			  if (uart_buffer[0] == 'c' ) {  // Клавиша c нажата ?
-				  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_TEXT, sizeof(CALIBRATE_TEXT), 1000);
-				  calibrate12 = TRUE;
-				  calibrate34 = TRUE;
-				  calibrate14 = TRUE;
-				  calibrate23 = TRUE;
-				  calibrateCount = 0;
-				  C_12 = CALIBRATE_START;
-				  C_34 = CALIBRATE_START;
-				  C_14 = CALIBRATE_START;
-				  C_23 = CALIBRATE_START;
-				  DX1.u = 0;
-				  DX2.u = 0;
-				  DY1.u = 0;
-				  DY2.u = 0;
-				  calibrateMode = MEASSURE_COUNT;
+			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+		  } else {
+			#ifdef TMP117_ENABLE
+			  temperature = TMP117_get_Temperature(hi2c1);
+			#endif
+			#ifdef BME280_ENABLE
+			  temperature = BME280_ReadTemperature();
+			  pressure = BME280_ReadPressure() * 0.000750061683f;
+			  humidity = BME280_ReadHumidity();
+			#endif
+			#ifdef ZABBIX_ENABLE
+				#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
+					#ifdef BME280_ENABLE
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_PRESSURE", pressure);
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_HUMIDITY", humidity);
+					#endif
+				#endif
+			  if ( A != 0 ) {
+				  if ( (! firstTime) && (V < 40) && (Vmax < 40) ) {  // Первый раз пропускаем для инициализации переменных.
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
+				  }
+			  } else {
+				  if ( (! firstTime) && (Vmax < 40) ) {
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
+				  }
 			  }
-			  uart_buffer[0] = 0x00;
+			#endif
+			  if ( ! firstTime ) {
+				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature, pressure, humidity);
+				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			  }
+			  firstTime = FALSE;
+			  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 		  }
+	  }
+	  /*
+	   * Подготовка запуска процедуры калибровки
+	   */
+	  if(HAL_UART_Receive(&huart1, (uint8_t *) uart_buffer, 1, 10) ) {
+		  if (uart_buffer[0] == 'c' ) {  // Клавиша c нажата ?
+			  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_TEXT, sizeof(CALIBRATE_TEXT), 1000);
+			  HAL_TIM_Base_Stop_IT(&htim4); // Остановим измерения
+			  HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
+			  calibrate12 = TRUE;
+			  calibrate34 = TRUE;
+			  calibrate14 = TRUE;
+			  calibrate23 = TRUE;
+			  calibrateCount = 0;
+			  C_12 = CALIBRATE_START;
+			  C_34 = CALIBRATE_START;
+			  C_14 = CALIBRATE_START;
+			  C_23 = CALIBRATE_START;
+			  DX1.u = 0;
+			  DX2.u = 0;
+			  DY1.u = 0;
+			  DY2.u = 0;
+			  calibrateMode = MEASSURE_COUNT;
+			  currentMode = 0;
+			  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
+		  }
+		  uart_buffer[0] = 0x00;
 	  }
 
     /* USER CODE END WHILE */

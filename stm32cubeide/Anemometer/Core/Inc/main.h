@@ -135,7 +135,7 @@ void Error_Handler(void);
 #define TMP117_SDA_Pin GPIO_PIN_9
 #define TMP117_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-uint16_t currentMode, startCount, measCount;
+uint16_t currentMode, startCount, measCount, front_sum;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
 uint16_t C_12, C_34, C_14, C_23, BC_12, BC_34, BC_14, BC_23;
 union {
@@ -154,7 +154,8 @@ union {
 	float f;
 	uint32_t u;
 } DY2;
-uint16_t calibrateCount, calibrateMode;
+uint16_t calibrateCount, calibrateMode, runFlag;
+#define	COUNT_FRONT 4
 #define CALIBRATE_ACURACY 3
 #define CALIBRATE_START 25000
 #define BODY_CALIBRATE_START 1000
@@ -170,7 +171,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-bool readyFlag, runFlag, firstTime, calibrate12, calibrate34, calibrate14, calibrate23;
+bool readyFlag, firstTime, calibrate12, calibrate34, calibrate14, calibrate23;
 
 /* For W5500*/
 #define DHCP_SOCKET     0
