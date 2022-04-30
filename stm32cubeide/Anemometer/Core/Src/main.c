@@ -610,7 +610,7 @@ void init_w5500() {
 
   while (1) {
 	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
-	  HAL_Delay(1);
+	  //HAL_Delay(1);
 	  if (readyFlag) {
 		  readyFlag = FALSE;
 		  if (calibrateMode > 0) {
@@ -755,10 +755,10 @@ void init_w5500() {
 			  C_34 = CALIBRATE_START;
 			  C_14 = CALIBRATE_START;
 			  C_23 = CALIBRATE_START;
-			  DX1.u = 0;
-			  DX2.u = 0;
-			  DY1.u = 0;
-			  DY2.u = 0;
+			  DX1.f = 0;
+			  DX2.f = 0;
+			  DY1.f = 0;
+			  DY2.f = 0;
 			  calibrateMode = MEASSURE_COUNT;
 			  currentMode = 0;
 			  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения

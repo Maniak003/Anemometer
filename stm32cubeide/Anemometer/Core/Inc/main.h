@@ -157,7 +157,7 @@ union {
 uint16_t calibrateCount, calibrateMode, runFlag;
 #define	COUNT_FRONT 4
 #define CALIBRATE_ACURACY 3
-#define CALIBRATE_START 25000
+#define CALIBRATE_START 32000
 #define BODY_CALIBRATE_START 1000
 #define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"
