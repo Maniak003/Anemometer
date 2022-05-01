@@ -625,7 +625,7 @@ void init_w5500() {
 			  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 
 			  /* Процедура калибровки */
-			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 1600)) {
+			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 800)) {
 				  sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  if ( calibrate12 && (abs(Z12 - 800) > CALIBRATE_ACURACY) ) {

@@ -319,6 +319,8 @@ void TIM4_IRQHandler(void)
 
 	  switch (currentMode++) {
 		  case 0: { 					// Z1 (transmit) > Z2 (receive)
+				HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
@@ -417,7 +419,7 @@ void TIM4_IRQHandler(void)
 			  currentMode = 0;
 			  if (calibrateMode == 0) { // Normal mode
 				  if (measCount == MEASSURE_COUNT - 1) {
-					  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+					  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 					  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
 					  Vmax = 0;
 					  Xsum = 0;
