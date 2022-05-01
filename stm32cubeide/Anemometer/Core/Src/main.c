@@ -628,7 +628,7 @@ void init_w5500() {
 			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 800)) {
 				  sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-				  if ( calibrate12 && (abs(Z12 - 800) > CALIBRATE_ACURACY) ) {
+				  if ( calibrate12 && (abs(Z12 + Z21 - 1600) > CALIBRATE_ACURACY) ) {
 					  if (Z12 > 800) {
 						  C_12++;
 					  } else {
@@ -637,7 +637,7 @@ void init_w5500() {
 				  } else {
 					  calibrate12 = FALSE;
 				  }
-				  if ( calibrate34 && (abs(Z34 - 800) > CALIBRATE_ACURACY) ) {
+				  if ( calibrate34 && (abs(Z34 + Z43 - 1600) > CALIBRATE_ACURACY) ) {
 					  if (Z34 > 800) {
 						  C_34++;
 					  } else {
@@ -646,7 +646,7 @@ void init_w5500() {
 				  } else {
 					  calibrate34 = FALSE;
 				  }
-				  if ( calibrate14 && (abs(Z14 - 800) > CALIBRATE_ACURACY) ) {
+				  if ( calibrate14 && (abs(Z14 + Z41 - 1600) > CALIBRATE_ACURACY) ) {
 					  if(Z14 > 800) {
 						  C_14++;
 					  } else {
@@ -655,7 +655,7 @@ void init_w5500() {
 				  } else {
 					  calibrate14 = FALSE;
 				  }
-				  if ( calibrate23 && (abs(Z23 - 800) > CALIBRATE_ACURACY) ) {
+				  if ( calibrate23 && (abs(Z23 + Z32 - 1600) > CALIBRATE_ACURACY) ) {
 					  if(Z23 > 800) {
 					  C_23++;
 					  } else {
