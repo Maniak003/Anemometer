@@ -56,7 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef hdma_tim2_ch1;
+extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 /* USER CODE BEGIN EV */
@@ -208,68 +208,17 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles DMA1 channel5 global interrupt.
+  * @brief This function handles TIM2 global interrupt.
   */
-void DMA1_Channel5_IRQHandler(void)
+void TIM2_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
-	if (runFlag > 0) {								// Разрешено измерение ?
-		if ( (runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса.
-				runFlag--;
-				front_sum = front_sum + (uint16_t) (fastCounter & 0x0FFFF);
-				if (runFlag == 0) {  // Измерения закончены ?
-					HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
-					#ifdef SYSTICK_DISABLE
-						SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
-					#endif
-					front_sum = front_sum / 4 - 1200;
-				//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-				//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
-					/* Turn off all multiplexer */
-					GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
-					switch (currentMode) {
-						case 1: { // Z1 > Z2
-							Z12 = front_sum;
-							break;
-						}
-						case 2: { // Z2 > Z1
-							Z21 = front_sum;
-							break;
-						}
-						case 3: { // Z2 > Z3
-							Z23 = front_sum;
-							break;
-						}
-						case 4: { // Z3 > Z2
-							Z32 = front_sum;
-							break;
-						}
-						case 5: { // Z3 > Z4
-							Z34 = front_sum;
-							break;
-						}
-						case 6: { // Z4 > Z3
-							Z43 = front_sum;
-							break;
-						}
-						case 7: { // Z4 > Z1
-							Z41 = front_sum;
-							break;
-						}
-						case 8: { // Z1 > Z4
-							Z14 = front_sum;
-							break;
-						}
-					}
-				}
-			}
-		}
+  /* USER CODE BEGIN TIM2_IRQn 0 */
 
-  /* USER CODE END DMA1_Channel5_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_tim2_ch1);
-  /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
+  /* USER CODE END TIM2_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim2);
+  /* USER CODE BEGIN TIM2_IRQn 1 */
 
-  /* USER CODE END DMA1_Channel5_IRQn 1 */
+  /* USER CODE END TIM2_IRQn 1 */
 }
 
 /**
@@ -278,10 +227,9 @@ void DMA1_Channel5_IRQHandler(void)
 void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
-	//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-	//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 //	if (startCount-- == 0) {
 		runFlag = COUNT_FRONT;		// Сработал таймер сброса таймера захвата, начинаем измерение.
+		LED_PULSE
 //	}
 
   /* USER CODE END TIM3_IRQn 0 */
@@ -302,7 +250,7 @@ void TIM4_IRQHandler(void)
 		/* Turn off all multiplexer */
 		GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 
-		HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);	// If not stop in DMA callback.
+		STOP_CAPTURE	// If not stop in DMA callback.
 		runFlag = 0;		// Запрещаем запись результата захвата
 		/* Restart timers */
 		HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
@@ -319,16 +267,14 @@ void TIM4_IRQHandler(void)
 
 	  switch (currentMode++) {
 		  case 0: { 					// Z1 (transmit) > Z2 (receive)
-				HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
 			  setZ1transmit; 			// Set Z1 port to output mode
 			  setZ2receive; 			// Turn on multiplexer for input Z2 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в первом канале
 			  /* Запускаем таймер захвата */
-			  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+			  START_CAPTURE
 			  break;
 		  }
 		  case 1: { 					// Z2 (transmit) > Z1 (receive)
@@ -338,11 +284,9 @@ void TIM4_IRQHandler(void)
 			  TIM3->ARR = C_23; 		// Коррекция для таймера запуска измерения Z23, Z32
 			  setZ2transmit; 			// Set Z2 port to output mode
 			  setZ1receive; 			// Turn on multiplexer for input Z1 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
-			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2); // Генерация для пьезокристалла во втором канале
 			  /* Запускаем таймер захвата */
-			  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+			  START_CAPTURE
 			  break;
 		  }
 		  case 2: { 					// Z2 (transmit) > Z3 (receive)
@@ -351,9 +295,9 @@ void TIM4_IRQHandler(void)
 			#endif
 			  setZ2transmit; 			// Set Z2 port to output mode
 			  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);	// Генерация для пьезокристалла во втором канале
 			  /* Запускаем таймер захвата */
-			  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+			  START_CAPTURE
 			  break;
 		  }
 		  case 3: { 					// Z3 (transmit) > Z2 (receive)
@@ -363,9 +307,10 @@ void TIM4_IRQHandler(void)
 			  TIM3->ARR = C_34; 		// Коррекция для таймера запуска измерения Z34, Z43
 			  setZ3transmit; 			// Set Z3 port to output mode
 			  setZ2receive; 			// Turn on multiplexer for input Z2 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
 			  /* Запускаем таймер захвата */
-			  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+			  START_CAPTURE
+			  TP_PULSE
 			  break;
 		  }
 		  case 4: { 					// Z3 (transmit) > Z4 (receive)
@@ -374,9 +319,9 @@ void TIM4_IRQHandler(void)
 			#endif
 			  setZ3transmit; 			// Set Z3 port to output mode
 			  setZ4receive; 			// Turn on multiplexer for input Z4 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
 			  /* Запускаем таймер захвата */
-			  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+			  START_CAPTURE
 			  break;
 		  }
 		  case 5: { 					// Z4 (transmit) > Z3 (receive)
@@ -386,9 +331,9 @@ void TIM4_IRQHandler(void)
 			  TIM3->ARR = C_14; 		// Коррекция для таймера запуска измерения Z14, Z41
 			  setZ4transmit; 			// Set Z4 port to output mode
 			  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в четвертом канале
 			  /* Запускаем таймер захвата */
-			  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+			  START_CAPTURE
 			  break;
 		  }
 		  case 6: { 					// Z4 (transmit) > Z1 (receive)
@@ -397,9 +342,9 @@ void TIM4_IRQHandler(void)
 			#endif
 			  setZ4transmit;			// Set Z4 port to output mode
 			  setZ1receive; 			// Turn on multiplexer for input Z1 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в четвертом канале
 			  /* Запускаем таймер захвата */
-			  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+			  START_CAPTURE
 			  break;
 		  }
 		  case 7: { 					// Z1 (transmit) > Z4 (receive)
@@ -409,9 +354,9 @@ void TIM4_IRQHandler(void)
 			  TIM3->ARR = C_12; 		// Коррекция для таймера запуска измерения Z12, Z21
 			  setZ1transmit;			// Set Z1 port to output mode
 			  setZ4receive; 			// Turn on multiplexer for input Z4 channel.
-			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
+			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);	// Генерация для пьезокристалла в первом канале
 			  /* Запускаем таймер захвата */
-			  HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 1);
+			  START_CAPTURE
 			  break;
 		  }
 		  case 8: { 					// All data complete.

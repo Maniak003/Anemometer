@@ -79,6 +79,12 @@ extern "C" {
 #define setZ2receive GPIOB->ODR |= (1 << Z2Receive)
 #define setZ3receive GPIOB->ODR |= (1 << Z3Receive)
 #define setZ4receive GPIOB->ODR |= (1 << Z4Receive)
+#define LED_PULSE GPIOA->BSRR = (uint32_t)LED_Pin; GPIOA->BSRR = (uint32_t)LED_Pin << 16u;
+#define TP_PULSE GPIOA->BSRR = (uint32_t)GPIO_PIN_15; GPIOA->BSRR = (uint32_t)GPIO_PIN_15 << 16u;
+//#define START_CAPTURE HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 2); HAL_TIM_IC_Start(&htim2, TIM_CHANNEL_2);
+//#define STOP_CAPTURE HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop(&htim2, TIM_CHANNEL_2);
+#define START_CAPTURE HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
+#define STOP_CAPTURE HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
 #define MEASSURE_COUNT 100
 #define SPEED_CALIBRATE 42.19f // cos(atg(17/18)) * (49.52/330000 - 49.52/331000) / (1/64000000) * 2
 #define SYSTICK_DISABLE
@@ -126,6 +132,8 @@ void Error_Handler(void);
 #define Z4_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_12
 #define LED_GPIO_Port GPIOA
+#define TP_Pin GPIO_PIN_15
+#define TP_GPIO_Port GPIOA
 #define Eth_int_Pin GPIO_PIN_3
 #define Eth_int_GPIO_Port GPIOB
 #define Eth_rst_Pin GPIO_PIN_4
@@ -160,6 +168,8 @@ uint16_t calibrateCount, calibrateMode, runFlag;
 #define CALIBRATE_START 24000
 #define BODY_CALIBRATE_START 1000
 #define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
+#define CALIBRATE_ERROR_RANGE "\r\nCalibrate ERROR.\r\nDelta out of range.\r\n"
+#define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"
 #define START_TEXT "\rAnemometer start.\r\n"
 double X, Y, V, A, Xsum, Ysum, Vmax;
