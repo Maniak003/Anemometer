@@ -109,10 +109,8 @@ int main(void)
 				C_34 = CALIBRATE_START;
 				C_14 = CALIBRATE_START;
 				C_23 = CALIBRATE_START;
-				DX1.f = 0;
-				DX2.f = 0;
-				DY1.f = 0;
-				DY2.f = 0;
+				DX.f = 0;
+				DY.f = 0;
 			}
 			FLASH_EraseInitTypeDef EraseInitStruct;
 			uint32_t PAGEError = 0;
@@ -138,19 +136,11 @@ int main(void)
 				}
 				flash_ok = HAL_ERROR;
 				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 24, DX1.u); // Write DX1
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 24, DX.u); // Write DX
 				}
 				flash_ok = HAL_ERROR;
 				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DX2.u); // Write DX2
-				}
-				flash_ok = HAL_ERROR;
-				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 32, DY1.u); // Write DY1
-				}
-				flash_ok = HAL_ERROR;
-				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, DY2.u); // Write DY2
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DY.u); // Write DY
 				}
 			}
 			// Lock flash
@@ -167,11 +157,10 @@ int main(void)
 			C_23 = *(__IO uint16_t*) (pageAdr + 22);
 			sprintf(SndBuffer, "C_12: %5d, C_34: %5d, C_14: %5d, C_23: %5d.\r\n", C_12, C_34, C_14, C_23);
 			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-			DX1.u = *(__IO uint32_t*) (pageAdr + 24);
-			DX2.u = *(__IO uint32_t*) (pageAdr + 28);
-			DY1.u = *(__IO uint32_t*) (pageAdr + 32);
-			DY2.u = *(__IO uint32_t*) (pageAdr + 36);
-			sprintf(SndBuffer, "DX1: %5.2f, DX2: %5.2f, DY1: %5.2f, DY2: %5.2f.\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
+			DX.u = *(__IO uint32_t*) (pageAdr + 24);
+			DY.u = *(__IO uint32_t*) (pageAdr + 28);
+			memset(SndBuffer, 0, sizeof(SndBuffer));
+			sprintf(SndBuffer, "DX: %5.2f, DY: %5.2f\r\n", DX.f, DY.f);
 			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 		}
 	}
@@ -673,24 +662,21 @@ void init_w5500() {
 					  HAL_NVIC_SystemReset();
 				  }
 				  if (calibrateMode > 0) {
-					  DX1.f = DX1.f + (float) (Z12 - Z21);
-					  DX2.f = DX2.f + (float) (Z43 - Z34);
-					  DY1.f = DY1.f + (float) (Z14 - Z41);
-					  DY2.f = DY2.f + (float) (Z23 - Z32);
+					  DX.f = DX.f + (float) (Z12 - Z21 + Z43 - Z34);
+					  DY.f = DY.f + (float) (Z14 - Z41 + Z23 - Z32);
+					  //DY2.f = DY2.f + (float) (Z23 - Z32);
 					  calibrateMode--;
 					  if (calibrateMode == 0) {
 						  /* Вычисление поправок */
-						  DX1.f = DX1.f / (float) MEASSURE_COUNT;
-						  DX2.f = DX2.f / (float) MEASSURE_COUNT;
-						  DY1.f = DY1.f / (float) MEASSURE_COUNT;
-						  DY2.f = DY2.f / (float) MEASSURE_COUNT;
+						  DX.f = DX.f / (float) (MEASSURE_COUNT * 2);
+						  DY.f = DY.f / (float) (MEASSURE_COUNT * 2);
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
 						  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
-						  sprintf(SndBuffer, "\r\nDX1:%5.2f, DX2:%5.2f, DY1:%5.2f, DY2:%5.2f\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
+						  sprintf(SndBuffer, "DX:%5.2f, DY:%5.2f\r\n\r\n", DX.f, DY.f);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-						  if (abs(DX1.f) < 30 && abs(DX2.f) < 30 && abs(DY1.f) < 30 && abs(DY2.f) < 30) {
+						  if (abs(DX.f) < 30 && abs(DY.f) < 30) {
 							  rwFlash(1);  // Запись данных калибровки во Flash.
 						  } else {
 							  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_ERROR_RANGE, sizeof(CALIBRATE_ERROR_RANGE), 1000);
@@ -757,10 +743,8 @@ void init_w5500() {
 			  C_34 = CALIBRATE_START;
 			  C_14 = CALIBRATE_START;
 			  C_23 = CALIBRATE_START;
-			  DX1.f = 0;
-			  DX2.f = 0;
-			  DY1.f = 0;
-			  DY2.f = 0;
+			  DX.f = 0;
+			  DY.f = 0;
 			  test_cnt = 0;
 			  calibrateMode = MEASSURE_COUNT;
 			  currentMode = 0;
@@ -1257,7 +1241,7 @@ static void MX_GPIO_Init(void)
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if (runFlag > 0) {								// Разрешено измерение ?
-	  if ((htim->Instance == TIM2) && (HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
+	  if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
 			if ( (runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше пропускаем все импульсы.
 				  //LED_PULSE
 					runFlag--;

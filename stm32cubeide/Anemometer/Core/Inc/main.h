@@ -149,19 +149,11 @@ uint16_t C_12, C_34, C_14, C_23, BC_12, BC_34, BC_14, BC_23;
 union {
 	float f;
 	uint32_t u;
-} DX1;
+} DX;
 union {
 	float f;
 	uint32_t u;
-} DX2;
-union {
-	float f;
-	uint32_t u;
-} DY1;
-union {
-	float f;
-	uint32_t u;
-} DY2;
+} DY;
 uint16_t calibrateCount, calibrateMode, runFlag;
 #define	COUNT_FRONT 4
 #define CALIBRATE_ACURACY 3

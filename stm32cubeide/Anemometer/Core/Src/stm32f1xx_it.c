@@ -378,9 +378,11 @@ void TIM4_IRQHandler(void)
 						  }
 					  }
 					  Xsum = Xsum / MEASSURE_COUNT;
-					  Ysum = Ysum / MEASSURE_COUNT;
 					  Xsum = Xsum / SPEED_CALIBRATE;
+
+					  Ysum = Ysum / MEASSURE_COUNT;
 					  Ysum = Ysum / SPEED_CALIBRATE;
+
 					  Vmax = Vmax / SPEED_CALIBRATE;
 					  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
 					  if ( V == 0) {
@@ -394,8 +396,8 @@ void TIM4_IRQHandler(void)
 					  measCount = 0;
 					  readyFlag = TRUE;
 				  } else {
-					  resul_arrayX[measCount] = (Z12 - Z21 - DX1.f + Z43 - Z34 - DX2.f) / 2;
-					  resul_arrayY[measCount] = (Z23 - Z32 - DY2.f + Z14 - Z41 - DY1.f) / 2;
+					  resul_arrayX[measCount] = (Z12 - Z21 + Z43 - Z34) / 2 - DX.f;
+					  resul_arrayY[measCount] = (Z23 - Z32 + Z14 - Z41) / 2 - DY.f;
 					  measCount++;
 				  }
 			  } else {					// Calibrate mode
