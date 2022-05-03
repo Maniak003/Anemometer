@@ -629,45 +629,45 @@ void init_w5500() {
 				  sprintf(SndBuffer, "Z12-Z21:%5d-%5d, Z43-Z34:%5d-%5d, Z14-Z41:%5d-%5d, Z23-Z32:%5d-%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  if ( calibrate12 && (abs(Z12 + Z21 - 1600) > CALIBRATE_ACURACY) ) {
-					  if (Z12 > 800) {
+					  if (Z12 + Z21 > 1600) {
 						  C_12++;
 					  } else {
 						  C_12--;
 					  }
 				  } else {
-					  calibrate12 = FALSE;
+					  calibrate12 = FALSE;	// Закончена калибровка таймера запуска измерения в канале X1
 				  }
 				  if ( calibrate34 && (abs(Z34 + Z43 - 1600) > CALIBRATE_ACURACY) ) {
-					  if (Z34 > 800) {
+					  if (Z34 + Z43 > 1600) {
 						  C_34++;
 					  } else {
 						  C_34--;
 					  }
 				  } else {
-					  calibrate34 = FALSE;
+					  calibrate34 = FALSE;	// Закончена калибровка таймера запуска измерения в канале X2
 				  }
 				  if ( calibrate14 && (abs(Z14 + Z41 - 1600) > CALIBRATE_ACURACY) ) {
-					  if(Z14 > 800) {
+					  if(Z14 + Z41 > 1600) {
 						  C_14++;
 					  } else {
 						  C_14--;
 					  }
 				  } else {
-					  calibrate14 = FALSE;
+					  calibrate14 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
 				  }
 				  if ( calibrate23 && (abs(Z23 + Z32 - 1600) > CALIBRATE_ACURACY) ) {
-					  if(Z23 > 800) {
-					  C_23++;
+					  if(Z23 + Z32 > 1600) {
+						  C_23++;
 					  } else {
 						  C_23--;
 					  }
 				  } else {
-					  calibrate23 = FALSE;
+					  calibrate23 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
 				  }
 				  calibrateCount++;
 				  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 			  } else {
-				  if (/*(calibrate12 || calibrate34 || calibrate14 || calibrate23) &&*/ (calibrateCount >= 1600)) {
+				  if (calibrateCount >= 800) {
 					  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_ERROR_TOUT, sizeof(CALIBRATE_ERROR_TOUT), 1000);
 					  /* System restart if calibrate error. */
 					  HAL_NVIC_SystemReset();
@@ -761,6 +761,7 @@ void init_w5500() {
 			  DX2.f = 0;
 			  DY1.f = 0;
 			  DY2.f = 0;
+			  test_cnt = 0;
 			  calibrateMode = MEASSURE_COUNT;
 			  currentMode = 0;
 			  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
@@ -1099,7 +1100,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_OC1;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_ENABLE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();

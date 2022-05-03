@@ -143,7 +143,7 @@ void Error_Handler(void);
 #define TMP117_SDA_Pin GPIO_PIN_9
 #define TMP117_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-uint16_t currentMode, startCount, measCount, front_sum;
+uint16_t currentMode, startCount, measCount, front_sum, test_cnt;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
 uint16_t C_12, C_34, C_14, C_23, BC_12, BC_34, BC_14, BC_23;
 union {
@@ -171,7 +171,7 @@ uint16_t calibrateCount, calibrateMode, runFlag;
 #define CALIBRATE_ERROR_RANGE "\r\nCalibrate ERROR.\r\nDelta out of range.\r\n"
 #define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"
-#define START_TEXT "\rAnemometer start.\r\n"
+#define START_TEXT "\r\nAnemometer start.\r\n"
 double X, Y, V, A, Xsum, Ysum, Vmax;
 float resul_arrayX[MEASSURE_COUNT];
 float resul_arrayY[MEASSURE_COUNT];

@@ -229,7 +229,7 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 //	if (startCount-- == 0) {
 		runFlag = COUNT_FRONT;		// Сработал таймер сброса таймера захвата, начинаем измерение.
-		LED_PULSE
+		//LED_PULSE
 //	}
 
   /* USER CODE END TIM3_IRQn 0 */
@@ -310,7 +310,7 @@ void TIM4_IRQHandler(void)
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
 			  /* Запускаем таймер захвата */
 			  START_CAPTURE
-			  TP_PULSE
+			  //TP_PULSE
 			  break;
 		  }
 		  case 4: { 					// Z3 (transmit) > Z4 (receive)
