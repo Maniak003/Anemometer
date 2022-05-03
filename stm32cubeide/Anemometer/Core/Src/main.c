@@ -625,7 +625,7 @@ void init_w5500() {
 			  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 
 			  /* Процедура калибровки */
-			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 800)) {
+			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 1600)) {
 				  sprintf(SndBuffer, "Z12-Z21:%5d-%5d, Z43-Z34:%5d-%5d, Z14-Z41:%5d-%5d, Z23-Z32:%5d-%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  if ( calibrate12 && (abs(Z12 + Z21 - 1600) > CALIBRATE_ACURACY) ) {
@@ -931,7 +931,7 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_ENABLE;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_OC1;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
   {
