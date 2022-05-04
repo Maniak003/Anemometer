@@ -1247,7 +1247,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 					if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
 						front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1) & 0x0FFFF);
 					} else {   // Активен спад
-						//front_array[front_idx++] = (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2) & 0x0FFFF);
+						front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2) & 0x0FFFF);
 					}
 					runFlag--;
 					if (runFlag == 0) {  // Измерения закончены ?
@@ -1255,7 +1255,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 						#ifdef SYSTICK_DISABLE
 							SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 						#endif
-						front_sum = front_sum / 2 - 800;  // Расчитываем задержку от средины импульсов
+						front_sum = front_sum / 4 - 1200;  // Расчитываем задержку от средины импульсов
 						/* Turn off all multiplexer */
 						GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 						switch (currentMode) {

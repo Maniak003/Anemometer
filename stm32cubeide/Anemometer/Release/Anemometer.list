@@ -4973,9 +4973,9 @@ Disassembly of section .text:
  8003604:	0800ad61 	.word	0x0800ad61
 
 08003608 <HAL_TIM_IC_CaptureCallback>:
- 8003608:	b510      	push	{r4, lr}
- 800360a:	4c2e      	ldr	r4, [pc, #184]	; (80036c4 <HAL_TIM_IC_CaptureCallback+0xbc>)
- 800360c:	8823      	ldrh	r3, [r4, #0]
+ 8003608:	b538      	push	{r3, r4, r5, lr}
+ 800360a:	4d2e      	ldr	r5, [pc, #184]	; (80036c4 <HAL_TIM_IC_CaptureCallback+0xbc>)
+ 800360c:	882b      	ldrh	r3, [r5, #0]
  800360e:	2b00      	cmp	r3, #0
  8003610:	d049      	beq.n	80036a6 <HAL_TIM_IC_CaptureCallback+0x9e>
  8003612:	6802      	ldr	r2, [r0, #0]
@@ -4996,38 +4996,38 @@ Disassembly of section .text:
  8003634:	f04f 5180 	mov.w	r1, #268435456	; 0x10000000
  8003638:	2a01      	cmp	r2, #1
  800363a:	6119      	str	r1, [r3, #16]
- 800363c:	d107      	bne.n	800364e <HAL_TIM_IC_CaptureCallback+0x46>
- 800363e:	2100      	movs	r1, #0
- 8003640:	4822      	ldr	r0, [pc, #136]	; (80036cc <HAL_TIM_IC_CaptureCallback+0xc4>)
- 8003642:	f003 f924 	bl	800688e <HAL_TIM_ReadCapturedValue>
- 8003646:	4b22      	ldr	r3, [pc, #136]	; (80036d0 <HAL_TIM_IC_CaptureCallback+0xc8>)
- 8003648:	881a      	ldrh	r2, [r3, #0]
- 800364a:	4410      	add	r0, r2
- 800364c:	8018      	strh	r0, [r3, #0]
- 800364e:	8821      	ldrh	r1, [r4, #0]
- 8003650:	3901      	subs	r1, #1
+ 800363c:	4823      	ldr	r0, [pc, #140]	; (80036cc <HAL_TIM_IC_CaptureCallback+0xc4>)
+ 800363e:	bf0c      	ite	eq
+ 8003640:	2100      	moveq	r1, #0
+ 8003642:	2104      	movne	r1, #4
+ 8003644:	f003 f923 	bl	800688e <HAL_TIM_ReadCapturedValue>
+ 8003648:	4c21      	ldr	r4, [pc, #132]	; (80036d0 <HAL_TIM_IC_CaptureCallback+0xc8>)
+ 800364a:	8829      	ldrh	r1, [r5, #0]
+ 800364c:	8823      	ldrh	r3, [r4, #0]
+ 800364e:	3901      	subs	r1, #1
+ 8003650:	4418      	add	r0, r3
  8003652:	b289      	uxth	r1, r1
- 8003654:	8021      	strh	r1, [r4, #0]
- 8003656:	bb31      	cbnz	r1, 80036a6 <HAL_TIM_IC_CaptureCallback+0x9e>
- 8003658:	481c      	ldr	r0, [pc, #112]	; (80036cc <HAL_TIM_IC_CaptureCallback+0xc4>)
- 800365a:	f003 fddf 	bl	800721c <HAL_TIM_IC_Stop_IT>
- 800365e:	2104      	movs	r1, #4
- 8003660:	481a      	ldr	r0, [pc, #104]	; (80036cc <HAL_TIM_IC_CaptureCallback+0xc4>)
- 8003662:	f003 fddb 	bl	800721c <HAL_TIM_IC_Stop_IT>
- 8003666:	4a1b      	ldr	r2, [pc, #108]	; (80036d4 <HAL_TIM_IC_CaptureCallback+0xcc>)
- 8003668:	491b      	ldr	r1, [pc, #108]	; (80036d8 <HAL_TIM_IC_CaptureCallback+0xd0>)
- 800366a:	6813      	ldr	r3, [r2, #0]
- 800366c:	f043 0301 	orr.w	r3, r3, #1
- 8003670:	6013      	str	r3, [r2, #0]
- 8003672:	4a17      	ldr	r2, [pc, #92]	; (80036d0 <HAL_TIM_IC_CaptureCallback+0xc8>)
- 8003674:	8813      	ldrh	r3, [r2, #0]
- 8003676:	085b      	lsrs	r3, r3, #1
- 8003678:	f5a3 7348 	sub.w	r3, r3, #800	; 0x320
- 800367c:	b29b      	uxth	r3, r3
- 800367e:	8013      	strh	r3, [r2, #0]
- 8003680:	68ca      	ldr	r2, [r1, #12]
- 8003682:	f422 6240 	bic.w	r2, r2, #3072	; 0xc00
- 8003686:	f022 0206 	bic.w	r2, r2, #6
+ 8003654:	8020      	strh	r0, [r4, #0]
+ 8003656:	8029      	strh	r1, [r5, #0]
+ 8003658:	bb29      	cbnz	r1, 80036a6 <HAL_TIM_IC_CaptureCallback+0x9e>
+ 800365a:	481c      	ldr	r0, [pc, #112]	; (80036cc <HAL_TIM_IC_CaptureCallback+0xc4>)
+ 800365c:	f003 fdde 	bl	800721c <HAL_TIM_IC_Stop_IT>
+ 8003660:	2104      	movs	r1, #4
+ 8003662:	481a      	ldr	r0, [pc, #104]	; (80036cc <HAL_TIM_IC_CaptureCallback+0xc4>)
+ 8003664:	f003 fdda 	bl	800721c <HAL_TIM_IC_Stop_IT>
+ 8003668:	4a1a      	ldr	r2, [pc, #104]	; (80036d4 <HAL_TIM_IC_CaptureCallback+0xcc>)
+ 800366a:	491b      	ldr	r1, [pc, #108]	; (80036d8 <HAL_TIM_IC_CaptureCallback+0xd0>)
+ 800366c:	6813      	ldr	r3, [r2, #0]
+ 800366e:	f043 0301 	orr.w	r3, r3, #1
+ 8003672:	6013      	str	r3, [r2, #0]
+ 8003674:	8823      	ldrh	r3, [r4, #0]
+ 8003676:	68ca      	ldr	r2, [r1, #12]
+ 8003678:	089b      	lsrs	r3, r3, #2
+ 800367a:	f5a3 6396 	sub.w	r3, r3, #1200	; 0x4b0
+ 800367e:	f422 6240 	bic.w	r2, r2, #3072	; 0xc00
+ 8003682:	f022 0206 	bic.w	r2, r2, #6
+ 8003686:	b29b      	uxth	r3, r3
+ 8003688:	8023      	strh	r3, [r4, #0]
  800368a:	60ca      	str	r2, [r1, #12]
  800368c:	4a13      	ldr	r2, [pc, #76]	; (80036dc <HAL_TIM_IC_CaptureCallback+0xd4>)
  800368e:	8812      	ldrh	r2, [r2, #0]
@@ -5040,7 +5040,7 @@ Disassembly of section .text:
  80036a0:	1311      	.short	0x1311
  80036a2:	4a0f      	ldr	r2, [pc, #60]	; (80036e0 <HAL_TIM_IC_CaptureCallback+0xd8>)
  80036a4:	8013      	strh	r3, [r2, #0]
- 80036a6:	bd10      	pop	{r4, pc}
+ 80036a6:	bd38      	pop	{r3, r4, r5, pc}
  80036a8:	4a0e      	ldr	r2, [pc, #56]	; (80036e4 <HAL_TIM_IC_CaptureCallback+0xdc>)
  80036aa:	e7fb      	b.n	80036a4 <HAL_TIM_IC_CaptureCallback+0x9c>
  80036ac:	4a0e      	ldr	r2, [pc, #56]	; (80036e8 <HAL_TIM_IC_CaptureCallback+0xe0>)
