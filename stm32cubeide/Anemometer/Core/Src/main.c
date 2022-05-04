@@ -1242,20 +1242,20 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if (runFlag > 0) {								// Разрешено измерение ?
 	  if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
-			if ( (runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше пропускаем все импульсы.
-				  //LED_PULSE
-					runFlag--;
+			if ( (runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
+				  LED_PULSE
 					if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
 						front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1) & 0x0FFFF);
 					} else {   // Активен спад
-						front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2) & 0x0FFFF);
+						//front_array[front_idx++] = (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2) & 0x0FFFF);
 					}
+					runFlag--;
 					if (runFlag == 0) {  // Измерения закончены ?
 						STOP_CAPTURE  // Таймер больше не нужен, выключаем
 						#ifdef SYSTICK_DISABLE
 							SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 						#endif
-						front_sum = front_sum / 4 - 1200;  // Расчитываем задержку от средины импульсов
+						front_sum = front_sum / 2 - 800;  // Расчитываем задержку от средины импульсов
 						/* Turn off all multiplexer */
 						GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 						switch (currentMode) {

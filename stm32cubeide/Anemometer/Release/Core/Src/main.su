@@ -10,5 +10,5 @@ main.c:98:7:rwFlash	56	static
 main.c:299:9:sendToZabbix.constprop	280	static
 main.c:768:6:SystemClock_Config	72	static,ignoring_inline_asm
 main.c:93:5:main	1272	static,ignoring_inline_asm
-main.c:1242:6:HAL_TIM_IC_CaptureCallback	16	static
+main.c:1242:6:HAL_TIM_IC_CaptureCallback	8	static
 main.c:1307:6:Error_Handler	0	static,ignoring_inline_asm
