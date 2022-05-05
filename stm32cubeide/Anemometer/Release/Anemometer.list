@@ -6346,7 +6346,7 @@ Disassembly of section .text:
  80043de:	f8df b284 	ldr.w	fp, [pc, #644]	; 8004664 <TIM4_IRQHandler+0x4c4>
  80043e2:	883d      	ldrh	r5, [r7, #0]
  80043e4:	4e8a      	ldr	r6, [pc, #552]	; (8004610 <TIM4_IRQHandler+0x470>)
- 80043e6:	2d63      	cmp	r5, #99	; 0x63
+ 80043e6:	2d64      	cmp	r5, #100	; 0x64
  80043e8:	f040 80d2 	bne.w	8004590 <TIM4_IRQHandler+0x3f0>
  80043ec:	4889      	ldr	r0, [pc, #548]	; (8004614 <TIM4_IRQHandler+0x474>)
  80043ee:	f002 fa33 	bl	8006858 <HAL_TIM_Base_Stop_IT>

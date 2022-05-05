@@ -363,7 +363,7 @@ void TIM4_IRQHandler(void)
 			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			  currentMode = 0;
 			  if (calibrateMode == 0) { // Normal mode
-				  if (measCount == MEASSURE_COUNT - 1) {
+				  if (measCount == MEASSURE_COUNT) {
 					  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 					  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
 					  Vmax = 0;
@@ -377,14 +377,14 @@ void TIM4_IRQHandler(void)
 							  Vmax = V;
 						  }
 					  }
-					  Xsum = Xsum / MEASSURE_COUNT;
-					  Xsum = Xsum / SPEED_CALIBRATE;
+					  Xsum = Xsum / MEASSURE_COUNT;		// Среднее количество тактов по X
+					  Xsum = Xsum / SPEED_CALIBRATE;	// Скорость по X
 
-					  Ysum = Ysum / MEASSURE_COUNT;
-					  Ysum = Ysum / SPEED_CALIBRATE;
+					  Ysum = Ysum / MEASSURE_COUNT;		// Среднее количество тактов по Y
+					  Ysum = Ysum / SPEED_CALIBRATE;	// Скорость по Y
 
-					  Vmax = Vmax / SPEED_CALIBRATE;
-					  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скорость
+					  Vmax = Vmax / SPEED_CALIBRATE;	// Максимальная скорость за время MEASSURE_COUNT
+					  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скалярное значение скорости
 					  if ( V == 0) {
 						  A = 0;
 					  } else {
@@ -394,15 +394,16 @@ void TIM4_IRQHandler(void)
 						  }
 					  }
 					  measCount = 0;
-					  readyFlag = TRUE;
+					  readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
 				  } else {
+					  /* Накопление массива векторов */
 					  resul_arrayX[measCount] = (Z12 - Z21 + Z43 - Z34) / 2 - DX.f;
 					  resul_arrayY[measCount] = (Z23 - Z32 + Z14 - Z41) / 2 - DY.f;
 					  measCount++;
 				  }
 			  } else {					// Calibrate mode
 				  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
-				  readyFlag = TRUE;
+				  readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
 			  }
 			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  break;
