@@ -155,13 +155,13 @@ union {
 	uint32_t u;
 } DY;
 uint16_t calibrateCount, calibrateMode, runFlag;
-#define	COUNT_FRONT 4
+#define	COUNT_FRONT 10
 #define CALIBRATE_ACURACY 3
 /*
  * // 24000
  * Подбирать по максимуму огибающей. Чем больше амплитуда, тем меньше jitter
  * */
-#define CALIBRATE_START 34000
+#define CALIBRATE_START 25000// 34000
 #define BODY_CALIBRATE_START 1000
 #define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
 #define CALIBRATE_ERROR_RANGE "\r\nCalibrate ERROR.\r\nDelta out of range.\r\n"

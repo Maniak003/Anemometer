@@ -1255,7 +1255,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 						#ifdef SYSTICK_DISABLE
 							SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 						#endif
-						front_sum = front_sum / 4 - 1200;  // Расчитываем задержку от средины импульсов
+						front_sum = front_sum / COUNT_FRONT - 3600;  // Расчитываем задержку от средины импульсов
 						/* Turn off all multiplexer */
 						GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 						switch (currentMode) {
