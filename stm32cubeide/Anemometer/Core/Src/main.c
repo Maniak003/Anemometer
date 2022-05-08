@@ -109,8 +109,10 @@ int main(void)
 				C_34 = CALIBRATE_START;
 				C_14 = CALIBRATE_START;
 				C_23 = CALIBRATE_START;
-				DX.f = 0;
-				DY.f = 0;
+				DX1.f = 0;
+				DX2.f = 0;
+				DY1.f = 0;
+				DY2.f = 0;
 			}
 			FLASH_EraseInitTypeDef EraseInitStruct;
 			uint32_t PAGEError = 0;
@@ -136,11 +138,19 @@ int main(void)
 				}
 				flash_ok = HAL_ERROR;
 				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 24, DX.u); // Write DX
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 24, DX1.u); // Write DX1
 				}
 				flash_ok = HAL_ERROR;
 				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DY.u); // Write DY
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DX2.u); // Write DX2
+				}
+				flash_ok = HAL_ERROR;
+				while(flash_ok != HAL_OK){
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 32, DY1.u); // Write DY1
+				}
+				flash_ok = HAL_ERROR;
+				while(flash_ok != HAL_OK){
+					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, DY2.u); // Write DY2
 				}
 			}
 			// Lock flash
@@ -157,10 +167,12 @@ int main(void)
 			C_23 = *(__IO uint16_t*) (pageAdr + 22);
 			sprintf(SndBuffer, "C_12: %5d, C_34: %5d, C_14: %5d, C_23: %5d.\r\n", C_12, C_34, C_14, C_23);
 			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-			DX.u = *(__IO uint32_t*) (pageAdr + 24);
-			DY.u = *(__IO uint32_t*) (pageAdr + 28);
+			DX1.u = *(__IO uint32_t*) (pageAdr + 24);
+			DX2.u = *(__IO uint32_t*) (pageAdr + 28);
+			DY1.u = *(__IO uint32_t*) (pageAdr + 32);
+			DY2.u = *(__IO uint32_t*) (pageAdr + 36);
 			memset(SndBuffer, 0, sizeof(SndBuffer));
-			sprintf(SndBuffer, "DX: %5.2f, DY: %5.2f\r\n", DX.f, DY.f);
+			sprintf(SndBuffer, "DX1: %7.6f, DX2: %7.6f, DY1: %7.6f, DY2: %7.6f\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
 			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 		}
 	}
@@ -577,8 +589,10 @@ void init_w5500() {
    *	Очистка массива результатов.
    */
   for (int ii = 0; ii < MEASSURE_COUNT; ii++) {
-	  resul_arrayX[ii] = 0;
-	  resul_arrayY[ii] = 0;
+	  resul_arrayX1[ii] = 0;
+	  resul_arrayX2[ii] = 0;
+	  resul_arrayY1[ii] = 0;
+	  resul_arrayY2[ii] = 0;
   }
   calibrate12 = FALSE;
   calibrate34 = FALSE;
@@ -614,7 +628,7 @@ void init_w5500() {
 			  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 
 			  /* Процедура калибровки */
-			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < 1600)) {
+			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
 				  sprintf(SndBuffer, "Z12-Z21:%5d-%5d, Z43-Z34:%5d-%5d, Z14-Z41:%5d-%5d, Z23-Z32:%5d-%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  if ( calibrate12 && (abs(Z12 + Z21 - 1600) > CALIBRATE_ACURACY) ) {
@@ -656,27 +670,35 @@ void init_w5500() {
 				  calibrateCount++;
 				  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 			  } else {
-				  if (calibrateCount >= 800) {
+				  if (calibrateCount >= CALIBRATE_MAX_COUNT) {
 					  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_ERROR_TOUT, sizeof(CALIBRATE_ERROR_TOUT), 1000);
 					  /* System restart if calibrate error. */
 					  HAL_NVIC_SystemReset();
 				  }
 				  if (calibrateMode > 0) {
-					  DX.f = DX.f + (float) (Z12 - Z21 + Z43 - Z34);
-					  DY.f = DY.f + (float) (Z14 - Z41 + Z23 - Z32);
+					  ZX1 = ZX1 + (float) Z12;
+					  ZX2 = ZX2 + (float) Z21;
+					  ZX3 = ZX3 + (float) Z43;
+					  ZX4 = ZX4 + (float) Z34;
+					  ZY1 = ZY1 + (float) Z14;
+					  ZY2 = ZY2 + (float) Z41;
+					  ZY3 = ZY3 + (float) Z23;
+					  ZY4 = ZY4 + (float) Z32;
 					  //DY2.f = DY2.f + (float) (Z23 - Z32);
 					  calibrateMode--;
 					  if (calibrateMode == 0) {
 						  /* Вычисление поправок */
-						  DX.f = DX.f / (float) (MEASSURE_COUNT * 2);
-						  DY.f = DY.f / (float) (MEASSURE_COUNT * 2);
+						  DX1.f = ZX1 / ZX2;
+						  DX2.f = ZX3 / ZX4;
+						  DY1.f = ZY1 / ZY2;
+						  DY2.f = ZY3 / ZY4;
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
 						  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
-						  sprintf(SndBuffer, "DX:%5.2f, DY:%5.2f\r\n\r\n", DX.f, DY.f);
+						  sprintf(SndBuffer, "DX1:%5.4f, DX2:%5.4f, DY1:%5.4f, DY2:%5.4f\r\n\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-						  if (abs(DX.f) < 30 && abs(DY.f) < 30) {
+						  if (abs(DX1.f) < 30 && abs(DX2.f) < 30 && abs(DY1.f) < 30 && abs(DY2.f) < 30) {
 							  rwFlash(1);  // Запись данных калибровки во Flash.
 						  } else {
 							  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_ERROR_RANGE, sizeof(CALIBRATE_ERROR_RANGE), 1000);
@@ -719,7 +741,7 @@ void init_w5500() {
 			  }
 			#endif
 			  if ( ! firstTime ) {
-				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, A, temperature, pressure, humidity);
+				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, Xmax, Ymax, A, temperature, pressure, humidity);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
 			  firstTime = FALSE;
@@ -743,10 +765,20 @@ void init_w5500() {
 			  C_34 = CALIBRATE_START;
 			  C_14 = CALIBRATE_START;
 			  C_23 = CALIBRATE_START;
-			  DX.f = 0;
-			  DY.f = 0;
+			  ZX1 = 0;
+			  ZX2 = 0;
+			  ZX3 = 0;
+			  ZX4 = 0;
+			  ZY1 = 0;
+			  ZY2 = 0;
+			  ZY3 = 0;
+			  ZY4 = 0;
+			  DX1.f = 0;
+			  DX2.f = 0;
+			  DY1.f = 0;
+			  DY2.f = 0;
 			  test_cnt = 0;
-			  calibrateMode = MEASSURE_COUNT;
+			  calibrateMode = MEASSURE_COUNT * CALIBRATE_TIMES;
 			  currentMode = 0;
 			  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
 		  }
@@ -1243,7 +1275,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if (runFlag > 0) {								// Разрешено измерение ?
 	  if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
 			if ( (runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
-				  LED_PULSE
+				  //LED_PULSE
 					if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
 						front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1) & 0x0FFFF);
 					} else {   // Активен спад

@@ -360,30 +360,70 @@ void TIM4_IRQHandler(void)
 			  break;
 		  }
 		  case 8: { 					// All data complete.
-			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+			  /*
+			   * currentMode
+			   * Z1--Z2
+			   * |	  |
+			   * Z4__Z3
+			   *
+			   * 0 - Z1 >> Z2
+			   * 1 - Z2 >> Z1
+			   * 2 - Z2 >> Z3
+			   * 3 - Z3 >> Z2
+			   * 4 - Z3 >> Z4
+			   * 5 - Z4 >> Z3
+			   * 6 - Z4 >> Z1
+			   * 7 - Z1 >> Z4
+			   */
 			  currentMode = 0;
 			  if (calibrateMode == 0) { // Normal mode
 				  if (measCount == MEASSURE_COUNT) {
 					  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 					  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
 					  Vmax = 0;
-					  Xsum = 0;
-					  Ysum = 0;
+					  Xmax = 0;
+					  Ymax = 0;
+					  Xsum1 = 0;
+					  Xsum2 = 0;
+					  Xsum3 = 0;
+					  Xsum4 = 0;
+					  Ysum1 = 0;
+					  Ysum2 = 0;
+					  Ysum3 = 0;
+					  Ysum4 = 0;
 					  for (int ii = 0; ii < MEASSURE_COUNT; ii++) {
-						  Xsum = Xsum + resul_arrayX[ii];
-						  Ysum = Ysum + resul_arrayY[ii];
-						  V = sqrt(pow(resul_arrayX[ii], 2) + pow(resul_arrayY[ii], 2));
+						  Xsum1 = Xsum1 + resul_arrayX1[ii];
+						  Xsum2 = Xsum2 + resul_arrayX2[ii];
+						  Xsum3 = Xsum3 + resul_arrayX3[ii];
+						  Xsum4 = Xsum4 + resul_arrayX4[ii];
+						  Ysum1 = Ysum1 + resul_arrayY1[ii];
+						  Ysum2 = Ysum2 + resul_arrayY2[ii];
+						  Ysum3 = Ysum3 + resul_arrayY3[ii];
+						  Ysum4 = Ysum4 + resul_arrayY4[ii];
+						  X = (resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f + resul_arrayX3[ii] - resul_arrayX4[ii] * DX2.f) / 2;
+						  Y = (resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f + resul_arrayY3[ii] - resul_arrayY4[ii] * DY2.f) / 2;
+						  V = sqrt(pow(X, 2) + pow(Y, 2));
 						  if ( V > Vmax) {
 							  Vmax = V;
 						  }
+						  if (X > Xmax) {
+							  Xmax = X;
+						  }
+						  if (Y > Ymax) {
+							  Ymax = Y;
+						  }
 					  }
-					  Xsum = Xsum / MEASSURE_COUNT;		// Среднее количество тактов по X
+					  Xsum = (Xsum1 - Xsum2 * DX1.f + Xsum3 - Xsum4 * DX2.f);
+					  Xsum = Xsum / (MEASSURE_COUNT * 2);		// Среднее количество тактов по X
 					  Xsum = Xsum / SPEED_CALIBRATE;	// Скорость по X
 
-					  Ysum = Ysum / MEASSURE_COUNT;		// Среднее количество тактов по Y
+					  Ysum = (Ysum1 - Ysum2 * DY1.f + Ysum3 - Ysum4 * DY2.f);
+					  Ysum = Ysum / (MEASSURE_COUNT * 2);		// Среднее количество тактов по Y
 					  Ysum = Ysum / SPEED_CALIBRATE;	// Скорость по Y
 
 					  Vmax = Vmax / SPEED_CALIBRATE;	// Максимальная скорость за время MEASSURE_COUNT
+					  Xmax = Xmax / SPEED_CALIBRATE;
+					  Ymax = Ymax / SPEED_CALIBRATE;
 					  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скалярное значение скорости
 					  if ( V == 0) {
 						  A = 0;
@@ -397,8 +437,14 @@ void TIM4_IRQHandler(void)
 					  readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
 				  } else {
 					  /* Накопление массива векторов */
-					  resul_arrayX[measCount] = (Z12 - Z21 + Z43 - Z34) / 2 - DX.f;
-					  resul_arrayY[measCount] = (Z23 - Z32 + Z14 - Z41) / 2 - DY.f;
+					  resul_arrayX1[measCount] = Z12;
+					  resul_arrayX2[measCount] = Z21;
+					  resul_arrayX3[measCount] = Z43;
+					  resul_arrayX4[measCount] = Z34;
+					  resul_arrayY1[measCount] = Z23;
+					  resul_arrayY2[measCount] = Z32;
+					  resul_arrayY3[measCount] = Z14;
+					  resul_arrayY4[measCount] = Z41;
 					  measCount++;
 				  }
 			  } else {					// Calibrate mode

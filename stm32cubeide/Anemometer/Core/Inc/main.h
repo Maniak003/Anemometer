@@ -146,14 +146,23 @@ void Error_Handler(void);
 uint16_t currentMode, startCount, measCount, test_cnt, front_sum;
 uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
 uint16_t C_12, C_34, C_14, C_23, BC_12, BC_34, BC_14, BC_23;
+float ZX1, ZX2, ZX3, ZX4, ZY1, ZY2, ZY3, ZY4;
 union {
 	float f;
 	uint32_t u;
-} DX;
+} DX1;
 union {
 	float f;
 	uint32_t u;
-} DY;
+} DX2;
+union {
+	float f;
+	uint32_t u;
+} DY1;
+union {
+	float f;
+	uint32_t u;
+} DY2;
 uint16_t calibrateCount, calibrateMode, runFlag;
 #define	COUNT_FRONT 10
 #define CALIBRATE_ACURACY 3
@@ -161,16 +170,18 @@ uint16_t calibrateCount, calibrateMode, runFlag;
  * // 24000
  * Подбирать по максимуму огибающей. Чем больше амплитуда, тем меньше jitter
  * */
-#define CALIBRATE_START 25000// 34000
+#define CALIBRATE_START 24000// 34000
+#define CALIBRATE_TIMES 5
+#define CALIBRATE_MAX_COUNT 1600
 #define BODY_CALIBRATE_START 1000
 #define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
 #define CALIBRATE_ERROR_RANGE "\r\nCalibrate ERROR.\r\nDelta out of range.\r\n"
 #define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"
 #define START_TEXT "\r\nAnemometer start.\r\n"
-double X, Y, V, A, Xsum, Ysum, Vmax;
-float resul_arrayX[MEASSURE_COUNT];
-float resul_arrayY[MEASSURE_COUNT];
+double X, Y, V, A, Xsum, Ysum, Vmax, Xmax, Ymax, Xsum1, Xsum2, Xsum3, Xsum4, Ysum1, Ysum2, Ysum3, Ysum4;
+float resul_arrayX1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT],resul_arrayX3[MEASSURE_COUNT], resul_arrayX4[MEASSURE_COUNT];
+float resul_arrayY1[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT],resul_arrayY3[MEASSURE_COUNT], resul_arrayY4[MEASSURE_COUNT];
 float temperature, pressure, humidity;
 uint32_t sumCounter2, fastCounter;
 TIM_HandleTypeDef htim1;
