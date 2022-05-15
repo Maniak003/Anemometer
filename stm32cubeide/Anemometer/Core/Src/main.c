@@ -201,7 +201,6 @@ void W5500_WriteBuff(uint8_t* buff, uint16_t len) {
 	HAL_SPI_Transmit(&hspi2, buff, len, HAL_MAX_DELAY);
 }
 
-
 uint8_t W5500_ReadByte(void) {
 	uint8_t byte;
 	W5500_ReadBuff(&byte, sizeof(byte));
@@ -629,6 +628,7 @@ void init_w5500() {
 			  }
 			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 		  } else {
+			  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			#ifdef TMP117_ENABLE
 			  temperature = TMP117_get_Temperature(hi2c1);
 			#endif
@@ -658,6 +658,7 @@ void init_w5500() {
 				  }
 			  }
 			#endif
+			  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  if ( ! firstTime ) {
 				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, Xmax, Ymax, A, temperature, pressure, humidity);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);

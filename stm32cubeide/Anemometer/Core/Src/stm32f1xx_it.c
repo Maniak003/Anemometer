@@ -371,7 +371,7 @@ void TIM4_IRQHandler(void)
 			  /*
 			   * currentMode
 			   * Z1--Z2
-			   * |	  |
+			   * |	  | > N
 			   * Z4__Z3
 			   *
 			   * 0 - Z1 >> Z2
@@ -388,7 +388,6 @@ void TIM4_IRQHandler(void)
 				  if (measCount == MEASSURE_COUNT) {
 					  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 					  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
-					  STOP_CAPTURE
 					  Vmax = 0;
 					  Xmax = 0;
 					  Ymax = 0;
@@ -416,6 +415,7 @@ void TIM4_IRQHandler(void)
 						  X = (resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f + resul_arrayX3[ii] - resul_arrayX4[ii] * DX2.f) / 2;
 						  Y = (resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f + resul_arrayY3[ii] - resul_arrayY4[ii] * DY2.f) / 2;
 						  V = sqrt(pow(X, 2) + pow(Y, 2));
+
 						  /* Медианный фильтр для максимаьлных значений */
 						  Vmedian[count] = V;
 						  if (++count >= 3) count = 0;
