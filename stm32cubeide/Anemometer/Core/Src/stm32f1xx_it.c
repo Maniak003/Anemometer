@@ -229,7 +229,7 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 //	if (startCount-- == 0) {
 		runFlag = COUNT_FRONT;		// Сработал таймер сброса таймера захвата, начинаем измерение.
-		LED_PULSE
+		//LED_PULSE
 //	}
 
   /* USER CODE END TIM3_IRQn 0 */
@@ -270,6 +270,7 @@ void TIM4_IRQHandler(void)
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
+			  //LED_PULSE
 			  setZ1transmit; 			// Set Z1 port to output mode
 			  setZ2receive; 			// Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в первом канале
@@ -281,6 +282,7 @@ void TIM4_IRQHandler(void)
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
+			  //LED_PULSE
 			  TIM3->ARR = C_23; 		// Коррекция для таймера запуска измерения Z23, Z32
 			  setZ2transmit; 			// Set Z2 port to output mode
 			  setZ1receive; 			// Turn on multiplexer for input Z1 channel.
@@ -293,6 +295,7 @@ void TIM4_IRQHandler(void)
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
+			  //LED_PULSE
 			  setZ2transmit; 			// Set Z2 port to output mode
 			  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);	// Генерация для пьезокристалла во втором канале
@@ -304,19 +307,21 @@ void TIM4_IRQHandler(void)
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
+			  //LED_PULSE
 			  TIM3->ARR = C_34; 		// Коррекция для таймера запуска измерения Z34, Z43
 			  setZ3transmit; 			// Set Z3 port to output mode
 			  setZ2receive; 			// Turn on multiplexer for input Z2 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
 			  /* Запускаем таймер захвата */
 			  START_CAPTURE
-			  TP_PULSE
+			  //TP_PULSE
 			  break;
 		  }
 		  case 4: { 					// Z3 (transmit) > Z4 (receive)
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
+			  //LED_PULSE
 			  setZ3transmit; 			// Set Z3 port to output mode
 			  setZ4receive; 			// Turn on multiplexer for input Z4 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
@@ -328,6 +333,7 @@ void TIM4_IRQHandler(void)
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
+			  LED_PULSE
 			  TIM3->ARR = C_14; 		// Коррекция для таймера запуска измерения Z14, Z41
 			  setZ4transmit; 			// Set Z4 port to output mode
 			  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
@@ -340,6 +346,7 @@ void TIM4_IRQHandler(void)
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
+			  //LED_PULSE
 			  setZ4transmit;			// Set Z4 port to output mode
 			  setZ1receive; 			// Turn on multiplexer for input Z1 channel.
 			  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в четвертом канале
@@ -351,6 +358,7 @@ void TIM4_IRQHandler(void)
 			#ifdef SYSTICK_DISABLE
 			  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 			#endif
+			  //LED_PULSE
 			  TIM3->ARR = C_12; 		// Коррекция для таймера запуска измерения Z12, Z21
 			  setZ1transmit;			// Set Z1 port to output mode
 			  setZ4receive; 			// Turn on multiplexer for input Z4 channel.
@@ -406,11 +414,11 @@ void TIM4_IRQHandler(void)
 						  if ( V > Vmax) {
 							  Vmax = V;
 						  }
-						  if (X > Xmax) {
-							  Xmax = X;
+						  if (abs(X) > Xmax) {
+							  Xmax = abs(X);
 						  }
-						  if (Y > Ymax) {
-							  Ymax = Y;
+						  if (abs(Y) > Ymax) {
+							  Ymax = abs(Y);
 						  }
 					  }
 					  Xsum = (Xsum1 - Xsum2 * DX1.f + Xsum3 - Xsum4 * DX2.f);

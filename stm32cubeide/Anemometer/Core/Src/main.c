@@ -61,7 +61,7 @@ char uart_buffer[10] = {0,};
 char SndBuffer[200] = {0,};
 uint32_t fastCounter;
 wiz_NetInfo net_info = {
-	.mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
+	.mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEB },
 	.dhcp = NETINFO_DHCP
 };
 /* USER CODE END PV */
@@ -102,17 +102,15 @@ int main(void)
 		magicKey = *(__IO uint32_t*) pageAdr;
 		if ((magicKey != 0x12349876) || (rwFlag == 1)) { // rwFlag == 1 for wrtite data to flash
 			magicKey = 0x12349876;
-			//sprintf(SndBuffer, "\r\nWrite FLASH.\r\n");
-			//HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			if (rwFlag == 0) { // For first initial
 				C_12 = CALIBRATE_START;
 				C_34 = CALIBRATE_START;
 				C_14 = CALIBRATE_START;
 				C_23 = CALIBRATE_START;
-				DX1.f = 0;
-				DX2.f = 0;
-				DY1.f = 0;
-				DY2.f = 0;
+				DX1.f = 1;
+				DX2.f = 1;
+				DY1.f = 1;
+				DY2.f = 1;
 			}
 			FLASH_EraseInitTypeDef EraseInitStruct;
 			uint32_t PAGEError = 0;
@@ -159,8 +157,6 @@ int main(void)
 				flash_ok = HAL_FLASH_Lock();
 			}
 		} else {
-			//sprintf(SndBuffer, "\r\nMagick key: %x.\r\n", (uint) magicKey);
-			//HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			C_12 = *(__IO uint16_t*) (pageAdr + 16);
 			C_34 = *(__IO uint16_t*) (pageAdr + 18);
 			C_14 = *(__IO uint16_t*) (pageAdr + 20);
@@ -176,62 +172,6 @@ int main(void)
 			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 		}
 	}
-
-
-/*
-int  writeSector(uint32_t Address, void * values, uint16_t size) {
-	uint16_t *AddressPtr;
-	uint16_t *valuePtr;
-	AddressPtr = (uint16_t *)Address;
-	valuePtr=(uint16_t *)values;
-	size = size / 2;  // incoming value is expressed in bytes, not 16 bit words
-	while(size) {
-		// unlock the flash
-		// Key 1 : 0x45670123
-		// Key 2 : 0xCDEF89AB
-		FLASH->KEYR = 0x45670123;
-		FLASH->KEYR = 0xCDEF89AB;
-		FLASH->CR &= ~BIT1; // ensure PER is low
-		FLASH->CR |= BIT0;  // set the PG bit
-		*(AddressPtr) = *(valuePtr);
-		while(FLASH->SR & BIT0); // wait while busy
-		if (FLASH->SR & BIT2)
-			return -1; // flash not erased to begin with
-		if (FLASH->SR & BIT4)
-			return -2; // write protect error
-		AddressPtr++;
-		valuePtr++;
-		size--;
-	}
-	return 0;
-}
-void eraseSector(uint32_t SectorStartAddress)
-{
-	FLASH->KEYR = 0x45670123;
-	FLASH->KEYR = 0xCDEF89AB;
-	FLASH->CR &= ~BIT0;  // Ensure PG bit is low
-	FLASH->CR |= BIT1; // set the PER bit
-	FLASH->AR = SectorStartAddress;
-	FLASH->CR |= BIT6; // set the start bit
-	while(FLASH->SR & BIT0); // wait while busy
-}
-void readSector(uint32_t SectorStartAddress, void * values, uint16_t size)
-{
-	uint16_t *AddressPtr;
-	uint16_t *valuePtr;
-	AddressPtr = (uint16_t *)SectorStartAddress;
-	valuePtr=(uint16_t *)values;
-	size = size/2; // incoming value is expressed in bytes, not 16 bit words
-	while(size)
-	{
-		*((uint16_t *)valuePtr)=*((uint16_t *)AddressPtr);
-		valuePtr++;
-		AddressPtr++;
-		size--;
-	}
-}
-*/
-
 
 #ifdef ZABBIX_DEBUG
 void UART_Printf(const char* fmt, ...) {
@@ -298,7 +238,7 @@ uint8_t dhcp_buffer[1024];
  * 		option zabbix-server-ip code 224 = ip-address ;
  * 		option zabix-host-name code 225 = string ;
  * 		host anemometr {
- *      	hardware ethernet 00:11:22:33:44:ea;
+ *      	hardware ethernet 00:11:22:33:44:xx;
  *      	fixed-address 192.168.1.24;
  *       	option zabbix-server-ip 192.168.1.6;
  *       	option zabix-host-name "Ed";
@@ -427,10 +367,7 @@ void init_w5500() {
 	#ifdef ZABBIX_DEBUG
     UART_Printf("Calling DHCP_init()...\r\n");
 	#endif
-//    wiz_NetInfo net_info = {
-//        .mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
-//        .dhcp = NETINFO_DHCP
-//    };
+
     // set MAC address before using DHCP
     setSHAR(net_info.mac);
     DHCP_init(DHCP_SOCKET, dhcp_buffer);
@@ -484,25 +421,6 @@ void init_w5500() {
 	#endif
     wizchip_setnetinfo(&net_info);
 
-    // Test request.
-    //sendToZabbix(net_info.zabbix, "Ed", "ALTIM_DIRECT", 11);
-    //sendToZabbix(net_info.zabbix, "Ed", "ALTIM_SPEED", 2.5);
-/*
-    UART_Printf("Calling DNS_init()...\r\n");
-    DNS_init(DNS_SOCKET, dns_buffer);
-
-    uint8_t addr[4];
-    {
-        char domain_name[] = "eax.me";
-        UART_Printf("Resolving domain name \"%s\"...\r\n", domain_name);
-        int8_t res = DNS_run(dns, (uint8_t*)&domain_name, addr);
-        if(res != 1) {
-            UART_Printf("DNS_run() failed, res = %d", res);
-            return;
-        }
-        UART_Printf("Result: %d.%d.%d.%d\r\n", addr[0], addr[1], addr[2], addr[3]);
-    }
-*/
 }
 
 
