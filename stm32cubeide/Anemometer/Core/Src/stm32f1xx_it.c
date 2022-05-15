@@ -388,9 +388,14 @@ void TIM4_IRQHandler(void)
 				  if (measCount == MEASSURE_COUNT) {
 					  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 					  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
+					  STOP_CAPTURE
 					  Vmax = 0;
 					  Xmax = 0;
 					  Ymax = 0;
+					  Vmedian[0] = 0;
+					  Vmedian[1] = 0;
+					  Vmedian[2] = 0;
+					  uint8_t count = 0;
 					  Xsum1 = 0;
 					  Xsum2 = 0;
 					  Xsum3 = 0;
@@ -411,6 +416,11 @@ void TIM4_IRQHandler(void)
 						  X = (resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f + resul_arrayX3[ii] - resul_arrayX4[ii] * DX2.f) / 2;
 						  Y = (resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f + resul_arrayY3[ii] - resul_arrayY4[ii] * DY2.f) / 2;
 						  V = sqrt(pow(X, 2) + pow(Y, 2));
+						  /* Медианный фильтр для максимаьлных значений */
+						  Vmedian[count] = V;
+						  if (++count >= 3) count = 0;
+						  V = (Vmedian[0] < Vmedian[1]) ? ((Vmedian[1] < Vmedian[2]) ? Vmedian[1] : ((Vmedian[2] < Vmedian[0]) ? Vmedian[0] : Vmedian[2])) : ((Vmedian[0] < Vmedian[2]) ? Vmedian[0] : ((Vmedian[2] < Vmedian[1]) ? Vmedian[1] : Vmedian[2]));
+
 						  if ( V > Vmax) {
 							  Vmax = V;
 						  }
@@ -420,6 +430,14 @@ void TIM4_IRQHandler(void)
 						  if (abs(Y) > Ymax) {
 							  Ymax = abs(Y);
 						  }
+						  resul_arrayX1[ii] = 0;
+						  resul_arrayX2[ii] = 0;
+						  resul_arrayX3[ii] = 0;
+						  resul_arrayX4[ii] = 0;
+						  resul_arrayY1[ii] = 0;
+						  resul_arrayY2[ii] = 0;
+						  resul_arrayY3[ii] = 0;
+						  resul_arrayY4[ii] = 0;
 					  }
 					  Xsum = (Xsum1 - Xsum2 * DX1.f + Xsum3 - Xsum4 * DX2.f);
 					  Xsum = Xsum / (MEASSURE_COUNT * 2);		// Среднее количество тактов по X

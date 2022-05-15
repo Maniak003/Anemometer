@@ -616,7 +616,7 @@ void init_w5500() {
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
 						  sprintf(SndBuffer, "DX1:%5.4f, DX2:%5.4f, DY1:%5.4f, DY2:%5.4f\r\n\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-						  if (abs(DX1.f) < 30 && abs(DX2.f) < 30 && abs(DY1.f) < 30 && abs(DY2.f) < 30) {
+						  if (abs(DX1.f) < 2 && abs(DX2.f) < 2 && abs(DY1.f) < 2 && abs(DY2.f) < 2) {
 							  rwFlash(1);  // Запись данных калибровки во Flash.
 						  } else {
 							  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_ERROR_RANGE, sizeof(CALIBRATE_ERROR_RANGE), 1000);
@@ -673,7 +673,8 @@ void init_w5500() {
 		  if (uart_buffer[0] == 'c' ) {  // Клавиша c нажата ?
 			  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_TEXT, sizeof(CALIBRATE_TEXT), 1000);
 			  HAL_TIM_Base_Stop_IT(&htim4); // Остановим измерения
-			  HAL_TIM_IC_Stop_DMA(&htim2, TIM_CHANNEL_1);
+			  STOP_CAPTURE
+			  memset(SndBuffer, 0, sizeof(SndBuffer));
 			  calibrate12 = TRUE;
 			  calibrate34 = TRUE;
 			  calibrate14 = TRUE;
