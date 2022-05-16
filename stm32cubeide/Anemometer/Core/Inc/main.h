@@ -179,7 +179,7 @@ uint16_t calibrateCount, calibrateMode, runFlag;
 #define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"
 #define START_TEXT "\r\nAnemometer start.\r\n"
-double X, Y, V, A, Vmedian[3], Xsum, Ysum, Vmax, Xmax, Ymax, Xsum1, Xsum2, Xsum3, Xsum4, Ysum1, Ysum2, Ysum3, Ysum4;
+double X, Y, V, Vmaxfin, Xmaxfin, Ymaxfin, A, Vmedian[3], Xsum, Ysum, Vmax, Xmax, Ymax, Xsum1, Xsum2, Xsum3, Xsum4, Ysum1, Ysum2, Ysum3, Ysum4;
 float resul_arrayX1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT],resul_arrayX3[MEASSURE_COUNT], resul_arrayX4[MEASSURE_COUNT];
 float resul_arrayY1[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT],resul_arrayY3[MEASSURE_COUNT], resul_arrayY4[MEASSURE_COUNT];
 float temperature, pressure, humidity;
