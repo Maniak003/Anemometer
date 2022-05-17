@@ -518,9 +518,6 @@ void init_w5500() {
 #ifdef BME280_ENABLE
   BME280_Init();
 #endif
-#ifdef TMP117_ENABLE
-  //TMP117_Initialization_DEFAULT(hi2c1);
-#endif
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
   HAL_UART_Transmit(&huart1, (uint8_t *) INIT_FINISH_TEXT, sizeof(INIT_FINISH_TEXT), HAL_MAX_DELAY);
@@ -534,16 +531,6 @@ void init_w5500() {
 	  if (readyFlag) {
 		  readyFlag = FALSE;
 		  if (calibrateMode > 0) {
-			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-			  //sprintf(SndBuffer, "Y1:%7d, Y2:%7d   \r", Z14 - Z41, Z23 - Z32);
-			  //sprintf(SndBuffer, "Z14:%7d, Z41:%7d, Z23:%7d, Z32:%7d   \r", Z14, Z41, Z23, Z32);
-			  // X
-			  //sprintf(SndBuffer, "Z12:%7d, Z21:%7d, Z43:%7d, Z34:%7d   \r", Z12, Z21, Z43, Z34);
-			  //sprintf(SndBuffer, "X:%7.0f, Y:%7.0f   \r", X, Y);
-			  // X + Y
-			  //sprintf(SndBuffer, "Z12:%5d, Z21:%5d, Z43:%5d, Z34:%5d, Z14:%5d, Z41:%5d, Z23:%5d, Z32:%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
-			  //HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-
 			  /* Процедура калибровки */
 			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
 				  sprintf(SndBuffer, "Z12-Z21:%5d-%5d, Z43-Z34:%5d-%5d, Z14-Z41:%5d-%5d, Z23-Z32:%5d-%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);

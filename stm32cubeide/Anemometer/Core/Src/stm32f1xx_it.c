@@ -403,7 +403,7 @@ void TIM4_IRQHandler(void)
 					  Ysum2 = 0;
 					  Ysum3 = 0;
 					  Ysum4 = 0;
-					  for (int ii = 0; ii < MEASSURE_COUNT; ii++) {
+					  for (int ii = PREFETCH; ii < (MEASSURE_COUNT - PREFETCH); ii++) {
 						  Xsum1 = Xsum1 + resul_arrayX1[ii];
 						  Xsum2 = Xsum2 + resul_arrayX2[ii];
 						  Xsum3 = Xsum3 + resul_arrayX3[ii];
@@ -440,11 +440,11 @@ void TIM4_IRQHandler(void)
 						  resul_arrayY4[ii] = 0;
 					  }
 					  Xsum = (Xsum1 - Xsum2 * DX1.f + Xsum3 - Xsum4 * DX2.f);
-					  Xsum = Xsum / (MEASSURE_COUNT * 2);		// Среднее количество тактов по X
+					  Xsum = Xsum / ((MEASSURE_COUNT - PREFETCH) * 2);		// Среднее количество тактов по X
 					  Xsum = Xsum / SPEED_CALIBRATE;	// Скорость по X
 
 					  Ysum = (Ysum1 - Ysum2 * DY1.f + Ysum3 - Ysum4 * DY2.f);
-					  Ysum = Ysum / (MEASSURE_COUNT * 2);		// Среднее количество тактов по Y
+					  Ysum = Ysum / ((MEASSURE_COUNT - PREFETCH) * 2);		// Среднее количество тактов по Y
 					  Ysum = Ysum / SPEED_CALIBRATE;	// Скорость по Y
 
 					  Vmaxfin = Vmax / SPEED_CALIBRATE;	// Максимальная скорость за время MEASSURE_COUNT
