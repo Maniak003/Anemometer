@@ -386,7 +386,7 @@ void TIM4_IRQHandler(void)
 			  currentMode = 0;
 			  if (calibrateMode == 0) { // Normal mode
 				  if (measCount == MEASSURE_COUNT) {
-					  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+					  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 					  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
 					  Vmax = 0;
 					  Xmax = 0;
@@ -447,9 +447,9 @@ void TIM4_IRQHandler(void)
 					  Ysum = Ysum / (MEASSURE_COUNT * 2);		// Среднее количество тактов по Y
 					  Ysum = Ysum / SPEED_CALIBRATE;	// Скорость по Y
 
-					  Vmax = Vmax / SPEED_CALIBRATE;	// Максимальная скорость за время MEASSURE_COUNT
-					  Xmax = Xmax / SPEED_CALIBRATE;
-					  Ymax = Ymax / SPEED_CALIBRATE;
+					  Vmaxfin = Vmax / SPEED_CALIBRATE;	// Максимальная скорость за время MEASSURE_COUNT
+					  Xmaxfin = Xmax / SPEED_CALIBRATE;
+					  Ymaxfin = Ymax / SPEED_CALIBRATE;
 					  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скалярное значение скорости
 					  if ( V == 0) {
 						  A = 0;

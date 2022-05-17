@@ -649,18 +649,18 @@ void init_w5500() {
 				  if ( (! firstTime) && (V < 40) && (Vmax < 40) ) {  // Первый раз пропускаем для инициализации переменных.
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
-					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
 				  }
 			  } else {
 				  if ( (! firstTime) && (Vmax < 40) ) {
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
-					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmax);
+					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
 				  }
 			  }
 			#endif
 			  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  if ( ! firstTime ) {
-				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmax, Xmax, Ymax, A, temperature, pressure, humidity);
+				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
 			  firstTime = FALSE;
