@@ -14,8 +14,8 @@
 #define SEALEVELPRESSURE_HPA (1013.25)
 #define SEALEVELPRESSURE_PA (1013250)
 //------------------------------------------------
-#define be16toword(a) ((((a)>>8)&0xff)|(((a)<<8)&0xff00))
-#define be24toword(a) ((((a)>>16)&0x000000ff)|((a)&0x0000ff00)|(((a)<<16)&0x00ff0000))
+#define be16toword(a) ((((a)>>8) & 0xff) | (((a)<<8) & 0xff00))
+#define be24toword(a) ((((a)>>16) & 0x000000ff) | ((a) & 0x0000ff00) | (((a)<<16) & 0x00ff0000))
 //------------------------------------------------
 #define BME280_ADDRESS 0xEC //BME280 I2C ADDRES (0x76<<1)
 #define BME280_REG_ID 0xD0 //BME280 ID REGISTER

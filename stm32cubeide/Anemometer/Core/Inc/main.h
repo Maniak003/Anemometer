@@ -86,8 +86,9 @@ extern "C" {
 #define START_CAPTURE HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
 #define STOP_CAPTURE HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
 #define MEASSURE_COUNT 100
-#define PREFETCH 20
+#define PREFETCH 50
 #define SPEED_CALIBRATE 42.19f // cos(atg(17/18)) * (49.52/330000 - 49.52/331000) / (1/64000000) * 2
+#define MAX_SPEED 25
 #define SYSTICK_DISABLE
 /* USER CODE END ET */
 
@@ -145,7 +146,7 @@ void Error_Handler(void);
 #define TMP117_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 uint16_t currentMode, startCount, measCount, test_cnt, front_sum;
-uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
+//uint16_t Z12, Z21, Z23, Z32, Z34, Z43, Z41, Z14;
 uint16_t C_12, C_34, C_14, C_23, BC_12, BC_34, BC_14, BC_23;
 float ZX1, ZX2, ZX3, ZX4, ZY1, ZY2, ZY3, ZY4;
 union {
@@ -166,12 +167,12 @@ union {
 } DY2;
 uint16_t calibrateCount, calibrateMode, runFlag;
 #define	COUNT_FRONT 10
-#define CALIBRATE_ACURACY 3
+#define CALIBRATE_ACURACY 1
 /*
  * // 24000
  * Подбирать по максимуму огибающей. Чем больше амплитуда, тем меньше jitter
  * */
-#define CALIBRATE_START 24000// 34000
+#define CALIBRATE_START 34000// 34000, 24000
 #define CALIBRATE_TIMES 5
 #define CALIBRATE_MAX_COUNT 1600
 #define BODY_CALIBRATE_START 1000
@@ -179,6 +180,7 @@ uint16_t calibrateCount, calibrateMode, runFlag;
 #define CALIBRATE_ERROR_RANGE "\r\nCalibrate ERROR.\r\nDelta out of range.\r\n"
 #define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"
+#define RESTART_TOUT "\r\nTime out, restart.\r\n"
 #define START_TEXT "\r\nAnemometer start.\r\n"
 double X, Y, V, Vmaxfin, Xmaxfin, Ymaxfin, A, Vmedian[3], Xsum, Ysum, Vmax, Xmax, Ymax, Xsum1, Xsum2, Xsum3, Xsum4, Ysum1, Ysum2, Ysum3, Ysum4;
 float resul_arrayX1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT],resul_arrayX3[MEASSURE_COUNT], resul_arrayX4[MEASSURE_COUNT];

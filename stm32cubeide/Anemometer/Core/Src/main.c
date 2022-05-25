@@ -45,6 +45,8 @@
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 
+IWDG_HandleTypeDef hiwdg;
+
 SPI_HandleTypeDef hspi2;
 
 TIM_HandleTypeDef htim1;
@@ -61,7 +63,7 @@ char uart_buffer[10] = {0,};
 char SndBuffer[200] = {0,};
 uint32_t fastCounter;
 wiz_NetInfo net_info = {
-	.mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEB },
+	.mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
 	.dhcp = NETINFO_DHCP
 };
 /* USER CODE END PV */
@@ -77,6 +79,7 @@ static void MX_TIM4_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI2_Init(void);
+static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -451,13 +454,14 @@ void init_w5500() {
   MX_TIM3_Init();
   MX_I2C1_Init();
   MX_SPI2_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
   readyFlag = TRUE;
   sumCounter2 = 0;
   /* Turn off all multiplexer */
@@ -465,7 +469,7 @@ void init_w5500() {
   /*
    * currentMode
    * Z1--Z2
-   * |	  |
+   * |	  | > N
    * Z4__Z3
    *
    * 0 - Z1 >> Z2
@@ -518,25 +522,26 @@ void init_w5500() {
 #ifdef BME280_ENABLE
   BME280_Init();
 #endif
-  HAL_TIM_Base_Start_IT(&htim3);
-  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
   HAL_UART_Transmit(&huart1, (uint8_t *) INIT_FINISH_TEXT, sizeof(INIT_FINISH_TEXT), HAL_MAX_DELAY);
   readyFlag = FALSE;
   currentMode = 0;
-  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
+  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
+  HAL_TIM_Base_Start_IT(&htim3);
+  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
 
   while (1) {
-	  //__HAL_TIM_SET_COUNTER(&htim2, 0x0000);
-	  //HAL_Delay(1);
 	  if (readyFlag) {
+		  SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
+		  HAL_IWDG_Refresh(&hiwdg);
 		  readyFlag = FALSE;
 		  if (calibrateMode > 0) {
 			  /* Процедура калибровки */
 			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
-				  sprintf(SndBuffer, "Z12-Z21:%5d-%5d, Z43-Z34:%5d-%5d, Z14-Z41:%5d-%5d, Z23-Z32:%5d-%5d   \r", Z12, Z21, Z43, Z34, Z14, Z41, Z23, Z32);
+				  sprintf(SndBuffer, "Z12-Z21:%5.0f-%5.0f, Z43-Z34:%5.0f-%5.0f, Z14-Z41:%5.0f-%5.0f, Z23-Z32:%5.0f-%5.0f   \r",
+						  resul_arrayX1[0], resul_arrayX2[0], resul_arrayX3[0], resul_arrayX4[0], resul_arrayY1[0], resul_arrayY2[0], resul_arrayY3[0], resul_arrayY4[0]);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-				  if ( calibrate12 && (abs(Z12 + Z21 - 1600) > CALIBRATE_ACURACY) ) {
-					  if (Z12 + Z21 > 1600) {
+				  if ( calibrate12 && (abs(resul_arrayX1[0] + resul_arrayX2[0] - 1600) > CALIBRATE_ACURACY) ) {
+					  if (resul_arrayX1[0] + resul_arrayX2[0] > 1600) {
 						  C_12++;
 					  } else {
 						  C_12--;
@@ -544,8 +549,8 @@ void init_w5500() {
 				  } else {
 					  calibrate12 = FALSE;	// Закончена калибровка таймера запуска измерения в канале X1
 				  }
-				  if ( calibrate34 && (abs(Z34 + Z43 - 1600) > CALIBRATE_ACURACY) ) {
-					  if (Z34 + Z43 > 1600) {
+				  if ( calibrate34 && (abs(resul_arrayX3[0] + resul_arrayX4[0] - 1600) > CALIBRATE_ACURACY) ) {
+					  if (resul_arrayX3[0] + resul_arrayX4[0] > 1600) {
 						  C_34++;
 					  } else {
 						  C_34--;
@@ -553,8 +558,8 @@ void init_w5500() {
 				  } else {
 					  calibrate34 = FALSE;	// Закончена калибровка таймера запуска измерения в канале X2
 				  }
-				  if ( calibrate14 && (abs(Z14 + Z41 - 1600) > CALIBRATE_ACURACY) ) {
-					  if(Z14 + Z41 > 1600) {
+				  if ( calibrate14 && (abs(resul_arrayY1[0] + resul_arrayY2[0] - 1600) > CALIBRATE_ACURACY) ) {
+					  if(resul_arrayY1[0] + resul_arrayY2[0] > 1600) {
 						  C_14++;
 					  } else {
 						  C_14--;
@@ -562,8 +567,8 @@ void init_w5500() {
 				  } else {
 					  calibrate14 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
 				  }
-				  if ( calibrate23 && (abs(Z23 + Z32 - 1600) > CALIBRATE_ACURACY) ) {
-					  if(Z23 + Z32 > 1600) {
+				  if ( calibrate23 && (abs(resul_arrayY3[0] + resul_arrayY4[0] - 1600) > CALIBRATE_ACURACY) ) {
+					  if(resul_arrayY3[0] + resul_arrayY4[0] > 1600) {
 						  C_23++;
 					  } else {
 						  C_23--;
@@ -572,6 +577,9 @@ void init_w5500() {
 					  calibrate23 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
 				  }
 				  calibrateCount++;
+				#ifdef SYSTICK_DISABLE
+				  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+				#endif
 				  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 			  } else {
 				  if (calibrateCount >= CALIBRATE_MAX_COUNT) {
@@ -580,14 +588,14 @@ void init_w5500() {
 					  HAL_NVIC_SystemReset();
 				  }
 				  if (calibrateMode > 0) {
-					  ZX1 = ZX1 + (float) Z12;
-					  ZX2 = ZX2 + (float) Z21;
-					  ZX3 = ZX3 + (float) Z43;
-					  ZX4 = ZX4 + (float) Z34;
-					  ZY1 = ZY1 + (float) Z14;
-					  ZY2 = ZY2 + (float) Z41;
-					  ZY3 = ZY3 + (float) Z23;
-					  ZY4 = ZY4 + (float) Z32;
+					  ZX1 = ZX1 + (float) resul_arrayX1[0];
+					  ZX2 = ZX2 + (float) resul_arrayX2[0];
+					  ZX3 = ZX3 + (float) resul_arrayX3[0];
+					  ZX4 = ZX4 + (float) resul_arrayX4[0];
+					  ZY1 = ZY1 + (float) resul_arrayY1[0];
+					  ZY2 = ZY2 + (float) resul_arrayY2[0];
+					  ZY3 = ZY3 + (float) resul_arrayY3[0];
+					  ZY4 = ZY4 + (float) resul_arrayY4[0];
 					  //DY2.f = DY2.f + (float) (Z23 - Z32);
 					  calibrateMode--;
 					  if (calibrateMode == 0) {
@@ -611,11 +619,14 @@ void init_w5500() {
 						  firstTime = TRUE;
 					  }
 				  }
+				#ifdef SYSTICK_DISABLE
+				  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+				#endif
 				  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 			  }
 			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 		  } else {
-			  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			#ifdef TMP117_ENABLE
 			  temperature = TMP117_get_Temperature(hi2c1);
 			#endif
@@ -626,33 +637,44 @@ void init_w5500() {
 			#endif
 			#ifdef ZABBIX_ENABLE
 				#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
-				  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
+			  	  if (temperature < 60) {
+			  		  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
 					#ifdef BME280_ENABLE
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_PRESSURE", pressure);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_HUMIDITY", humidity);
 					#endif
+			  	  } else {
+					#ifdef BME280_ENABLE
+			  		BME280_Init();  // Сбой датчика bme280, пробуем исправить.
+					#endif
+			  	  }
 				#endif
 			  if ( A != 0 ) {
-				  if ( (! firstTime) && (V < 40) && (Vmax < 40) ) {  // Первый раз пропускаем для инициализации переменных.
+				  if ( (! firstTime) && (V < MAX_SPEED) && (Vmax < MAX_SPEED) ) {  // Первый раз пропускаем для инициализации переменных.
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
 				  }
 			  } else {
-				  if ( (! firstTime) && (Vmax < 40) ) {
+				  if ( (! firstTime) && (Vmax < MAX_SPEED) ) {
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
 				  }
 			  }
 			#endif
-			  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
+			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  if ( ! firstTime ) {
 				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
 			  firstTime = FALSE;
+				#ifdef SYSTICK_DISABLE
+				  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
+				#endif
 			  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 		  }
+	  //} else {
+		//  HAL_Delay(1);
 	  }
 	  /*
 	   * Подготовка запуска процедуры калибровки
@@ -687,6 +709,7 @@ void init_w5500() {
 			  test_cnt = 0;
 			  calibrateMode = MEASSURE_COUNT * CALIBRATE_TIMES;
 			  currentMode = 0;
+			  measCount = 0;
 			  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
 		  }
 		  uart_buffer[0] = 0x00;
@@ -712,10 +735,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL8;
@@ -769,6 +793,34 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief IWDG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IWDG_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG_Init 0 */
+
+  /* USER CODE END IWDG_Init 0 */
+
+  /* USER CODE BEGIN IWDG_Init 1 */
+
+  /* USER CODE END IWDG_Init 1 */
+  hiwdg.Instance = IWDG;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_128;
+  hiwdg.Init.Reload = 4095;
+  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG_Init 2 */
+
+  /* USER CODE END IWDG_Init 2 */
 
 }
 
@@ -835,7 +887,7 @@ static void MX_TIM1_Init(void)
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 799;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 7;
+  htim1.Init.RepetitionCounter = 5;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
@@ -1191,45 +1243,57 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 					runFlag--;
 					if (runFlag == 0) {  // Измерения закончены ?
 						STOP_CAPTURE  // Таймер больше не нужен, выключаем
-						#ifdef SYSTICK_DISABLE
-							SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
-						#endif
+						//#ifdef SYSTICK_DISABLE
+						//	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
+						//#endif
 						front_sum = front_sum / COUNT_FRONT - 3600;  // Расчитываем задержку от средины импульсов
 						/* Turn off all multiplexer */
 						GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
-						switch (currentMode) {
-							case 1: { // Z1 > Z2
-								Z12 = front_sum;
+						switch (currentMode++) {
+							case 0: { // Z1 > Z2, X1
+								resul_arrayX1[measCount] = front_sum;
+								//Z12 = front_sum;
 								break;
 							}
-							case 2: { // Z2 > Z1
-								Z21 = front_sum;
+							case 1: { // Z2 > Z1, X2
+								resul_arrayX2[measCount] = front_sum;
+								//Z21 = front_sum;
 								break;
 							}
-							case 3: { // Z2 > Z3
-								Z23 = front_sum;
+							case 2: { // Z2 > Z3
+								resul_arrayY3[measCount] = front_sum;
+								//Z23 = front_sum;
 								break;
 							}
-							case 4: { // Z3 > Z2
-								Z32 = front_sum;
+							case 3: { // Z3 > Z2
+								resul_arrayY4[measCount] = front_sum;
+								//Z32 = front_sum;
 								break;
 							}
-							case 5: { // Z3 > Z4
-								Z34 = front_sum;
+							case 4: { // Z3 > Z4
+								resul_arrayX3[measCount] = front_sum;
+								//Z34 = front_sum;
 								break;
 							}
-							case 6: { // Z4 > Z3
-								Z43 = front_sum;
+							case 5: { // Z4 > Z3
+								resul_arrayX4[measCount] = front_sum;
+								//Z43 = front_sum;
 								break;
 							}
-							case 7: { // Z4 > Z1
-								Z41 = front_sum;
+							case 6: { // Z4 > Z1
+								resul_arrayY1[measCount] = front_sum;
+								//Z41 = front_sum;
 								break;
 							}
-							case 8: { // Z1 > Z4
-								Z14 = front_sum;
+							case 7: { // Z1 > Z4
+								resul_arrayY2[measCount] = front_sum;
+								measCount++;
+								//Z14 = front_sum;
 								break;
 							}
+						}
+						if (currentMode == 8) {
+							currentMode = 0;
 						}
 					}
 				}
