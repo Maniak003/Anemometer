@@ -601,9 +601,9 @@ void init_w5500() {
 					  if (calibrateMode == 0) {
 						  /* Вычисление поправок */
 						  DX1.f = ZX1 / ZX2;
-						  DX2.f = ZX3 / ZX4;
+						  DX2.f = ZX4 / ZX3;
 						  DY1.f = ZY1 / ZY2;
-						  DY2.f = ZY3 / ZY4;
+						  DY2.f = ZY4 / ZY3;
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
 						  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_12:%5d, C_34:%5d, C_14:%5d, C_23:%5d\r\n", C_12, C_34, C_14, C_23);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
@@ -632,7 +632,7 @@ void init_w5500() {
 			#endif
 			#ifdef BME280_ENABLE
 			  temperature = BME280_ReadTemperature();
-			  pressure = BME280_ReadPressure() * 0.000750061683f;
+			  pressure = BME280_ReadPressure() * 0.00750063755419211f; //0.00750063755419211
 			  humidity = BME280_ReadHumidity();
 			#endif
 			#ifdef ZABBIX_ENABLE

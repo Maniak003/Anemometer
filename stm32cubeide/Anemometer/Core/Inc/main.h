@@ -172,17 +172,18 @@ uint16_t calibrateCount, calibrateMode, runFlag;
  * // 24000
  * Подбирать по максимуму огибающей. Чем больше амплитуда, тем меньше jitter
  * */
-#define CALIBRATE_START 34000// 34000, 24000
+#define CALIBRATE_START 24000// 34000, 24000
 #define CALIBRATE_TIMES 5
 #define CALIBRATE_MAX_COUNT 1600
 #define BODY_CALIBRATE_START 1000
+#define MAX_DIFFERENT 84
 #define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
 #define CALIBRATE_ERROR_RANGE "\r\nCalibrate ERROR.\r\nDelta out of range.\r\n"
 #define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
 #define INIT_FINISH_TEXT "Init finish.\r\n"
 #define RESTART_TOUT "\r\nTime out, restart.\r\n"
 #define START_TEXT "\r\nAnemometer start.\r\n"
-double X, Y, V, Vmaxfin, Xmaxfin, Ymaxfin, A, Vmedian[3], Xsum, Ysum, Vmax, Xmax, Ymax, Xsum1, Xsum2, Xsum3, Xsum4, Ysum1, Ysum2, Ysum3, Ysum4;
+double X, Y, V, Vmaxfin, Xmaxfin, Ymaxfin, A, Vmedian[3], Xsum, Ysum, Vmax, Xmax, Ymax, Xsum1, Xsum2, Ysum1, Ysum2;
 float resul_arrayX1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT],resul_arrayX3[MEASSURE_COUNT], resul_arrayX4[MEASSURE_COUNT];
 float resul_arrayY1[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT],resul_arrayY3[MEASSURE_COUNT], resul_arrayY4[MEASSURE_COUNT];
 float temperature, pressure, humidity;

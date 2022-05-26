@@ -244,6 +244,7 @@ void TIM3_IRQHandler(void)
   */
 void TIM4_IRQHandler(void)
 {
+	double XX1, XX2, YY1, YY2;
   /* USER CODE BEGIN TIM4_IRQn 0 */
 	  /*
 	   * currentMode
@@ -285,6 +286,9 @@ void TIM4_IRQHandler(void)
 			if ((measCount == MEASSURE_COUNT) && (calibrateMode == 0)) {
 				//LED_PULSE
 				  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+				#ifdef SYSTICK_DISABLE
+					SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
+				#endif
 				  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
 				  Vmax = 0;
 				  Xmax = 0;
@@ -295,24 +299,36 @@ void TIM4_IRQHandler(void)
 				  uint8_t count = 0;
 				  Xsum1 = 0;
 				  Xsum2 = 0;
-				  Xsum3 = 0;
-				  Xsum4 = 0;
 				  Ysum1 = 0;
 				  Ysum2 = 0;
-				  Ysum3 = 0;
-				  Ysum4 = 0;
 				  //LED_PULSE
 				  for (int ii = PREFETCH; ii < MEASSURE_COUNT; ii++) {
-					  Xsum1 = Xsum1 + resul_arrayX1[ii];
-					  Xsum2 = Xsum2 + resul_arrayX2[ii];
-					  Xsum3 = Xsum3 + resul_arrayX3[ii];
-					  Xsum4 = Xsum4 + resul_arrayX4[ii];
-					  Ysum1 = Ysum1 + resul_arrayY1[ii];
-					  Ysum2 = Ysum2 + resul_arrayY2[ii];
-					  Ysum3 = Ysum3 + resul_arrayY3[ii];
-					  Ysum4 = Ysum4 + resul_arrayY4[ii];
-					  X = (resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f + resul_arrayX3[ii] - resul_arrayX4[ii] * DX2.f) / 2;
-					  Y = (resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f + resul_arrayY3[ii] - resul_arrayY4[ii] * DY2.f) / 2;
+					  XX1 = resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f;
+					  XX2 = resul_arrayX4[ii] - resul_arrayX3[ii] * DX2.f;
+					  if (abs(XX1 - XX2) > MAX_DIFFERENT) {
+						  if (abs(XX1) > abs(XX2)) {
+							  XX2 = XX1;
+						  } else {
+							  XX1 = XX2;
+						  }
+					  }
+					  Xsum1 = Xsum1 + XX1;
+					  Xsum2 = Xsum2 + XX2;
+
+					  YY1 = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
+					  YY2 = resul_arrayY4[ii] - resul_arrayY3[ii] * DY2.f;
+					  if (abs(YY1 - YY2) > MAX_DIFFERENT) {
+						  if (abs(YY1) > abs (YY2)) {
+							  YY2 = YY2;
+						  } else {
+							  YY2 = YY1;
+						  }
+					  }
+					  Ysum1 = Ysum1 + YY1;
+					  Ysum2 = Ysum2 + YY2;
+
+					  X = (XX1 + XX2) / 2;
+					  Y = (YY1 + YY2) / 2;
 					  V = sqrt(pow(X, 2) + pow(Y, 2));
 
 					  /* Медианный фильтр для максимальных значений */
@@ -338,11 +354,11 @@ void TIM4_IRQHandler(void)
 					  resul_arrayY3[ii] = 0;
 					  resul_arrayY4[ii] = 0;
 				  }
-				  Xsum = (Xsum1 - Xsum2 * DX1.f + Xsum3 - Xsum4 * DX2.f);
+				  Xsum = (Xsum1 + Xsum2);
 				  Xsum = Xsum / ((MEASSURE_COUNT - PREFETCH) * 2);		// Среднее количество тактов по X
 				  Xsum = Xsum / SPEED_CALIBRATE;	// Скорость по X
 
-				  Ysum = (Ysum1 - Ysum2 * DY1.f + Ysum3 - Ysum4 * DY2.f);
+				  Ysum = (Ysum1 + Ysum2);
 				  Ysum = Ysum / ((MEASSURE_COUNT - PREFETCH) * 2);		// Среднее количество тактов по Y
 				  Ysum = Ysum / SPEED_CALIBRATE;	// Скорость по Y
 
@@ -359,9 +375,6 @@ void TIM4_IRQHandler(void)
 					  }
 				  }
 				  measCount = 0;
-					#ifdef SYSTICK_DISABLE
-						SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
-					#endif
 				  readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
 			} else {
 				if ((calibrateMode > 0) && (measCount == 1)) {  // Режим калибровки
@@ -416,7 +429,7 @@ void TIM4_IRQHandler(void)
 						  setZ4transmit; 			// Set Z4 port to output mode
 						  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
 						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в четвертом канале
-						  /* Запускаем таймер захвата */
+						  break;
 					  }
 					  case 6: { 					// Z4 (transmit) > Z1 (receive)
 						  LED_PULSE
