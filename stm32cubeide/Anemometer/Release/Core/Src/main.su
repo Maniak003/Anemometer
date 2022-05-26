@@ -11,4 +11,4 @@ main.c:253:9:sendToZabbix.constprop	280	static
 main.c:730:6:SystemClock_Config	72	static,ignoring_inline_asm
 main.c:96:5:main	1296	static,ignoring_inline_asm
 main.c:1233:6:HAL_TIM_IC_CaptureCallback	16	static
-main.c:1310:6:Error_Handler	0	static,ignoring_inline_asm
+main.c:1302:6:Error_Handler	0	static,ignoring_inline_asm

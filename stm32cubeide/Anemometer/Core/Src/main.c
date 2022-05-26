@@ -637,7 +637,7 @@ void init_w5500() {
 			#endif
 			#ifdef ZABBIX_ENABLE
 				#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
-			  	  if (temperature < 60) {
+			  	  if ((temperature < 60.0) && (temperature > -40.0)) {
 			  		  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
 					#ifdef BME280_ENABLE
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_PRESSURE", pressure);
@@ -1250,45 +1250,37 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 						/* Turn off all multiplexer */
 						GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 						switch (currentMode++) {
-							case 0: { // Z1 > Z2, X1
+							case 0: { // Z1 > Z2, Z12
 								resul_arrayX1[measCount] = front_sum;
-								//Z12 = front_sum;
 								break;
 							}
-							case 1: { // Z2 > Z1, X2
+							case 1: { // Z2 > Z1, Z21
 								resul_arrayX2[measCount] = front_sum;
-								//Z21 = front_sum;
 								break;
 							}
-							case 2: { // Z2 > Z3
+							case 2: { // Z2 > Z3 Z23
 								resul_arrayY3[measCount] = front_sum;
-								//Z23 = front_sum;
 								break;
 							}
-							case 3: { // Z3 > Z2
+							case 3: { // Z3 > Z2 Z32
 								resul_arrayY4[measCount] = front_sum;
-								//Z32 = front_sum;
 								break;
 							}
-							case 4: { // Z3 > Z4
+							case 4: { // Z3 > Z4 Z34
 								resul_arrayX3[measCount] = front_sum;
-								//Z34 = front_sum;
 								break;
 							}
-							case 5: { // Z4 > Z3
+							case 5: { // Z4 > Z3 Z43
 								resul_arrayX4[measCount] = front_sum;
-								//Z43 = front_sum;
 								break;
 							}
-							case 6: { // Z4 > Z1
+							case 6: { // Z4 > Z1 Z41
 								resul_arrayY1[measCount] = front_sum;
-								//Z41 = front_sum;
 								break;
 							}
-							case 7: { // Z1 > Z4
+							case 7: { // Z1 > Z4 Z14
 								resul_arrayY2[measCount] = front_sum;
 								measCount++;
-								//Z14 = front_sum;
 								break;
 							}
 						}
