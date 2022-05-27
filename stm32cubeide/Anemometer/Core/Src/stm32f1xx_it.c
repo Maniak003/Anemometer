@@ -314,9 +314,9 @@ void TIM4_IRQHandler(void)
 			XX2 = (X2m[0] < X2m[1]) ? ((X2m[1] < X2m[2]) ? X2m[1] : ((X2m[2] < X2m[0]) ? X2m[0] : X2m[2])) : ((X2m[0] < X2m[2]) ? X2m[0] : ((X2m[2] < X2m[1]) ? X2m[1] : X2m[2]));
 			if (abs(XX1 - XX2) > MAX_DIFFERENT) {
 				if (abs(XX1) > abs(XX2)) {
-					XX2 = XX1;
-				} else {
 					XX1 = XX2;
+				} else {
+					XX2 = XX1;
 				}
 			}
 			Xsum1 = Xsum1 + XX1;
@@ -331,7 +331,7 @@ void TIM4_IRQHandler(void)
 			YY2 = (Y2m[0] < Y2m[1]) ? ((Y2m[1] < Y2m[2]) ? Y2m[1] : ((Y2m[2] < Y2m[0]) ? Y2m[0] : Y2m[2])) : ((Y2m[0] < Y2m[2]) ? Y2m[0] : ((Y2m[2] < Y2m[1]) ? Y2m[1] : Y2m[2]));
 			if (abs(YY1 - YY2) > MAX_DIFFERENT) {
 				if (abs(YY1) > abs (YY2)) {
-					YY2 = YY2;
+					YY1 = YY2;
 				} else {
 					YY2 = YY1;
 				}
