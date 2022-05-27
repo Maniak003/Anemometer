@@ -244,7 +244,10 @@ void TIM3_IRQHandler(void)
   */
 void TIM4_IRQHandler(void)
 {
-	double XX1, XX2, YY1, YY2;
+	double XX1, XX2, YY1, YY2, X1m[3], X2m[3], Y1m[3], Y2m[3];
+	uint8_t countX1, countX2, countY1, countY2;
+	//double Vmedian[3];
+	//uint8_t countV;
   /* USER CODE BEGIN TIM4_IRQn 0 */
 	  /*
 	   * currentMode
@@ -293,18 +296,23 @@ void TIM4_IRQHandler(void)
 				  Vmax = 0;
 				  Xmax = 0;
 				  Ymax = 0;
-				  Vmedian[0] = 0;
-				  Vmedian[1] = 0;
-				  Vmedian[2] = 0;
-				  uint8_t count = 0;
 				  Xsum1 = 0;
 				  Xsum2 = 0;
 				  Ysum1 = 0;
 				  Ysum2 = 0;
+				  //Vmedian[0] = 0; Vmedian[1] = 0; Vmedian[2] = 0; countV = 0;
+				  X1m[0] = 0; X1m[1] = 0; X1m[2] = 0; countX1 = 0;
+				  X2m[0] = 0; X2m[1] = 0; X2m[2] = 0; countX2 = 0;
+				  Y1m[0] = 0; Y1m[1] = 0; Y1m[2] = 0; countY1 = 0;
+				  Y2m[0] = 0; Y2m[1] = 0; Y2m[2] = 0; countY2 = 0;
 				  //LED_PULSE
 				  for (int ii = PREFETCH; ii < MEASSURE_COUNT; ii++) {
-					  XX1 = resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f;
-					  XX2 = resul_arrayX4[ii] - resul_arrayX3[ii] * DX2.f;
+					  X1m[countX1] = resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f;
+					  if (++countX1 >= 3) countX1 = 0;
+					  XX1 = (X1m[0] < X1m[1]) ? ((X1m[1] < X1m[2]) ? X1m[1] : ((X1m[2] < X1m[0]) ? X1m[0] : X1m[2])) : ((X1m[0] < X1m[2]) ? X1m[0] : ((X1m[2] < X1m[1]) ? X1m[1] : X1m[2]));
+					  X2m[countX2] = resul_arrayX4[ii] - resul_arrayX3[ii] * DX2.f;
+					  if (++countX2 >= 3) countX2 = 0;
+					  XX2 = (X2m[0] < X2m[1]) ? ((X2m[1] < X2m[2]) ? X2m[1] : ((X2m[2] < X2m[0]) ? X2m[0] : X2m[2])) : ((X2m[0] < X2m[2]) ? X2m[0] : ((X2m[2] < X2m[1]) ? X2m[1] : X2m[2]));
 					  if (abs(XX1 - XX2) > MAX_DIFFERENT) {
 						  if (abs(XX1) > abs(XX2)) {
 							  XX2 = XX1;
@@ -315,8 +323,12 @@ void TIM4_IRQHandler(void)
 					  Xsum1 = Xsum1 + XX1;
 					  Xsum2 = Xsum2 + XX2;
 
-					  YY1 = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
-					  YY2 = resul_arrayY4[ii] - resul_arrayY3[ii] * DY2.f;
+					  Y1m[countY1] = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
+					  if (++countY1 >= 3) countY1 = 0;
+					  YY1 = (Y1m[0] < Y1m[1]) ? ((Y1m[1] < Y1m[2]) ? Y1m[1] : ((Y1m[2] < Y1m[0]) ? Y1m[0] : Y1m[2])) : ((Y1m[0] < Y1m[2]) ? Y1m[0] : ((Y1m[2] < Y1m[1]) ? Y1m[1] : Y1m[2]));
+					  X2m[countY2] = resul_arrayY4[ii] - resul_arrayY3[ii] * DY2.f;
+					  if (++countY2 >= 3) countY2 = 0;
+					  YY2 = (Y2m[0] < Y2m[1]) ? ((Y2m[1] < Y2m[2]) ? Y2m[1] : ((Y2m[2] < Y2m[0]) ? Y2m[0] : Y2m[2])) : ((Y2m[0] < Y2m[2]) ? Y2m[0] : ((Y2m[2] < Y2m[1]) ? Y2m[1] : Y2m[2]));
 					  if (abs(YY1 - YY2) > MAX_DIFFERENT) {
 						  if (abs(YY1) > abs (YY2)) {
 							  YY2 = YY2;
@@ -332,9 +344,9 @@ void TIM4_IRQHandler(void)
 					  V = sqrt(pow(X, 2) + pow(Y, 2));
 
 					  /* Медианный фильтр для максимальных значений */
-					  Vmedian[count] = V;
-					  if (++count >= 3) count = 0;
-					  V = (Vmedian[0] < Vmedian[1]) ? ((Vmedian[1] < Vmedian[2]) ? Vmedian[1] : ((Vmedian[2] < Vmedian[0]) ? Vmedian[0] : Vmedian[2])) : ((Vmedian[0] < Vmedian[2]) ? Vmedian[0] : ((Vmedian[2] < Vmedian[1]) ? Vmedian[1] : Vmedian[2]));
+					  //Vmedian[countV] = V;
+					  //if (++countV >= 3) countV = 0;
+					  //V = (Vmedian[0] < Vmedian[1]) ? ((Vmedian[1] < Vmedian[2]) ? Vmedian[1] : ((Vmedian[2] < Vmedian[0]) ? Vmedian[0] : Vmedian[2])) : ((Vmedian[0] < Vmedian[2]) ? Vmedian[0] : ((Vmedian[2] < Vmedian[1]) ? Vmedian[1] : Vmedian[2]));
 
 					  if ( V > Vmax) {
 						  Vmax = V;
