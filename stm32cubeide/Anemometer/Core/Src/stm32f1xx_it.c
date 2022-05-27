@@ -305,6 +305,7 @@ void TIM4_IRQHandler(void)
 		Y2m[0] = 0; Y2m[1] = 0; Y2m[2] = 0; countY2 = 0;
 		//LED_PULSE
 		for (int ii = PREFETCH; ii < MEASSURE_COUNT; ii++) {
+			// Медианный фильтр для X
 			X1m[countX1] = resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f;
 			if (++countX1 >= 3) countX1 = 0;
 			XX1 = (X1m[0] < X1m[1]) ? ((X1m[1] < X1m[2]) ? X1m[1] : ((X1m[2] < X1m[0]) ? X1m[0] : X1m[2])) : ((X1m[0] < X1m[2]) ? X1m[0] : ((X1m[2] < X1m[1]) ? X1m[1] : X1m[2]));
@@ -321,6 +322,7 @@ void TIM4_IRQHandler(void)
 			Xsum1 = Xsum1 + XX1;
 			Xsum2 = Xsum2 + XX2;
 
+			// Медианный фильтр для Y
 			Y1m[countY1] = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
 			if (++countY1 >= 3) countY1 = 0;
 			YY1 = (Y1m[0] < Y1m[1]) ? ((Y1m[1] < Y1m[2]) ? Y1m[1] : ((Y1m[2] < Y1m[0]) ? Y1m[0] : Y1m[2])) : ((Y1m[0] < Y1m[2]) ? Y1m[0] : ((Y1m[2] < Y1m[1]) ? Y1m[1] : Y1m[2]));
