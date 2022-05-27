@@ -186,13 +186,12 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-    static uint16_t ticks = 0;
-    ticks++;
-    if(ticks >= 1000) {
-        DHCP_time_handler();
-        ticks = 0;
-    }
-
+	static uint16_t ticks = 0;
+	ticks++;
+	if(ticks >= 1000) {
+		DHCP_time_handler();
+		ticks = 0;
+	}
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
@@ -228,7 +227,7 @@ void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
 //	if (startCount-- == 0) {
-		runFlag = COUNT_FRONT;		// Сработал таймер сброса таймера захвата, начинаем измерение.
+	runFlag = COUNT_FRONT;		// Сработал таймер сброса таймера захвата, начинаем измерение.
 		//LED_PULSE
 //	}
 
@@ -244,225 +243,224 @@ void TIM3_IRQHandler(void)
   */
 void TIM4_IRQHandler(void)
 {
+  /* USER CODE BEGIN TIM4_IRQn 0 */
 	double XX1, XX2, YY1, YY2, X1m[3], X2m[3], Y1m[3], Y2m[3];
 	uint8_t countX1, countX2, countY1, countY2;
-	//double Vmedian[3];
+	//double Vm[3];
 	//uint8_t countV;
-  /* USER CODE BEGIN TIM4_IRQn 0 */
-	  /*
-	   * currentMode
-	   * Z1--Z2
-	   * |	  | > N
-	   * Z4__Z3
-	   *
-	   * 0 - Z1 >> Z2
-	   * 1 - Z2 >> Z1
-	   * 2 - Z2 >> Z3
-	   * 3 - Z3 >> Z2
-	   * 4 - Z3 >> Z4
-	   * 5 - Z4 >> Z3
-	   * 6 - Z4 >> Z1
-	   * 7 - Z1 >> Z4
-	   */
-		front_sum = 0;
+	/*
+	* currentMode
+	* Z1--Z2
+	* |	  | > N
+	* Z4__Z3
+	*
+	* 0 - Z1 >> Z2
+	* 1 - Z2 >> Z1
+	* 2 - Z2 >> Z3
+	* 3 - Z3 >> Z2
+	* 4 - Z3 >> Z4
+	* 5 - Z4 >> Z3
+	* 6 - Z4 >> Z1
+	* 7 - Z1 >> Z4
+	*/
+	front_sum = 0;
 
-		/* Turn off all multiplexer */
-		GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
+	/* Turn off all multiplexer */
+	GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 
-		STOP_CAPTURE	// If not stop in callback.
-		runFlag = 0;		// Запрещаем запись результата захвата
-		/* Restart timers */
-		HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
-		HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_2);
-		HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_3);
-		HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_4);
+	STOP_CAPTURE	// If not stop in callback.
+	runFlag = 0;		// Запрещаем запись результата захвата
+	/* Restart timers */
+	HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_2);
+	HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_3);
+	HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_4);
 
-		/* Set all timer channels for input mode */
-		GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8
-				  | GPIO_CRH_CNF9 | GPIO_CRH_MODE9
-				  | GPIO_CRH_CNF10 | GPIO_CRH_MODE10
-				  | GPIO_CRH_CNF11 | GPIO_CRH_MODE11))
-				  | (GPIO_CRH_CNF8_0 | GPIO_CRH_CNF9_0 | GPIO_CRH_CNF10_0 | GPIO_CRH_CNF11_0);
+	/* Set all timer channels for input mode */
+	GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8
+			  | GPIO_CRH_CNF9 | GPIO_CRH_MODE9
+			  | GPIO_CRH_CNF10 | GPIO_CRH_MODE10
+			  | GPIO_CRH_CNF11 | GPIO_CRH_MODE11))
+			  | (GPIO_CRH_CNF8_0 | GPIO_CRH_CNF9_0 | GPIO_CRH_CNF10_0 | GPIO_CRH_CNF11_0);
 
-
-			//LED_PULSE
-			if ((measCount == MEASSURE_COUNT) && (calibrateMode == 0)) {
-				//LED_PULSE
-				  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
-				#ifdef SYSTICK_DISABLE
-					SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
-				#endif
-				  HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
-				  Vmax = 0;
-				  Xmax = 0;
-				  Ymax = 0;
-				  Xsum1 = 0;
-				  Xsum2 = 0;
-				  Ysum1 = 0;
-				  Ysum2 = 0;
-				  //Vmedian[0] = 0; Vmedian[1] = 0; Vmedian[2] = 0; countV = 0;
-				  X1m[0] = 0; X1m[1] = 0; X1m[2] = 0; countX1 = 0;
-				  X2m[0] = 0; X2m[1] = 0; X2m[2] = 0; countX2 = 0;
-				  Y1m[0] = 0; Y1m[1] = 0; Y1m[2] = 0; countY1 = 0;
-				  Y2m[0] = 0; Y2m[1] = 0; Y2m[2] = 0; countY2 = 0;
-				  //LED_PULSE
-				  for (int ii = PREFETCH; ii < MEASSURE_COUNT; ii++) {
-					  X1m[countX1] = resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f;
-					  if (++countX1 >= 3) countX1 = 0;
-					  XX1 = (X1m[0] < X1m[1]) ? ((X1m[1] < X1m[2]) ? X1m[1] : ((X1m[2] < X1m[0]) ? X1m[0] : X1m[2])) : ((X1m[0] < X1m[2]) ? X1m[0] : ((X1m[2] < X1m[1]) ? X1m[1] : X1m[2]));
-					  X2m[countX2] = resul_arrayX4[ii] - resul_arrayX3[ii] * DX2.f;
-					  if (++countX2 >= 3) countX2 = 0;
-					  XX2 = (X2m[0] < X2m[1]) ? ((X2m[1] < X2m[2]) ? X2m[1] : ((X2m[2] < X2m[0]) ? X2m[0] : X2m[2])) : ((X2m[0] < X2m[2]) ? X2m[0] : ((X2m[2] < X2m[1]) ? X2m[1] : X2m[2]));
-					  if (abs(XX1 - XX2) > MAX_DIFFERENT) {
-						  if (abs(XX1) > abs(XX2)) {
-							  XX2 = XX1;
-						  } else {
-							  XX1 = XX2;
-						  }
-					  }
-					  Xsum1 = Xsum1 + XX1;
-					  Xsum2 = Xsum2 + XX2;
-
-					  Y1m[countY1] = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
-					  if (++countY1 >= 3) countY1 = 0;
-					  YY1 = (Y1m[0] < Y1m[1]) ? ((Y1m[1] < Y1m[2]) ? Y1m[1] : ((Y1m[2] < Y1m[0]) ? Y1m[0] : Y1m[2])) : ((Y1m[0] < Y1m[2]) ? Y1m[0] : ((Y1m[2] < Y1m[1]) ? Y1m[1] : Y1m[2]));
-					  X2m[countY2] = resul_arrayY4[ii] - resul_arrayY3[ii] * DY2.f;
-					  if (++countY2 >= 3) countY2 = 0;
-					  YY2 = (Y2m[0] < Y2m[1]) ? ((Y2m[1] < Y2m[2]) ? Y2m[1] : ((Y2m[2] < Y2m[0]) ? Y2m[0] : Y2m[2])) : ((Y2m[0] < Y2m[2]) ? Y2m[0] : ((Y2m[2] < Y2m[1]) ? Y2m[1] : Y2m[2]));
-					  if (abs(YY1 - YY2) > MAX_DIFFERENT) {
-						  if (abs(YY1) > abs (YY2)) {
-							  YY2 = YY2;
-						  } else {
-							  YY2 = YY1;
-						  }
-					  }
-					  Ysum1 = Ysum1 + YY1;
-					  Ysum2 = Ysum2 + YY2;
-
-					  X = (XX1 + XX2) / 2;
-					  Y = (YY1 + YY2) / 2;
-					  V = sqrt(pow(X, 2) + pow(Y, 2));
-
-					  /* Медианный фильтр для максимальных значений */
-					  //Vmedian[countV] = V;
-					  //if (++countV >= 3) countV = 0;
-					  //V = (Vmedian[0] < Vmedian[1]) ? ((Vmedian[1] < Vmedian[2]) ? Vmedian[1] : ((Vmedian[2] < Vmedian[0]) ? Vmedian[0] : Vmedian[2])) : ((Vmedian[0] < Vmedian[2]) ? Vmedian[0] : ((Vmedian[2] < Vmedian[1]) ? Vmedian[1] : Vmedian[2]));
-
-					  if ( V > Vmax) {
-						  Vmax = V;
-					  }
-					  if (abs(X) > Xmax) {
-						  Xmax = abs(X);
-					  }
-					  if (abs(Y) > Ymax) {
-						  Ymax = abs(Y);
-					  }
-					  resul_arrayX1[ii] = 0;
-					  resul_arrayX2[ii] = 0;
-					  resul_arrayX3[ii] = 0;
-					  resul_arrayX4[ii] = 0;
-					  resul_arrayY1[ii] = 0;
-					  resul_arrayY2[ii] = 0;
-					  resul_arrayY3[ii] = 0;
-					  resul_arrayY4[ii] = 0;
-				  }
-				  Xsum = (Xsum1 + Xsum2);
-				  Xsum = Xsum / ((MEASSURE_COUNT - PREFETCH) * 2);		// Среднее количество тактов по X
-				  Xsum = Xsum / SPEED_CALIBRATE;	// Скорость по X
-
-				  Ysum = (Ysum1 + Ysum2);
-				  Ysum = Ysum / ((MEASSURE_COUNT - PREFETCH) * 2);		// Среднее количество тактов по Y
-				  Ysum = Ysum / SPEED_CALIBRATE;	// Скорость по Y
-
-				  Vmaxfin = Vmax / SPEED_CALIBRATE;	// Максимальная скорость за время MEASSURE_COUNT
-				  Xmaxfin = Xmax / SPEED_CALIBRATE;
-				  Ymaxfin = Ymax / SPEED_CALIBRATE;
-				  V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скалярное значение скорости
-				  if ( V == 0) {
-					  A = 0;
-				  } else {
-					  A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
-					  if (Ysum < 0) {
-						  A = 360 - A; // III, IV квадранты
-					  }
-				  }
-				  measCount = 0;
-				  readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
-			} else {
-				if ((calibrateMode > 0) && (measCount == 1)) {  // Режим калибровки
-					HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
-					measCount = 0;
-					#ifdef SYSTICK_DISABLE
-						SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
-					#endif
-					readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
+	//LED_PULSE
+	if ((measCount == MEASSURE_COUNT) && (calibrateMode == 0)) {
+		//LED_PULSE
+		//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+		#ifdef SYSTICK_DISABLE
+		SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
+		#endif
+		HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
+		Vmax = 0;
+		Xmax = 0;
+		Ymax = 0;
+		Xsum1 = 0;
+		Xsum2 = 0;
+		Ysum1 = 0;
+		Ysum2 = 0;
+		//Vmedian[0] = 0; Vmedian[1] = 0; Vmedian[2] = 0; countV = 0;
+		X1m[0] = 0; X1m[1] = 0; X1m[2] = 0; countX1 = 0;
+		X2m[0] = 0; X2m[1] = 0; X2m[2] = 0; countX2 = 0;
+		Y1m[0] = 0; Y1m[1] = 0; Y1m[2] = 0; countY1 = 0;
+		Y2m[0] = 0; Y2m[1] = 0; Y2m[2] = 0; countY2 = 0;
+		//LED_PULSE
+		for (int ii = PREFETCH; ii < MEASSURE_COUNT; ii++) {
+			X1m[countX1] = resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f;
+			if (++countX1 >= 3) countX1 = 0;
+			XX1 = (X1m[0] < X1m[1]) ? ((X1m[1] < X1m[2]) ? X1m[1] : ((X1m[2] < X1m[0]) ? X1m[0] : X1m[2])) : ((X1m[0] < X1m[2]) ? X1m[0] : ((X1m[2] < X1m[1]) ? X1m[1] : X1m[2]));
+			X2m[countX2] = resul_arrayX4[ii] - resul_arrayX3[ii] * DX2.f;
+			if (++countX2 >= 3) countX2 = 0;
+			XX2 = (X2m[0] < X2m[1]) ? ((X2m[1] < X2m[2]) ? X2m[1] : ((X2m[2] < X2m[0]) ? X2m[0] : X2m[2])) : ((X2m[0] < X2m[2]) ? X2m[0] : ((X2m[2] < X2m[1]) ? X2m[1] : X2m[2]));
+			if (abs(XX1 - XX2) > MAX_DIFFERENT) {
+				if (abs(XX1) > abs(XX2)) {
+					XX2 = XX1;
 				} else {
-					switch (currentMode) {
-					  case 0: { 					// Z1 (transmit) > Z2 (receive)
-						  //LED_PULSE
-						  setZ1transmit; 			// Set Z1 port to output mode
-						  setZ2receive; 			// Turn on multiplexer for input Z2 channel.
-						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в первом канале
-						  break;
-						}
-					  case 1: { 					// Z2 (transmit) > Z1 (receive)
-						  //LED_PULSE
-						  TIM3->ARR = C_23; 		// Коррекция для таймера запуска измерения Z23, Z32
-						  setZ2transmit; 			// Set Z2 port to output mode
-						  setZ1receive; 			// Turn on multiplexer for input Z1 channel.
-						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2); // Генерация для пьезокристалла во втором канале
-						  break;
-					  }
-					  case 2: { 					// Z2 (transmit) > Z3 (receive)
-						  //LED_PULSE
-						  setZ2transmit; 			// Set Z2 port to output mode
-						  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
-						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);	// Генерация для пьезокристалла во втором канале
-						  break;
-					  }
-					  case 3: { 					// Z3 (transmit) > Z2 (receive)
-						  //LED_PULSE
-						  TIM3->ARR = C_34; 		// Коррекция для таймера запуска измерения Z34, Z43
-						  setZ3transmit; 			// Set Z3 port to output mode
-						  setZ2receive; 			// Turn on multiplexer for input Z2 channel.
-						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
-						  break;
-					  }
-					  case 4: { 					// Z3 (transmit) > Z4 (receive) !
-						  //LED_PULSE
-						  setZ3transmit; 			// Set Z3 port to output mode
-						  setZ4receive; 			// Turn on multiplexer for input Z4 channel.
-						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
-						  break;
-					  }
-					  case 5: { 					// Z4 (transmit) > Z3 (receive) !
-						  //LED_PULSE
-						  TIM3->ARR = C_14; 		// Коррекция для таймера запуска измерения Z14, Z41
-						  setZ4transmit; 			// Set Z4 port to output mode
-						  setZ3receive; 			// Turn on multiplexer for input Z3 channel.
-						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в четвертом канале
-						  break;
-					  }
-					  case 6: { 					// Z4 (transmit) > Z1 (receive)
-						  LED_PULSE
-						  setZ4transmit;			// Set Z4 port to output mode
-						  setZ1receive; 			// Turn on multiplexer for input Z1 channel.
-						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в четвертом канале
-						  break;
-					  }
-					  case 7: { 					// Z1 (transmit) > Z4 (receive)
-						  //LED_PULSE
-						  TIM3->ARR = C_12; 		// Коррекция для таймера запуска измерения Z12, Z21
-						  setZ1transmit;			// Set Z1 port to output mode
-						  setZ4receive; 			// Turn on multiplexer for input Z4 channel.
-						  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);	// Генерация для пьезокристалла в первом канале
-						  break;
-					  }
-					}
-					/* Запускаем таймер захвата */
-					START_CAPTURE
+					XX1 = XX2;
+				}
+			}
+			Xsum1 = Xsum1 + XX1;
+			Xsum2 = Xsum2 + XX2;
+
+			Y1m[countY1] = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
+			if (++countY1 >= 3) countY1 = 0;
+			YY1 = (Y1m[0] < Y1m[1]) ? ((Y1m[1] < Y1m[2]) ? Y1m[1] : ((Y1m[2] < Y1m[0]) ? Y1m[0] : Y1m[2])) : ((Y1m[0] < Y1m[2]) ? Y1m[0] : ((Y1m[2] < Y1m[1]) ? Y1m[1] : Y1m[2]));
+			X2m[countY2] = resul_arrayY4[ii] - resul_arrayY3[ii] * DY2.f;
+			if (++countY2 >= 3) countY2 = 0;
+			YY2 = (Y2m[0] < Y2m[1]) ? ((Y2m[1] < Y2m[2]) ? Y2m[1] : ((Y2m[2] < Y2m[0]) ? Y2m[0] : Y2m[2])) : ((Y2m[0] < Y2m[2]) ? Y2m[0] : ((Y2m[2] < Y2m[1]) ? Y2m[1] : Y2m[2]));
+			if (abs(YY1 - YY2) > MAX_DIFFERENT) {
+				if (abs(YY1) > abs (YY2)) {
+					YY2 = YY2;
+				} else {
+					YY2 = YY1;
+				}
+			}
+			Ysum1 = Ysum1 + YY1;
+			Ysum2 = Ysum2 + YY2;
+
+			X = (XX1 + XX2) / 2;
+			Y = (YY1 + YY2) / 2;
+			V = sqrt(pow(X, 2) + pow(Y, 2));
+
+			/* Медианный фильтр для максимальных значений */
+			//Vm[countV] = V;
+			//if (++countV >= 3) countV = 0;
+			//V = (Vm[0] < Vm[1]) ? ((Vm[1] < Vm[2]) ? Vm[1] : ((Vm[2] < Vm[0]) ? Vm[0] : Vm[2])) : ((Vm[0] < Vm[2]) ? Vm[0] : ((Vm[2] < Vm[1]) ? Vm[1] : Vm[2]));
+
+			if ( V > Vmax) {
+				Vmax = V;
+			}
+			if (abs(X) > Xmax) {
+				Xmax = abs(X);
+			}
+			if (abs(Y) > Ymax) {
+				Ymax = abs(Y);
+			}
+			resul_arrayX1[ii] = 0;
+			resul_arrayX2[ii] = 0;
+			resul_arrayX3[ii] = 0;
+			resul_arrayX4[ii] = 0;
+			resul_arrayY1[ii] = 0;
+			resul_arrayY2[ii] = 0;
+			resul_arrayY3[ii] = 0;
+			resul_arrayY4[ii] = 0;
+		}
+		Xsum = (Xsum1 + Xsum2);
+		Xsum = Xsum / ((MEASSURE_COUNT - PREFETCH) * 2);		// Среднее количество тактов по X
+		Xsum = Xsum / SPEED_CALIBRATE;	// Скорость по X
+
+		Ysum = (Ysum1 + Ysum2);
+		Ysum = Ysum / ((MEASSURE_COUNT - PREFETCH) * 2);		// Среднее количество тактов по Y
+		Ysum = Ysum / SPEED_CALIBRATE;	// Скорость по Y
+
+		Vmaxfin = Vmax / SPEED_CALIBRATE;	// Максимальная скорость за время MEASSURE_COUNT
+		Xmaxfin = Xmax / SPEED_CALIBRATE;
+		Ymaxfin = Ymax / SPEED_CALIBRATE;
+		V = sqrt(pow(Xsum, 2) + pow(Ysum, 2));  // Скалярное значение скорости
+		if ( V == 0) {
+		  A = 0;
+		} else {
+			A = acos( Xsum / V ) * 180 / 3.1415926; // Угол
+			if (Ysum < 0) {
+				A = 360 - A; // III, IV квадранты
 			}
 		}
+		measCount = 0;
+		readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
+	} else {
+		if ((calibrateMode > 0) && (measCount == 1)) {  // Режим калибровки
+			HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
+			measCount = 0;
+			#ifdef SYSTICK_DISABLE
+				SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
+			#endif
+			readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
+		} else {
+			switch (currentMode) {
+				case 0: { 					// Z1 (transmit) > Z2 (receive)
+					//LED_PULSE
+					setZ1transmit; 			// Set Z1 port to output mode
+					setZ2receive; 			// Turn on multiplexer for input Z2 channel.
+					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в первом канале
+					break;
+				}
+				case 1: { 					// Z2 (transmit) > Z1 (receive)
+					//LED_PULSE
+					TIM3->ARR = C_23; 		// Коррекция для таймера запуска измерения Z23, Z32
+					setZ2transmit; 			// Set Z2 port to output mode
+					setZ1receive; 			// Turn on multiplexer for input Z1 channel.
+					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2); // Генерация для пьезокристалла во втором канале
+					break;
+				}
+				case 2: { 					// Z2 (transmit) > Z3 (receive)
+					//LED_PULSE
+					setZ2transmit; 			// Set Z2 port to output mode
+					setZ3receive; 			// Turn on multiplexer for input Z3 channel.
+					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);	// Генерация для пьезокристалла во втором канале
+					break;
+				}
+				case 3: { 					// Z3 (transmit) > Z2 (receive)
+					//LED_PULSE
+					TIM3->ARR = C_34; 		// Коррекция для таймера запуска измерения Z34, Z43
+					setZ3transmit; 			// Set Z3 port to output mode
+					setZ2receive; 			// Turn on multiplexer for input Z2 channel.
+					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
+					break;
+				}
+				case 4: { 					// Z3 (transmit) > Z4 (receive) !
+					//LED_PULSE
+					setZ3transmit; 			// Set Z3 port to output mode
+					setZ4receive; 			// Turn on multiplexer for input Z4 channel.
+					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);	// Генерация для пьезокристалла в третьем канале
+					break;
+				}
+				case 5: { 					// Z4 (transmit) > Z3 (receive) !
+					//LED_PULSE
+					TIM3->ARR = C_14; 		// Коррекция для таймера запуска измерения Z14, Z41
+					setZ4transmit; 			// Set Z4 port to output mode
+					setZ3receive; 			// Turn on multiplexer for input Z3 channel.
+					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в четвертом канале
+					break;
+				}
+				case 6: { 					// Z4 (transmit) > Z1 (receive)
+					LED_PULSE
+					setZ4transmit;			// Set Z4 port to output mode
+					setZ1receive; 			// Turn on multiplexer for input Z1 channel.
+					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в четвертом канале
+					break;
+				}
+				case 7: { 					// Z1 (transmit) > Z4 (receive)
+					//LED_PULSE
+					TIM3->ARR = C_12; 		// Коррекция для таймера запуска измерения Z12, Z21
+					setZ1transmit;			// Set Z1 port to output mode
+					setZ4receive; 			// Turn on multiplexer for input Z4 channel.
+					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);	// Генерация для пьезокристалла в первом канале
+					break;
+				}
+			}
+			/* Запускаем таймер захвата */
+			START_CAPTURE
+		}
+	}
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */

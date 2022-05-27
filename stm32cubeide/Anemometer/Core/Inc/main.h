@@ -170,7 +170,7 @@ uint16_t calibrateCount, calibrateMode, runFlag;
  * */
 #define CALIBRATE_START 24000// 34000, 24000
 #define MEASSURE_COUNT 100
-#define PREFETCH 50
+#define PREFETCH 20
 #define SPEED_CALIBRATE 42.19f // cos(atg(17/18)) * (49.52/330000 - 49.52/331000) / (1/64000000) * 2
 #define MAX_DIFFERENT 21		// Допустимые различия между каналами.
 #define MAX_SPEED 25

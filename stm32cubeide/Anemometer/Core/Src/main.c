@@ -1232,64 +1232,64 @@ static void MX_GPIO_Init(void)
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if (runFlag > 0) {								// Разрешено измерение ?
-	  if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
-			if ( (runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
-				  //LED_PULSE
-					if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
-						front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1) & 0x0FFFF);
-					} else {   // Активен спад
-						front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2) & 0x0FFFF);
+		if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
+			if ((runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
+				//LED_PULSE
+				if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
+					front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1) & 0x0FFFF);
+				} else {   // Активен спад
+					front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2) & 0x0FFFF);
+				}
+				runFlag--;
+				if (runFlag == 0) {  // Измерения закончены ?
+					STOP_CAPTURE  // Таймер больше не нужен, выключаем
+					//#ifdef SYSTICK_DISABLE
+					//	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
+					//#endif
+					front_sum = front_sum / COUNT_FRONT - 3600;  // Расчитываем задержку от средины импульсов
+					/* Turn off all multiplexer */
+					GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
+					switch (currentMode++) {
+						case 0: { // Z1 > Z2, Z12
+							resul_arrayX1[measCount] = front_sum;
+							break;
+						}
+						case 1: { // Z2 > Z1, Z21
+							resul_arrayX2[measCount] = front_sum;
+							break;
+						}
+						case 2: { // Z2 > Z3 Z23
+							resul_arrayY3[measCount] = front_sum;
+							break;
+						}
+						case 3: { // Z3 > Z2 Z32
+							resul_arrayY4[measCount] = front_sum;
+							break;
+						}
+						case 4: { // Z3 > Z4 Z34
+							resul_arrayX3[measCount] = front_sum;
+							break;
+						}
+						case 5: { // Z4 > Z3 Z43
+							resul_arrayX4[measCount] = front_sum;
+							break;
+						}
+						case 6: { // Z4 > Z1 Z41
+							resul_arrayY1[measCount] = front_sum;
+							break;
+						}
+						case 7: { // Z1 > Z4 Z14
+							resul_arrayY2[measCount] = front_sum;
+							measCount++;
+							break;
+						}
 					}
-					runFlag--;
-					if (runFlag == 0) {  // Измерения закончены ?
-						STOP_CAPTURE  // Таймер больше не нужен, выключаем
-						//#ifdef SYSTICK_DISABLE
-						//	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
-						//#endif
-						front_sum = front_sum / COUNT_FRONT - 3600;  // Расчитываем задержку от средины импульсов
-						/* Turn off all multiplexer */
-						GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
-						switch (currentMode++) {
-							case 0: { // Z1 > Z2, Z12
-								resul_arrayX1[measCount] = front_sum;
-								break;
-							}
-							case 1: { // Z2 > Z1, Z21
-								resul_arrayX2[measCount] = front_sum;
-								break;
-							}
-							case 2: { // Z2 > Z3 Z23
-								resul_arrayY3[measCount] = front_sum;
-								break;
-							}
-							case 3: { // Z3 > Z2 Z32
-								resul_arrayY4[measCount] = front_sum;
-								break;
-							}
-							case 4: { // Z3 > Z4 Z34
-								resul_arrayX3[measCount] = front_sum;
-								break;
-							}
-							case 5: { // Z4 > Z3 Z43
-								resul_arrayX4[measCount] = front_sum;
-								break;
-							}
-							case 6: { // Z4 > Z1 Z41
-								resul_arrayY1[measCount] = front_sum;
-								break;
-							}
-							case 7: { // Z1 > Z4 Z14
-								resul_arrayY2[measCount] = front_sum;
-								measCount++;
-								break;
-							}
-						}
-						if (currentMode == 8) {
-							currentMode = 0;
-						}
+					if (currentMode == 8) {
+						currentMode = 0;
 					}
 				}
-		  }
+			}
+		}
 	}
 }
 
