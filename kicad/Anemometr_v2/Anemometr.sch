@@ -1646,9 +1646,7 @@ Wire Wire Line
 NoConn ~ 4450 3850
 NoConn ~ 4450 3950
 NoConn ~ 4450 4050
-NoConn ~ 4450 4250
 NoConn ~ 4450 4750
-NoConn ~ 5750 4350
 NoConn ~ 5750 4450
 NoConn ~ 5750 4550
 NoConn ~ 5750 4650
@@ -3322,4 +3320,12 @@ F 3 "~" H 11100 1900 50  0001 C CNN
 	1    11100 1900
 	0    -1   -1   0   
 $EndComp
+Text GLabel 10950 2300 0    50   Input ~ 0
+Analog
+Wire Wire Line
+	10950 2300 11100 2300
+Connection ~ 11100 2300
+Text GLabel 4450 4250 0    50   Input ~ 0
+Analog
+NoConn ~ 5750 4350
 $EndSCHEMATC
