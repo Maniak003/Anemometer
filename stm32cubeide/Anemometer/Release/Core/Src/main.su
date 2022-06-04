@@ -6,10 +6,11 @@ main.c:190:6:W5500_ReadBuff	0	static
 main.c:198:9:W5500_ReadByte	16	static
 main.c:194:6:W5500_WriteBuff	0	static
 main.c:204:6:W5500_WriteByte	16	static
+main.c:821:13:MX_I2C1_Init	8	static,ignoring_inline_asm
 main.c:90:6:rwFlash	72	static
 main.c:244:9:sendToZabbix	280	static
 main.c:347:6:init_w5500	24	static
 main.c:782:6:SystemClock_Config	80	static,ignoring_inline_asm
-main.c:427:5:main	256	static,ignoring_inline_asm
+main.c:427:5:main	240	static,ignoring_inline_asm
 main.c:1286:6:HAL_TIM_IC_CaptureCallback	16	static
 main.c:1352:6:Error_Handler	0	static,ignoring_inline_asm

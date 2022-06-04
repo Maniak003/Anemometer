@@ -207,7 +207,7 @@ bool readyFlag, firstTime, calibrate12, calibrate34, calibrate14, calibrate23, t
 #define _DHCP_DEBUG_
 
 //#define ZABBIX_DEBUG
-//#define ZABBIX_ENABLE
+#define ZABBIX_ENABLE
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128
