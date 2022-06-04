@@ -63,7 +63,7 @@ char uart_buffer[10] = {0,};
 char SndBuffer[200] = {0,};
 uint32_t fastCounter;
 wiz_NetInfo net_info = {
-	.mac  = { 0x00, 0x11, 0x22, 0x33, 0x44, 0xEA },
+	.mac  = { MAC_ADDRESS },
 	.dhcp = NETINFO_DHCP
 };
 /* USER CODE END PV */
@@ -87,94 +87,85 @@ static void MX_IWDG_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-/* USER CODE END 0 */
+void rwFlash(uint8_t rwFlag) {
+	uint32_t pageAdr = 0x800FC00; //.
+	uint32_t magicKey;
+	uint64_t dataForSave;
+	magicKey = *(__IO uint32_t*) pageAdr;
+	if ((magicKey != 0x12349876) || (rwFlag == 1)) { // rwFlag == 1 for wrtite data to flash
+		magicKey = 0x12349876;
+		if (rwFlag == 0) { // For first initial
+			C_12 = CALIBRATE_START;
+			C_34 = CALIBRATE_START;
+			C_14 = CALIBRATE_START;
+			C_23 = CALIBRATE_START;
+			DX1.f = 1;
+			DX2.f = 1;
+			DY1.f = 1;
+			DY2.f = 1;
+		}
+		FLASH_EraseInitTypeDef EraseInitStruct;
+		uint32_t PAGEError = 0;
+		EraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
+		EraseInitStruct.PageAddress = pageAdr; //
+		EraseInitStruct.NbPages     = 1;
 
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
-  /* USER CODE BEGIN 1 */
-
-
-	void rwFlash(uint8_t rwFlag) {
-		uint32_t pageAdr = 0x800FC00; //.
-		uint32_t magicKey;
-		uint64_t dataForSave;
-		magicKey = *(__IO uint32_t*) pageAdr;
-		if ((magicKey != 0x12349876) || (rwFlag == 1)) { // rwFlag == 1 for wrtite data to flash
-			magicKey = 0x12349876;
-			if (rwFlag == 0) { // For first initial
-				C_12 = CALIBRATE_START;
-				C_34 = CALIBRATE_START;
-				C_14 = CALIBRATE_START;
-				C_23 = CALIBRATE_START;
-				DX1.f = 1;
-				DX2.f = 1;
-				DY1.f = 1;
-				DY2.f = 1;
-			}
-			FLASH_EraseInitTypeDef EraseInitStruct;
-			uint32_t PAGEError = 0;
-			EraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
-			EraseInitStruct.PageAddress = pageAdr; //
-			EraseInitStruct.NbPages     = 1;
-
-			flash_ok = HAL_ERROR;
-			// Unlock flash
-			while(flash_ok != HAL_OK) {
-			  flash_ok = HAL_FLASH_Unlock();
-			}
-			if (HAL_FLASHEx_Erase(&EraseInitStruct, &PAGEError) == HAL_OK) {
-				dataForSave = (uint64_t) magicKey;
-				flash_ok = HAL_ERROR;
-				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr, dataForSave); // Write  magic key
-				}
-				dataForSave = (uint64_t) (C_12 | ((uint64_t) C_34 << 16) | ((uint64_t) C_14 << 32) | ((uint64_t) C_23 << 48));
-				flash_ok = HAL_ERROR;
-				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr + 16, dataForSave); // Write C_12 C_34 C_14 C_23
-				}
-				flash_ok = HAL_ERROR;
-				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 24, DX1.u); // Write DX1
-				}
-				flash_ok = HAL_ERROR;
-				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DX2.u); // Write DX2
-				}
-				flash_ok = HAL_ERROR;
-				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 32, DY1.u); // Write DY1
-				}
-				flash_ok = HAL_ERROR;
-				while(flash_ok != HAL_OK){
-					flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, DY2.u); // Write DY2
-				}
-			}
-			// Lock flash
+		flash_ok = HAL_ERROR;
+		// Unlock flash
+		while(flash_ok != HAL_OK) {
+		  flash_ok = HAL_FLASH_Unlock();
+		}
+		if (HAL_FLASHEx_Erase(&EraseInitStruct, &PAGEError) == HAL_OK) {
+			dataForSave = (uint64_t) magicKey;
 			flash_ok = HAL_ERROR;
 			while(flash_ok != HAL_OK){
-				flash_ok = HAL_FLASH_Lock();
+				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr, dataForSave); // Write  magic key
 			}
-		} else {
-			C_12 = *(__IO uint16_t*) (pageAdr + 16);
-			C_34 = *(__IO uint16_t*) (pageAdr + 18);
-			C_14 = *(__IO uint16_t*) (pageAdr + 20);
-			C_23 = *(__IO uint16_t*) (pageAdr + 22);
-			sprintf(SndBuffer, "C_12: %5d, C_34: %5d, C_14: %5d, C_23: %5d.\r\n", C_12, C_34, C_14, C_23);
-			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-			DX1.u = *(__IO uint32_t*) (pageAdr + 24);
-			DX2.u = *(__IO uint32_t*) (pageAdr + 28);
-			DY1.u = *(__IO uint32_t*) (pageAdr + 32);
-			DY2.u = *(__IO uint32_t*) (pageAdr + 36);
-			memset(SndBuffer, 0, sizeof(SndBuffer));
-			sprintf(SndBuffer, "DX1: %7.6f, DX2: %7.6f, DY1: %7.6f, DY2: %7.6f\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
-			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			dataForSave = (uint64_t) (C_12 | ((uint64_t) C_34 << 16) | ((uint64_t) C_14 << 32) | ((uint64_t) C_23 << 48));
+			flash_ok = HAL_ERROR;
+			while(flash_ok != HAL_OK){
+				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr + 16, dataForSave); // Write C_12 C_34 C_14 C_23
+			}
+			flash_ok = HAL_ERROR;
+			while(flash_ok != HAL_OK){
+				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 24, DX1.u); // Write DX1
+			}
+			flash_ok = HAL_ERROR;
+			while(flash_ok != HAL_OK){
+				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DX2.u); // Write DX2
+			}
+			flash_ok = HAL_ERROR;
+			while(flash_ok != HAL_OK){
+				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 32, DY1.u); // Write DY1
+			}
+			flash_ok = HAL_ERROR;
+			while(flash_ok != HAL_OK){
+				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, DY2.u); // Write DY2
+			}
 		}
+		// Lock flash
+		flash_ok = HAL_ERROR;
+		while(flash_ok != HAL_OK){
+			flash_ok = HAL_FLASH_Lock();
+		}
+	} else {
+		C_12 = *(__IO uint16_t*) (pageAdr + 16);
+		C_34 = *(__IO uint16_t*) (pageAdr + 18);
+		C_14 = *(__IO uint16_t*) (pageAdr + 20);
+		C_23 = *(__IO uint16_t*) (pageAdr + 22);
+		memset(SndBuffer, 0, sizeof(SndBuffer));
+		sprintf(SndBuffer, "C_12: %5d, C_34: %5d, C_14: %5d, C_23: %5d\r\n", C_12, C_34, C_14, C_23);
+		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+		DX1.u = *(__IO uint32_t*) (pageAdr + 24);
+		DX2.u = *(__IO uint32_t*) (pageAdr + 28);
+		DY1.u = *(__IO uint32_t*) (pageAdr + 32);
+		DY2.u = *(__IO uint32_t*) (pageAdr + 36);
+		memset(SndBuffer, 0, sizeof(SndBuffer));
+		sprintf(SndBuffer, "DX1: %7.6f, DX2: %7.6f, DY1: %7.6f, DY2: %7.6f\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
+		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 	}
+}
+
 
 #ifdef ZABBIX_DEBUG
 void UART_Printf(const char* fmt, ...) {
@@ -426,6 +417,18 @@ void init_w5500() {
 }
 
 
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+  /* USER CODE BEGIN 1 */
+
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -461,7 +464,7 @@ void init_w5500() {
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
   readyFlag = TRUE;
   sumCounter2 = 0;
   /* Turn off all multiplexer */
@@ -503,6 +506,7 @@ void init_w5500() {
    * calibrateMode > 0 -- Режим калибровки
    */
   calibrateMode = 0;
+  test_flag = FALSE;
   Xsum = 0;
   Ysum = 0;
   Vmax = 0;
@@ -525,11 +529,12 @@ void init_w5500() {
   HAL_UART_Transmit(&huart1, (uint8_t *) INIT_FINISH_TEXT, sizeof(INIT_FINISH_TEXT), HAL_MAX_DELAY);
   readyFlag = FALSE;
   currentMode = 0;
-  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
+  HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);	// LED off
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
 
   while (1) {
+	  HAL_IWDG_Refresh(&hiwdg);
 	  if (readyFlag) {
 		  SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 		  HAL_IWDG_Refresh(&hiwdg);
@@ -537,46 +542,59 @@ void init_w5500() {
 		  if (calibrateMode > 0) {
 			  /* Процедура калибровки */
 			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
-				  sprintf(SndBuffer, "Z12-Z21:%5.0f-%5.0f, Z43-Z34:%5.0f-%5.0f, Z14-Z41:%5.0f-%5.0f, Z23-Z32:%5.0f-%5.0f   \r",
-						  resul_arrayX1[0], resul_arrayX2[0], resul_arrayX3[0], resul_arrayX4[0], resul_arrayY1[0], resul_arrayY2[0], resul_arrayY3[0], resul_arrayY4[0]);
+				  memset(SndBuffer, 0, sizeof(SndBuffer));
+				  if (test_flag) {
+					  sprintf(SndBuffer, "Z12-Z21:%5.0f, Z43-Z34:%5.0f, Z14-Z41:%5.0f, Z23-Z32:%5.0f   \r",
+							  resul_arrayY1[0] - resul_arrayY2[0] * DY1.f,
+							  resul_arrayY4[0] - resul_arrayY3[0] * DY2.f,
+							  resul_arrayX1[0] - resul_arrayX2[0] * DX1.f,
+							  resul_arrayX4[0] - resul_arrayX3[0] * DX2.f);
+				  } else {
+					  sprintf(SndBuffer, "Z12-Z21:%5.0f-%5.0f, Z43-Z34:%5.0f-%5.0f, Z14-Z41:%5.0f-%5.0f, Z23-Z32:%5.0f-%5.0f   \r",
+							  resul_arrayY1[0], resul_arrayY2[0], resul_arrayY3[0], resul_arrayY4[0], resul_arrayX1[0], resul_arrayX2[0], resul_arrayX3[0], resul_arrayX4[0]);
+				  }
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-				  if ( calibrate12 && (abs(resul_arrayX1[0] + resul_arrayX2[0] - 1600) > CALIBRATE_ACURACY) ) {
-					  if (resul_arrayX1[0] + resul_arrayX2[0] > 1600) {
-						  C_12++;
+				  /* Y */
+				  if (! test_flag) {
+					  if ( calibrate12 && (abs(resul_arrayY1[0] + resul_arrayY2[0] - 1600) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayY1[0] + resul_arrayY2[0] > 1600) {
+							  C_12++;
+						  } else {
+							  C_12--;
+						  }
 					  } else {
-						  C_12--;
+						  calibrate12 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
 					  }
-				  } else {
-					  calibrate12 = FALSE;	// Закончена калибровка таймера запуска измерения в канале X1
-				  }
-				  if ( calibrate34 && (abs(resul_arrayX3[0] + resul_arrayX4[0] - 1600) > CALIBRATE_ACURACY) ) {
-					  if (resul_arrayX3[0] + resul_arrayX4[0] > 1600) {
-						  C_34++;
+					  if ( calibrate34 && (abs(resul_arrayY3[0] + resul_arrayY4[0] - 1600) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayY3[0] + resul_arrayY4[0] > 1600) {
+							  C_34++;
+						  } else {
+							  C_34--;
+						  }
 					  } else {
-						  C_34--;
+						  calibrate34 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
 					  }
-				  } else {
-					  calibrate34 = FALSE;	// Закончена калибровка таймера запуска измерения в канале X2
-				  }
-				  if ( calibrate14 && (abs(resul_arrayY1[0] + resul_arrayY2[0] - 1600) > CALIBRATE_ACURACY) ) {
-					  if(resul_arrayY1[0] + resul_arrayY2[0] > 1600) {
-						  C_14++;
+					  /* X */
+					  if ( calibrate14 && (abs(resul_arrayX3[0] + resul_arrayX4[0] - 1600) > CALIBRATE_ACURACY) ) {
+						  if(resul_arrayX3[0] + resul_arrayX4[0] > 1600) {
+							  C_14++;
+						  } else {
+							  C_14--;
+						  }
 					  } else {
-						  C_14--;
+						  calibrate14 = FALSE;	// Закончена калибровка таймера запуска измерения в канале X2
 					  }
-				  } else {
-					  calibrate14 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
-				  }
-				  if ( calibrate23 && (abs(resul_arrayY3[0] + resul_arrayY4[0] - 1600) > CALIBRATE_ACURACY) ) {
-					  if(resul_arrayY3[0] + resul_arrayY4[0] > 1600) {
-						  C_23++;
+					  if ( calibrate23 && (abs(resul_arrayX1[0] + resul_arrayX2[0] - 1600) > CALIBRATE_ACURACY) ) {
+						  if(resul_arrayX1[0] + resul_arrayX2[0] > 1600) {
+							  C_23++;
+						  } else {
+							  C_23--;
+						  }
 					  } else {
-						  C_23--;
+						  calibrate23 = FALSE;	// Закончена калибровка таймера запуска измерения в канале X1
 					  }
-				  } else {
-					  calibrate23 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
+					  calibrateCount++;
 				  }
-				  calibrateCount++;
 				#ifdef SYSTICK_DISABLE
 				  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;  // Выключение SysTick
 				#endif
@@ -645,6 +663,8 @@ void init_w5500() {
 					#endif
 			  	  } else {
 					#ifdef BME280_ENABLE
+			  		HAL_I2C_DeInit(&hi2c1);
+			  		MX_I2C1_Init();
 			  		BME280_Init();  // Сбой датчика bme280, пробуем исправить.
 					#endif
 			  	  }
@@ -689,6 +709,7 @@ void init_w5500() {
 			  calibrate34 = TRUE;
 			  calibrate14 = TRUE;
 			  calibrate23 = TRUE;
+			  test_flag = FALSE;
 			  calibrateCount = 0;
 			  C_12 = CALIBRATE_START;
 			  C_34 = CALIBRATE_START;
@@ -711,6 +732,37 @@ void init_w5500() {
 			  currentMode = 0;
 			  measCount = 0;
 			  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
+		  } else {
+			  if (uart_buffer[0] == 't' ) {		// Test
+				  HAL_TIM_Base_Stop_IT(&htim4); // Остановим измерения
+				  STOP_CAPTURE
+				  HAL_UART_Transmit(&huart1, (uint8_t *) TEST_TEXT, sizeof(TEST_TEXT), 1000);
+				  calibrateMode = 1;
+				  calibrateCount = 0;
+				  test_flag = TRUE;
+				  calibrate12 = TRUE;
+				  calibrate34 = TRUE;
+				  calibrate14 = TRUE;
+				  calibrate23 = TRUE;
+				  measCount = 0;
+				  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
+			  } else {
+				  if (uart_buffer[0] == 'r' ) {		// Terminate calibration && test
+					  HAL_TIM_Base_Stop_IT(&htim4); // Остановим измерения
+					  STOP_CAPTURE
+					  HAL_UART_Transmit(&huart1, (uint8_t *) TEST_TERMINATE, sizeof(TEST_TERMINATE), 1000);
+					  test_flag = 0;
+					  calibrate12 = TRUE;
+					  calibrate34 = TRUE;
+					  calibrate14 = TRUE;
+					  calibrate23 = TRUE;
+					  calibrateMode = 0;
+					  calibrateCount = 0;
+					  measCount = 0;
+					  rwFlash(0);		// Чтение параметров калибровки из Flash.
+					  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
+				  }
+			  }
 		  }
 		  uart_buffer[0] = 0x00;
 	  }
@@ -735,14 +787,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL8;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -778,7 +829,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 40000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -887,7 +938,7 @@ static void MX_TIM1_Init(void)
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 799;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 5;
+  htim1.Init.RepetitionCounter = 7;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
@@ -1204,18 +1255,13 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED_Pin|TP_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : Z1Receive_Pin Z2Receive_Pin Z3Receive_Pin Z4Receive_Pin */
-  GPIO_InitStruct.Pin = Z1Receive_Pin|Z2Receive_Pin|Z3Receive_Pin|Z4Receive_Pin;
+  /*Configure GPIO pins : Z1Receive_Pin Z2Receive_Pin Z3Receive_Pin Z4Receive_Pin
+                           Eth_CS_Pin */
+  GPIO_InitStruct.Pin = Z1Receive_Pin|Z2Receive_Pin|Z3Receive_Pin|Z4Receive_Pin
+                          |Eth_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : Eth_CS_Pin Eth_int_Pin Eth_rst_Pin */
-  GPIO_InitStruct.Pin = Eth_CS_Pin|Eth_int_Pin|Eth_rst_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_Pin TP_Pin */
@@ -1224,6 +1270,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Eth_int_Pin Eth_rst_Pin */
+  GPIO_InitStruct.Pin = Eth_int_Pin|Eth_rst_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
@@ -1249,43 +1302,40 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 					front_sum = front_sum / COUNT_FRONT - 3600;  // Расчитываем задержку от средины импульсов
 					/* Turn off all multiplexer */
 					GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
-					switch (currentMode++) {
-						case 0: { // Z1 > Z2, Z12
-							resul_arrayX1[measCount] = front_sum;
-							break;
-						}
-						case 1: { // Z2 > Z1, Z21
-							resul_arrayX2[measCount] = front_sum;
-							break;
-						}
-						case 2: { // Z2 > Z3 Z23
-							resul_arrayY3[measCount] = front_sum;
-							break;
-						}
-						case 3: { // Z3 > Z2 Z32
-							resul_arrayY4[measCount] = front_sum;
-							break;
-						}
-						case 4: { // Z3 > Z4 Z34
-							resul_arrayX3[measCount] = front_sum;
-							break;
-						}
-						case 5: { // Z4 > Z3 Z43
-							resul_arrayX4[measCount] = front_sum;
-							break;
-						}
-						case 6: { // Z4 > Z1 Z41
+					switch (currentMode) {
+						case 1: { // Z1 > Z2, Z12
 							resul_arrayY1[measCount] = front_sum;
 							break;
 						}
-						case 7: { // Z1 > Z4 Z14
+						case 2: { // Z2 > Z1, Z21
 							resul_arrayY2[measCount] = front_sum;
-							measCount++;
 							break;
 						}
-					}
-					if (currentMode == 8) {
-						currentMode = 0;
+						case 3: { // Z2 > Z3 Z23
+							resul_arrayX1[measCount] = front_sum;
+							break;
+						}
+						case 4: { // Z3 > Z2 Z32
+							resul_arrayX2[measCount] = front_sum;
+							break;
+						}
+						case 5: { // Z3 > Z4 Z34
+							resul_arrayY3[measCount] = front_sum;
+							break;
+						}
+						case 6: { // Z4 > Z3 Z43
+							resul_arrayY4[measCount] = front_sum;
+							break;
+						}
+						case 7: { // Z4 > Z1 Z41
+							resul_arrayX3[measCount] = front_sum;
+							break;
+						}
+						case 8: { // Z1 > Z4 Z14
+							resul_arrayX4[measCount] = front_sum;
+							//measCount++;
+							break;
+						}
 					}
 				}
 			}

@@ -71,14 +71,14 @@ extern "C" {
 #define Z2Receive 2
 #define Z3Receive 10
 #define Z4Receive 11
-#define setZ1transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8_0)) | (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1)
-#define setZ2transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9_0)) | (GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1)
-#define setZ3transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10_0)) | (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1)
-#define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1)
-#define setZ1receive GPIOB->ODR |= (1 << Z1Receive)
-#define setZ2receive GPIOB->ODR |= (1 << Z2Receive)
-#define setZ3receive GPIOB->ODR |= (1 << Z3Receive)
-#define setZ4receive GPIOB->ODR |= (1 << Z4Receive)
+//#define setZ1transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8_0)) | (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1);
+//#define setZ2transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9_0)) | (GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1);
+//#define setZ3transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10_0)) | (GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1);
+//#define setZ4transmit GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11_0)) | (GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1);
+#define setZ1receive GPIOB->ODR |= (1 << Z1Receive); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8)) | GPIO_CRH_CNF8_0;
+#define setZ2receive GPIOB->ODR |= (1 << Z2Receive); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9)) | GPIO_CRH_CNF9_0;
+#define setZ3receive GPIOB->ODR |= (1 << Z3Receive); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10)) | GPIO_CRH_CNF10_0;
+#define setZ4receive GPIOB->ODR |= (1 << Z4Receive); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11)) | GPIO_CRH_CNF11_0;
 #define LED_PULSE GPIOA->BSRR = (uint32_t)LED_Pin; GPIOA->BSRR = (uint32_t)LED_Pin << 16u;
 #define TP_PULSE GPIOA->BSRR = (uint32_t)GPIO_PIN_15; GPIOA->BSRR = (uint32_t)GPIO_PIN_15 << 16u;
 //#define START_CAPTURE HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &fastCounter, 2); HAL_TIM_IC_Start(&htim2, TIM_CHANNEL_2);
@@ -168,7 +168,7 @@ uint16_t calibrateCount, calibrateMode, runFlag;
  * // 24000
  * Подбирать по максимуму огибающей. Чем больше амплитуда, тем меньше jitter
  * */
-#define CALIBRATE_START 24000// 34000, 24000
+#define CALIBRATE_START 44000// 34000, 24000
 #define MEASSURE_COUNT 100
 #define PREFETCH 20
 #define SPEED_CALIBRATE 42.19f // cos(atg(17/18)) * (49.52/330000 - 49.52/331000) / (1/64000000) * 2
@@ -177,6 +177,10 @@ uint16_t calibrateCount, calibrateMode, runFlag;
 #define CALIBRATE_TIMES 5
 #define CALIBRATE_MAX_COUNT 1600
 #define BODY_CALIBRATE_START 1000
+#define MEDIAN_FILTER_ENABLE
+//#define DIFFERENT_ANALIS
+#define TEST_TEXT "\r\nStart test.\r\n"
+#define TEST_TERMINATE "\r\nTerminate test or calibrate.\r\n"
 #define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
 #define CALIBRATE_ERROR_RANGE "\r\nCalibrate ERROR.\r\nDelta out of range.\r\n"
 #define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
@@ -192,7 +196,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-bool readyFlag, firstTime, calibrate12, calibrate34, calibrate14, calibrate23;
+bool readyFlag, firstTime, calibrate12, calibrate34, calibrate14, calibrate23, test_flag;
 
 /* For W5500*/
 #define DHCP_SOCKET     0
@@ -203,10 +207,11 @@ bool readyFlag, firstTime, calibrate12, calibrate34, calibrate14, calibrate23;
 #define _DHCP_DEBUG_
 
 //#define ZABBIX_DEBUG
-#define ZABBIX_ENABLE
+//#define ZABBIX_ENABLE
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128
+#define MAC_ADDRESS		0x00, 0x11, 0x22, 0x33, 0x44, 0xEB
 char ZabbixHostName[255];
 
 /* USER CODE END Private defines */
