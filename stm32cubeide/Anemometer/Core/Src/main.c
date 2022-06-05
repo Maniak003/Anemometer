@@ -306,7 +306,7 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
             len -= nbytes;
         }
     }
-    /* Read data from Zabbix
+    /* Read data from Zabbix */
 #ifdef ZABBIX_DEBUG
     UART_Printf("Read.\r\n");
 #endif
@@ -334,7 +334,7 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
 			#endif
         }
     }
-    */
+
 	#ifdef ZABBIX_DEBUG
     UART_Printf("Closing socket.\r\n");
 	#endif
@@ -534,7 +534,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
 
   while (1) {
-	  HAL_IWDG_Refresh(&hiwdg);
+	  //HAL_IWDG_Refresh(&hiwdg);
 	  if (readyFlag) {
 		  SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 		  HAL_IWDG_Refresh(&hiwdg);
@@ -669,14 +669,14 @@ int main(void)
 					#endif
 			  	  }
 				#endif
-			  if ( A != 0 ) {
-				  if ( (! firstTime) && (V < MAX_SPEED) && (Vmax < MAX_SPEED) ) {  // Первый раз пропускаем для инициализации переменных.
+			  if ( V != 0 ) {
+				  if ( (! firstTime) && (V < MAX_SPEED) && (Vmaxfin < MAX_SPEED) ) {  // Первый раз пропускаем для инициализации переменных.
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
 				  }
 			  } else {
-				  if ( (! firstTime) && (Vmax < MAX_SPEED) ) {
+				  if ( (! firstTime) && (Vmaxfin < MAX_SPEED) ) {
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
 				  }
@@ -684,7 +684,8 @@ int main(void)
 			#endif
 			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  if ( ! firstTime ) {
-				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r", Xsum, Ysum, V, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity);
+				  sprintf(SndBuffer, "X:%5.2f, Y:%5.2f, V:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r",
+						  Xsum, Ysum, V, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
 			  firstTime = FALSE;
