@@ -292,9 +292,10 @@ void TIM4_IRQHandler(void)
 	GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8_0 | GPIO_CRH_CNF9_0 | GPIO_CRH_CNF10_0 | GPIO_CRH_CNF11_0))
 			| (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1 | GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1 | GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1 | GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1);
 
+	/* Управление циклом опроса */
 	if (currentMode >= 8) {
 		currentMode = 0;
-		measCount++;
+		measCount++;  // Следующее измерение.
 	}
 	//LED_PULSE
 	if ((measCount == MEASSURE_COUNT) && (calibrateMode == 0)) {
@@ -312,11 +313,13 @@ void TIM4_IRQHandler(void)
 		Ysum1 = 0;
 		Ysum2 = 0;
 		#ifdef MEDIAN_FILTER_ENABLE
+		/* Фильтр для всех значений */
 		X1m[0] = 0; X1m[1] = 0; X1m[2] = 0; countX1 = 0;
 		X2m[0] = 0; X2m[1] = 0; X2m[2] = 0; countX2 = 0;
 		Y1m[0] = 0; Y1m[1] = 0; Y1m[2] = 0; countY1 = 0;
 		Y2m[0] = 0; Y2m[1] = 0; Y2m[2] = 0; countY2 = 0;
 		#else
+		/* Фильтр только для максимальной скорости */
 		Vm[0] = 0; Vm[1] = 0; Vm[2] = 0; countV = 0;
 		#endif
 		//LED_PULSE
@@ -350,7 +353,7 @@ void TIM4_IRQHandler(void)
 			Y1m[countY1] = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
 			if (++countY1 >= 3) countY1 = 0;
 			YY1 = (Y1m[0] < Y1m[1]) ? ((Y1m[1] < Y1m[2]) ? Y1m[1] : ((Y1m[2] < Y1m[0]) ? Y1m[0] : Y1m[2])) : ((Y1m[0] < Y1m[2]) ? Y1m[0] : ((Y1m[2] < Y1m[1]) ? Y1m[1] : Y1m[2]));
-			X2m[countY2] = resul_arrayY4[ii] - resul_arrayY3[ii] * DY2.f;
+			Y2m[countY2] = resul_arrayY4[ii] - resul_arrayY3[ii] * DY2.f;
 			if (++countY2 >= 3) countY2 = 0;
 			YY2 = (Y2m[0] < Y2m[1]) ? ((Y2m[1] < Y2m[2]) ? Y2m[1] : ((Y2m[2] < Y2m[0]) ? Y2m[0] : Y2m[2])) : ((Y2m[0] < Y2m[2]) ? Y2m[0] : ((Y2m[2] < Y2m[1]) ? Y2m[1] : Y2m[2]));
 			#else
@@ -421,7 +424,7 @@ void TIM4_IRQHandler(void)
 		measCount = 0;
 		readyFlag = TRUE;  // Разрешаем обработку в основном цикле.
 	} else {
-		if ((calibrateMode > 0) && (measCount == 1)) {  // Режим калибровки
+		if ((calibrateMode > 0) && (measCount == 1)) {  // Режим калибровки/тестирования
 			HAL_TIM_Base_Stop_IT(&htim4);  // Остановим измерения на время обработки
 			measCount = 0;
 			#ifdef SYSTICK_DISABLE
@@ -431,7 +434,7 @@ void TIM4_IRQHandler(void)
 		} else {
 			switch (currentMode++) {
 				case 0: { 					// Z1 (transmit) > Z2 (receive) Y1
-					LED_PULSE
+					//LED_PULSE
 					//setZ1transmit; 			// Set Z1 port to output mode
 					setZ2receive 			// Turn on multiplexer for input Z2 channel.
 					HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в первом канале
@@ -483,7 +486,7 @@ void TIM4_IRQHandler(void)
 					break;
 				}
 				case 7: { 					// Z1 (transmit) > Z4 (receive) X4
-					//LED_PULSE
+					LED_PULSE
 					TIM3->ARR = C_12; 		// Коррекция для таймера запуска измерения Z12, Z21
 					//setZ1transmit;			// Set Z1 port to output mode
 					setZ4receive 			// Turn on multiplexer for input Z4 channel.

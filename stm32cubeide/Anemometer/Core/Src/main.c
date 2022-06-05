@@ -53,7 +53,6 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-DMA_HandleTypeDef hdma_tim2_ch1;
 
 UART_HandleTypeDef huart1;
 
@@ -71,7 +70,6 @@ wiz_NetInfo net_info = {
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM2_Init(void);
@@ -307,36 +305,28 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
         }
     }
     /* Read data from Zabbix */
-#ifdef ZABBIX_DEBUG
-    UART_Printf("Read.\r\n");
-#endif
-    {
-        char buff[32];
-        for(;;) {
-            int32_t nbytes = recv(tcp_socket, (uint8_t*)&buff, sizeof(buff)-1);
-            if(nbytes == SOCKERR_SOCKSTATUS) {
-			#ifdef ZABBIX_DEBUG
-                UART_Printf("\r\nDisconnect.\r\n");
-			#endif
-                break;
-            }
-
-            if(nbytes <= 0) {
-			#ifdef ZABBIX_DEBUG
-                UART_Printf("\r\nrecv() failed, %d\r\n", nbytes);
-			#endif
-                break;
-            }
-
-            buff[nbytes] = '\0';
-			#ifdef ZABBIX_DEBUG
-            UART_Printf("%s", buff);
-			#endif
-        }
-    }
-
 	#ifdef ZABBIX_DEBUG
-    UART_Printf("Closing socket.\r\n");
+		UART_Printf("Read.\r\n");
+		{
+			char buff[32];
+			for(;;) {
+				int32_t nbytes = recv(tcp_socket, (uint8_t*)&buff, sizeof(buff)-1);
+				if(nbytes == SOCKERR_SOCKSTATUS) {
+					UART_Printf("\r\nDisconnect.\r\n");
+					break;
+				}
+
+				if(nbytes <= 0) {
+					UART_Printf("\r\nrecv() failed, %d\r\n", nbytes);
+					break;
+				}
+
+				buff[nbytes] = '\0';
+				UART_Printf("%s", buff);
+			}
+		}
+
+		UART_Printf("Closing socket.\r\n");
 	#endif
     close(tcp_socket);
     return(0);
@@ -449,7 +439,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_TIM1_Init();
   MX_USART1_UART_Init();
   MX_TIM2_Init();
@@ -491,6 +480,8 @@ int main(void)
   HAL_GPIO_WritePin(GPIOB, W5500_CS_Pin, GPIO_PIN_SET);
   HAL_Delay(2000);
   init_w5500();
+#else
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);	// Reset W5500
 #endif
   rwFlash(0);		// Чтение параметров калибровки из Flash.
 //  C_12 = 37640;
@@ -544,7 +535,7 @@ int main(void)
 			  if ((calibrate12 || calibrate34 || calibrate14 || calibrate23) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
 				  memset(SndBuffer, 0, sizeof(SndBuffer));
 				  if (test_flag) {
-					  sprintf(SndBuffer, "Z12-Z21:%5.0f, Z43-Z34:%5.0f, Z14-Z41:%5.0f, Z23-Z32:%5.0f   \r",
+					  sprintf(SndBuffer, "Z12-Z21:%5.0f, Z43-Z34:%5.0f, Z23-Z32:%5.0f, Z14-Z41:%5.0f   \r",
 							  resul_arrayY1[0] - resul_arrayY2[0] * DY1.f,
 							  resul_arrayY4[0] - resul_arrayY3[0] * DY2.f,
 							  resul_arrayX1[0] - resul_arrayX2[0] * DX1.f,
@@ -653,6 +644,12 @@ int main(void)
 			  pressure = BME280_ReadPressure() * 0.00750063755419211f; //0.00750063755419211
 			  humidity = BME280_ReadHumidity();
 			#endif
+			  /*
+			  memset(SndBuffer, 0, sizeof(SndBuffer));
+			  for (int iii = 0; iii < MEASSURE_COUNT; iii++) {
+				  sprintf(SndBuffer, "X3:%5.2f, X4:%5.2f                 \r\n", resul_arrayX3[iii], resul_arrayX4[iii]);
+				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			  }*/
 			#ifdef ZABBIX_ENABLE
 				#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
 			  	  if ((temperature < 60.0) && (temperature > -40.0)) {
@@ -788,12 +785,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV2;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -1225,17 +1223,6 @@ static void MX_USART1_UART_Init(void)
 }
 
 /**
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void)
-{
-
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA1_CLK_ENABLE();
-
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -1301,6 +1288,9 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 					//	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 					//#endif
 					front_sum = front_sum / COUNT_FRONT - 3600;  // Расчитываем задержку от средины импульсов
+					if (front_sum > 1500) {		// Ошибка измерения.
+						front_sum = 1500;		// Значение необходимое для калибровки.
+					}
 					/* Turn off all multiplexer */
 					GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 					switch (currentMode) {
