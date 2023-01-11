@@ -3215,7 +3215,7 @@ Wire Wire Line
 	5750 3950 5900 3950
 Connection ~ 5900 3950
 $Comp
-L My_Library:TLV3501-2 D20
+L Anemometr-rescue:TLV3501-2-My_Library D20
 U 1 1 637C998F
 P 10050 1350
 F 0 "D20" H 9900 1350 50  0000 L CNN
@@ -3235,7 +3235,7 @@ Wire Wire Line
 Wire Wire Line
 	10150 1600 10200 1600
 $Comp
-L My_Library:TLV3501-2 D21
+L Anemometr-rescue:TLV3501-2-My_Library D21
 U 1 1 638DF360
 P 10050 3150
 F 0 "D21" H 9900 3150 50  0000 L CNN
