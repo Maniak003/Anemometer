@@ -58,7 +58,7 @@ wiz_NetInfo net_info = {
 	.mac  = { MAC_ADDRESS },
 	.dhcp = NETINFO_DHCP
 };
-
+uint32_t errCnt, errMin, errMax, err;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -472,9 +472,23 @@ int main(void)
   while (1)
   {
 	  if (readyFlag) {
+		  if (errCnt++ > 100) {
+		    errCnt = 0;
+		    err = errMax - errMin;
+		    errMax = 0;
+		    errMin = 65565;
+		  }
+		  else {
+			  if (errMax < resulMeass) {
+				  errMax = resulMeass;
+			  }
+			  if (errMin > resulMeass) {
+				  errMin = resulMeass;
+			  }
+		  }
 		  readyFlag = FALSE;
 		  memset(SndBuffer, 0, sizeof(SndBuffer));
-		  sprintf(SndBuffer, "Capture :%lu   \r", (uint32_t) resulMeass);
+		  sprintf(SndBuffer, "Capture :%lu, Error:%lu   \r", (uint32_t) resulMeass, err);
 		  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 	  }
     /* USER CODE END WHILE */

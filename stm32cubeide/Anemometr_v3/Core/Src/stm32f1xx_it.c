@@ -274,8 +274,8 @@ void TIM4_IRQHandler(void)
 			| (GPIO_CRH_CNF8_1 | GPIO_CRH_MODE8_1 | GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9_1 | GPIO_CRH_CNF10_1 | GPIO_CRH_MODE10_1 | GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11_1);
 
 	TIM3->ARR = C_13; 		// Коррекция для таймера запуска измерения Z13
-	setZ1receive
-	HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3);
+	setZ3receive
+	HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 
 	START_CAPTURE
   /* USER CODE END TIM4_IRQn 0 */
