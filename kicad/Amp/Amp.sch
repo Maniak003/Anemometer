@@ -14,17 +14,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Amp-rescue:Conn-My_Library J1
-U 1 1 63C7E189
-P 3400 2350
-F 0 "J1" H 3342 2165 50  0001 C CNN
-F 1 "Conn" H 3342 2256 50  0001 C CNN
-F 2 "My-library:connBig" H 3450 2200 50  0001 C CNN
-F 3 "~" H 3400 2350 50  0001 C CNN
-	1    3400 2350
-	-1   0    0    1   
-$EndComp
-$Comp
 L Device:C C2
 U 1 1 63C7E6CA
 P 6000 2150
@@ -47,29 +36,7 @@ F 3 "https://www.analog.com/media/en/technical-documentation/data-sheets/AD8603_
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR02
-U 1 1 63C7F0B0
-P 5250 3250
-F 0 "#PWR02" H 5250 3000 50  0001 C CNN
-F 1 "GND" H 5255 3077 50  0001 C CNN
-F 2 "" H 5250 3250 50  0001 C CNN
-F 3 "" H 5250 3250 50  0001 C CNN
-	1    5250 3250
-	1    0    0    -1  
-$EndComp
-$Comp
-L Amp-rescue:Conn-My_Library J2
-U 1 1 63C7FD46
-P 3400 3150
-F 0 "J2" H 3342 2965 50  0001 C CNN
-F 1 "Conn" H 3342 3056 50  0001 C CNN
-F 2 "My-library:connBig" H 3450 3000 50  0001 C CNN
-F 3 "~" H 3400 3150 50  0001 C CNN
-	1    3400 3150
-	-1   0    0    1   
-$EndComp
-$Comp
-L Amp-rescue:Conn-My_Library J6
+L Amp-rescue:Conn-My_Library-Amp-rescue J6
 U 1 1 63C80349
 P 7400 3150
 F 0 "J6" H 7428 3196 50  0001 L CNN
@@ -96,8 +63,8 @@ $Comp
 L Device:R R3
 U 1 1 63C8294F
 P 5250 3000
-F 0 "R3" H 5050 2800 50  0000 L CNN
-F 1 "100k" H 5000 2700 50  0000 L CNN
+F 0 "R3" H 5300 2800 50  0000 L CNN
+F 1 "20k" H 5300 2700 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 5180 3000 50  0001 C CNN
 F 3 "~" H 5250 3000 50  0001 C CNN
 	1    5250 3000
@@ -106,12 +73,12 @@ $EndComp
 $Comp
 L Device:C C3
 U 1 1 63C8351B
-P 5100 3000
+P 5050 3000
 F 0 "C3" H 4850 3050 50  0000 L CNN
-F 1 "1uF" H 4850 2950 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 5138 2850 50  0001 C CNN
-F 3 "~" H 5100 3000 50  0001 C CNN
-	1    5100 3000
+F 1 "10n" H 4800 2950 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 5088 2850 50  0001 C CNN
+F 3 "~" H 5050 3000 50  0001 C CNN
+	1    5050 3000
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -141,8 +108,6 @@ Wire Wire Line
 Wire Wire Line
 	5250 2550 5250 2850
 Connection ~ 5250 2850
-Wire Wire Line
-	5250 3150 5250 3250
 Connection ~ 5250 3150
 Wire Wire Line
 	5250 3150 5600 3150
@@ -163,7 +128,7 @@ $Comp
 L Device:Q_NPN_BEC Q1
 U 1 1 63C8A2D1
 P 6350 2100
-F 0 "Q1" V 6587 2100 50  0000 C CNN
+F 0 "Q1" V 6450 2100 50  0000 C CNN
 F 1 "Q_NPN_BEC" V 6587 2100 50  0001 C CNN
 F 2 "Package_TO_SOT_SMD:SOT-23" H 6550 2200 50  0001 C CNN
 F 3 "~" H 6350 2100 50  0001 C CNN
@@ -193,18 +158,18 @@ F 3 "~" H 6150 2650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library J3
+L Amp-rescue:Conn-My_Library-Amp-rescue J3
 U 1 1 63C8F41C
-P 7850 2000
-F 0 "J3" H 7878 2046 50  0001 L CNN
-F 1 "Conn" H 7878 1955 50  0001 L CNN
-F 2 "My-library:SMD-CONN" H 7900 1850 50  0001 C CNN
-F 3 "~" H 7850 2000 50  0001 C CNN
-	1    7850 2000
+P 8100 2000
+F 0 "J3" H 8128 2046 50  0001 L CNN
+F 1 "Conn" H 8128 1955 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 8150 1850 50  0001 C CNN
+F 3 "~" H 8100 2000 50  0001 C CNN
+	1    8100 2000
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library J5
+L Amp-rescue:Conn-My_Library-Amp-rescue J5
 U 1 1 63C8F7BE
 P 7400 2650
 F 0 "J5" H 7428 2696 50  0001 L CNN
@@ -215,14 +180,14 @@ F 3 "~" H 7400 2650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library J4
+L Amp-rescue:Conn-My_Library-Amp-rescue J4
 U 1 1 63C92E60
-P 7400 3000
-F 0 "J4" H 7428 3046 50  0001 L CNN
-F 1 "Conn" H 7428 2955 50  0001 L CNN
-F 2 "My-library:SMD-CONN" H 7450 2850 50  0001 C CNN
-F 3 "~" H 7400 3000 50  0001 C CNN
-	1    7400 3000
+P 7400 3450
+F 0 "J4" H 7428 3496 50  0001 L CNN
+F 1 "Conn" H 7428 3405 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 7450 3300 50  0001 C CNN
+F 3 "~" H 7400 3450 50  0001 C CNN
+	1    7400 3450
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -233,7 +198,7 @@ L Device:R R2
 U 1 1 63C7E3E7
 P 5250 2150
 F 0 "R2" H 5320 2196 50  0000 L CNN
-F 1 "100k" H 5320 2105 50  0000 L CNN
+F 1 "20k" H 5320 2105 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 5180 2150 50  0001 C CNN
 F 3 "~" H 5250 2150 50  0001 C CNN
 	1    5250 2150
@@ -245,19 +210,12 @@ L Analog_Switch:TS5A3166DBVR U2
 U 1 1 63CAD01E
 P 6900 2650
 F 0 "U2" H 6800 2800 50  0000 L CNN
-F 1 "TS5A3166DBVR" H 6650 2050 50  0000 L CNN
+F 1 "TS5A3166DBVR" H 6650 2050 50  0001 L CNN
 F 2 "Package_TO_SOT_SMD:SOT-23-5" H 6850 2500 50  0001 C CNN
 F 3 " http://www.ti.com/lit/ds/symlink/ts5a3166.pdf" H 6900 2750 50  0001 C CNN
 	1    6900 2650
 	-1   0    0    -1  
 $EndComp
-Wire Wire Line
-	6350 2600 6350 2750
-Wire Wire Line
-	6350 2750 6400 2750
-Wire Wire Line
-	6350 2750 6350 3000
-Connection ~ 6350 2750
 Wire Wire Line
 	6800 2950 6800 3150
 Wire Wire Line
@@ -393,20 +351,17 @@ F 3 "" H 7700 2300 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	7650 2000 7700 2000
-Connection ~ 7700 2000
-Wire Wire Line
-	7700 2000 7750 2000
 Wire Wire Line
 	6950 2000 7050 2000
 Connection ~ 6950 2000
 Connection ~ 6000 2000
 Wire Wire Line
 	6000 2000 6150 2000
-Text Label 7700 2000 0    50   ~ 0
+Text Label 8000 2000 0    50   ~ 0
 +5v
 Text Label 7200 2650 0    50   ~ 0
 Out
-Text Label 6850 3000 0    50   ~ 0
+Text Label 7200 3400 0    50   ~ 0
 Select
 Text Label 4400 2350 0    50   ~ 0
 In
@@ -417,44 +372,32 @@ Connection ~ 4500 2750
 Wire Wire Line
 	4500 2750 4550 2750
 Wire Wire Line
-	3500 2350 4500 2350
-Wire Wire Line
 	4500 2350 4500 2750
 $Comp
-L Amp-rescue:Conn-My_Library J7
+L Amp-rescue:Conn-My_Library-Amp-rescue J7
 U 1 1 63D437C1
-P 3400 2750
-F 0 "J7" H 3428 2796 50  0001 L CNN
-F 1 "Conn" H 3428 2705 50  0001 L CNN
-F 2 "My-library:SMD-CONN" H 3450 2600 50  0001 C CNN
-F 3 "~" H 3400 2750 50  0001 C CNN
-	1    3400 2750
+P 3500 2150
+F 0 "J7" H 3528 2196 50  0001 L CNN
+F 1 "Conn" H 3528 2105 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 3550 2000 50  0001 C CNN
+F 3 "~" H 3500 2150 50  0001 C CNN
+	1    3500 2150
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	6350 3000 6350 3450
-Wire Wire Line
 	6350 3450 4350 3450
-Connection ~ 6350 3000
 Wire Wire Line
-	5100 2850 5250 2850
-Connection ~ 5100 3150
-Wire Wire Line
-	5100 3150 5250 3150
-Wire Wire Line
-	4500 3150 5100 3150
-Text Label 5700 1800 0    50   ~ 0
+	4500 3150 5050 3150
+Text Label 5700 1850 0    50   ~ 0
 3.3v
 Wire Wire Line
-	6800 2000 6800 1800
-Wire Wire Line
-	3500 3150 3950 3150
+	6800 2000 6800 1850
 $Comp
-L My_Library:TS5A3167DBVR U4
+L Amp-rescue:TS5A3167DBVR-My_Library U4
 U 1 1 63D0B70A
 P 4050 2750
 F 0 "U4" H 3950 2900 50  0000 L CNN
-F 1 "TS5A3167DBVR" H 3850 2200 50  0000 L CNN
+F 1 "TS5A3167DBVR" H 3850 2250 50  0001 L CNN
 F 2 "Package_TO_SOT_SMD:SOT-23-5" H 3815 2495 50  0001 C CNN
 F 3 " http://www.ti.com/lit/ds/symlink/ts5a3166.pdf" H 4050 2850 50  0001 C CNN
 	1    4050 2750
@@ -463,11 +406,9 @@ $EndComp
 Wire Wire Line
 	4350 2850 4350 3450
 Wire Wire Line
-	3950 2450 3950 1800
+	3950 2450 3950 1850
 Wire Wire Line
 	4350 2750 4500 2750
-Wire Wire Line
-	3950 1800 6800 1800
 Wire Wire Line
 	3950 3050 3950 3150
 Connection ~ 3950 3150
@@ -477,15 +418,71 @@ Wire Wire Line
 	6300 2650 6600 2650
 Wire Wire Line
 	7200 2650 7300 2650
-Wire Wire Line
-	7200 2750 7200 3000
-Wire Wire Line
-	6350 3000 7200 3000
-Wire Wire Line
-	7200 3000 7300 3000
-Connection ~ 7200 3000
-Text Label 3500 2750 0    50   ~ 0
+Text Label 3600 2150 0    50   ~ 0
 Signal
+$Comp
+L power:GND #PWR02
+U 1 1 63CE834D
+P 5600 3250
+F 0 "#PWR02" H 5600 3000 50  0001 C CNN
+F 1 "GND" H 5605 3077 50  0001 C CNN
+F 2 "" H 5600 3250 50  0001 C CNN
+F 3 "" H 5600 3250 50  0001 C CNN
+	1    5600 3250
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
-	3500 2750 3750 2750
+	5600 3150 5600 3250
+$Comp
+L Device:L L1
+U 1 1 63CECB33
+P 7850 2000
+F 0 "L1" V 8040 2000 50  0000 C CNN
+F 1 "47uH" V 7949 2000 50  0000 C CNN
+F 2 "Inductor_SMD:L_0805_2012Metric" H 7850 2000 50  0001 C CNN
+F 3 "~" H 7850 2000 50  0001 C CNN
+	1    7850 2000
+	0    -1   -1   0   
+$EndComp
+Connection ~ 7700 2000
+Connection ~ 5050 3150
+Wire Wire Line
+	5050 2850 5250 2850
+Wire Wire Line
+	5050 3150 5250 3150
+Wire Wire Line
+	3950 1850 6800 1850
+Wire Wire Line
+	7200 3450 6350 3450
+Connection ~ 6350 3450
+Wire Wire Line
+	6350 2600 6350 3450
+Wire Wire Line
+	7200 2750 7200 3450
+Wire Wire Line
+	7300 3450 7200 3450
+Connection ~ 7200 3450
+$Comp
+L My_Library:MCUSD18A40B12RS Z1
+U 1 1 63D25829
+P 3550 2750
+F 0 "Z1" H 3550 2650 50  0000 L CNN
+F 1 "MCUSD18A40B12RS" H 2700 2600 50  0001 L CNN
+F 2 "My-library:MCUSD18A40B12RS" H 3550 2750 50  0001 C CNN
+F 3 "" H 3550 2750 50  0001 C CNN
+	1    3550 2750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3750 2750 3750 2150
+Wire Wire Line
+	3750 2150 3600 2150
+Wire Wire Line
+	3550 2550 3550 2350
+Wire Wire Line
+	3550 2350 4500 2350
+Wire Wire Line
+	3550 2950 3550 3150
+Wire Wire Line
+	3550 3150 3950 3150
 $EndSCHEMATC
