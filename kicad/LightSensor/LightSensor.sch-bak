@@ -1,0 +1,197 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L My_Library:Conn J2
+U 1 1 63CF8FE7
+P 5950 2550
+F 0 "J2" H 5892 2365 50  0001 C CNN
+F 1 "Conn" H 5892 2456 50  0001 C CNN
+F 2 "My-library:SMD-CONN" H 6000 2400 50  0001 C CNN
+F 3 "~" H 5950 2550 50  0001 C CNN
+	1    5950 2550
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R1
+U 1 1 63CF94A8
+P 6100 2350
+F 0 "R1" H 5900 2400 50  0000 L CNN
+F 1 "5.1k" H 5850 2300 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6030 2350 50  0001 C CNN
+F 3 "~" H 6100 2350 50  0001 C CNN
+	1    6100 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C2
+U 1 1 63CF9750
+P 7650 2900
+F 0 "C2" H 7765 2946 50  0000 L CNN
+F 1 "0.1uF" H 7765 2855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 7688 2750 50  0001 C CNN
+F 3 "~" H 7650 2900 50  0001 C CNN
+	1    7650 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR01
+U 1 1 63CFA2D5
+P 6700 3050
+F 0 "#PWR01" H 6700 2800 50  0001 C CNN
+F 1 "GND" H 6705 2877 50  0000 C CNN
+F 2 "" H 6700 3050 50  0001 C CNN
+F 3 "" H 6700 3050 50  0001 C CNN
+	1    6700 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L My_Library:BH1750FVI D1
+U 1 1 63CFCB21
+P 6700 2650
+F 0 "D1" H 6900 2800 50  0000 C CNN
+F 1 "BH1750FVI" H 6950 2950 50  0000 C CNN
+F 2 "My-library:BH1750FVI" H 6700 2650 50  0001 C CNN
+F 3 "" H 6700 2650 50  0001 C CNN
+	1    6700 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C1
+U 1 1 63CFD3BF
+P 7350 2900
+F 0 "C1" H 7400 3100 50  0000 L CNN
+F 1 "1uF" H 7400 3000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 7388 2750 50  0001 C CNN
+F 3 "~" H 7350 2900 50  0001 C CNN
+	1    7350 2900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6700 2950 6700 3050
+Connection ~ 6700 3050
+Connection ~ 7350 3050
+Wire Wire Line
+	7350 3050 7650 3050
+Wire Wire Line
+	7100 2750 7350 2750
+$Comp
+L Device:R R2
+U 1 1 63CFFAEB
+P 6250 2350
+F 0 "R2" H 6320 2396 50  0000 L CNN
+F 1 "5.1k" H 6320 2305 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6180 2350 50  0001 C CNN
+F 3 "~" H 6250 2350 50  0001 C CNN
+	1    6250 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L My_Library:Conn J3
+U 1 1 63D01AFA
+P 5950 2750
+F 0 "J3" H 5892 2565 50  0001 C CNN
+F 1 "Conn" H 5892 2656 50  0001 C CNN
+F 2 "My-library:SMD-CONN" H 6000 2600 50  0001 C CNN
+F 3 "~" H 5950 2750 50  0001 C CNN
+	1    5950 2750
+	-1   0    0    1   
+$EndComp
+$Comp
+L My_Library:Conn J4
+U 1 1 63D01DEE
+P 5950 3050
+F 0 "J4" H 5892 2865 50  0001 C CNN
+F 1 "Conn" H 5892 2956 50  0001 C CNN
+F 2 "My-library:SMD-CONN" H 6000 2900 50  0001 C CNN
+F 3 "~" H 5950 3050 50  0001 C CNN
+	1    5950 3050
+	-1   0    0    1   
+$EndComp
+$Comp
+L My_Library:Conn J1
+U 1 1 63D02049
+P 5950 2150
+F 0 "J1" H 5892 1965 50  0001 C CNN
+F 1 "Conn" H 5892 2056 50  0001 C CNN
+F 2 "My-library:SMD-CONN" H 6000 2000 50  0001 C CNN
+F 3 "~" H 5950 2150 50  0001 C CNN
+	1    5950 2150
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6050 2150 6100 2150
+Wire Wire Line
+	6700 2150 6700 2350
+Wire Wire Line
+	6100 2150 6100 2200
+Connection ~ 6100 2150
+Wire Wire Line
+	6100 2150 6250 2150
+Wire Wire Line
+	6250 2150 6250 2200
+Connection ~ 6250 2150
+Wire Wire Line
+	6250 2150 6700 2150
+Wire Wire Line
+	6050 2550 6250 2550
+Wire Wire Line
+	6050 2750 6100 2750
+Wire Wire Line
+	6250 2500 6250 2550
+Connection ~ 6250 2550
+Wire Wire Line
+	6250 2550 6300 2550
+Wire Wire Line
+	6100 2500 6100 2750
+Connection ~ 6100 2750
+Wire Wire Line
+	6100 2750 6300 2750
+Wire Wire Line
+	6050 3050 6700 3050
+Wire Wire Line
+	6700 2150 7350 2150
+Wire Wire Line
+	7650 2150 7650 2750
+Connection ~ 6700 2150
+Wire Wire Line
+	6700 3050 7150 3050
+Wire Wire Line
+	7100 2650 7150 2650
+Wire Wire Line
+	7150 2650 7150 3050
+Connection ~ 7150 3050
+Wire Wire Line
+	7150 3050 7350 3050
+$Comp
+L Device:R R3
+U 1 1 63D04415
+P 7350 2350
+F 0 "R3" H 7420 2396 50  0000 L CNN
+F 1 "1k" H 7420 2305 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 7280 2350 50  0001 C CNN
+F 3 "~" H 7350 2350 50  0001 C CNN
+	1    7350 2350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7350 2200 7350 2150
+Connection ~ 7350 2150
+Wire Wire Line
+	7350 2150 7650 2150
+Wire Wire Line
+	7350 2500 7350 2750
+Connection ~ 7350 2750
+$EndSCHEMATC
