@@ -36,7 +36,7 @@ F 3 "https://www.analog.com/media/en/technical-documentation/data-sheets/AD8603_
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue J6
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue J6
 U 1 1 63C80349
 P 7400 3150
 F 0 "J6" H 7428 3196 50  0001 L CNN
@@ -158,7 +158,7 @@ F 3 "~" H 6150 2650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue J3
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue J3
 U 1 1 63C8F41C
 P 8100 2000
 F 0 "J3" H 8128 2046 50  0001 L CNN
@@ -169,7 +169,7 @@ F 3 "~" H 8100 2000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue J5
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue J5
 U 1 1 63C8F7BE
 P 7400 2650
 F 0 "J5" H 7428 2696 50  0001 L CNN
@@ -180,7 +180,7 @@ F 3 "~" H 7400 2650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue J4
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue J4
 U 1 1 63C92E60
 P 7400 3450
 F 0 "J4" H 7428 3496 50  0001 L CNN
@@ -374,7 +374,7 @@ Wire Wire Line
 Wire Wire Line
 	4500 2350 4500 2750
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue J7
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue J7
 U 1 1 63D437C1
 P 3500 2150
 F 0 "J7" H 3528 2196 50  0001 L CNN
@@ -393,7 +393,7 @@ Text Label 5700 1850 0    50   ~ 0
 Wire Wire Line
 	6800 2000 6800 1850
 $Comp
-L Amp-rescue:TS5A3167DBVR-My_Library U4
+L Amp-rescue:TS5A3167DBVR-My_Library-Amp-rescue U4
 U 1 1 63D0B70A
 P 4050 2750
 F 0 "U4" H 3950 2900 50  0000 L CNN
@@ -463,7 +463,7 @@ Wire Wire Line
 	7300 3450 7200 3450
 Connection ~ 7200 3450
 $Comp
-L My_Library:MCUSD18A40B12RS Z1
+L Amp-rescue:MCUSD18A40B12RS-My_Library Z1
 U 1 1 63D25829
 P 3550 2750
 F 0 "Z1" H 3550 2650 50  0000 L CNN

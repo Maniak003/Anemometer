@@ -1,11 +1,11 @@
 EESchema-LIBRARY Version 2.4
 #encoding utf-8
 #
-# Amp-rescue_Conn-My_Library-Amp-rescue
+# Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue
 #
-DEF Amp-rescue_Conn-My_Library-Amp-rescue J 0 40 N N 1 F N
+DEF Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue J 0 40 N N 1 F N
 F0 "J" 0 100 50 H V C CNN
-F1 "Amp-rescue_Conn-My_Library-Amp-rescue" 0 -100 50 H V C CNN
+F1 "Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue" 0 -100 50 H V C CNN
 F2 "My-library:SMD-CONN" 50 -150 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -17,11 +17,30 @@ X ~ 1 -100 0 79 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# Amp-rescue_TS5A3167DBVR-My_Library
+# Amp-rescue_MCUSD18A40B12RS-My_Library
 #
-DEF Amp-rescue_TS5A3167DBVR-My_Library U 0 5 Y Y 1 F N
+DEF Amp-rescue_MCUSD18A40B12RS-My_Library Z 0 40 Y Y 1 F N
+F0 "Z" 50 -100 50 H V C CNN
+F1 "Amp-rescue_MCUSD18A40B12RS-My_Library" -600 400 50 H V C CNN
+F2 "My-library:MCUSD18A40B12RS" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+C 0 0 146 0 1 0 N
+P 2 0 1 0 -100 -50 100 -50 N
+P 2 0 1 0 -100 50 100 50 N
+P 2 0 1 0 0 -100 0 -50 N
+P 2 0 1 0 0 100 0 50 N
+P 5 0 1 0 -125 25 125 25 125 -25 -125 -25 -125 25 N
+X ~ + 0 200 100 D 50 50 1 1 I
+X ~ - 0 -200 100 U 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# Amp-rescue_TS5A3167DBVR-My_Library-Amp-rescue
+#
+DEF Amp-rescue_TS5A3167DBVR-My_Library-Amp-rescue U 0 5 Y Y 1 F N
 F0 "U" -150 250 50 H V L CNN
-F1 "Amp-rescue_TS5A3167DBVR-My_Library" 150 -250 50 H V L CNN
+F1 "Amp-rescue_TS5A3167DBVR-My_Library-Amp-rescue" 150 -250 50 H V L CNN
 F2 "Package_TO_SOT_SMD:SOT-23-5" -235 -255 50 H I C CNN
 F3 "" 0 100 50 H I C CNN
 $FPLIST
@@ -194,25 +213,6 @@ DRAW
 S -40 -100 40 100 0 1 10 N
 X ~ 1 0 150 50 D 50 50 1 1 P
 X ~ 2 0 -150 50 U 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
-# My_Library_MCUSD18A40B12RS
-#
-DEF My_Library_MCUSD18A40B12RS Z 0 40 Y Y 1 F N
-F0 "Z" 50 -100 50 H V C CNN
-F1 "My_Library_MCUSD18A40B12RS" -600 400 50 H V C CNN
-F2 "My-library:MCUSD18A40B12RS" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-DRAW
-C 0 0 146 0 1 0 N
-P 2 0 1 0 -100 -50 100 -50 N
-P 2 0 1 0 -100 50 100 50 N
-P 2 0 1 0 0 -100 0 -50 N
-P 2 0 1 0 0 100 0 50 N
-P 5 0 1 0 -125 25 125 25 125 -25 -125 -25 -125 25 N
-X ~ + 0 200 100 D 50 50 1 1 I
-X ~ - 0 -200 100 U 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
