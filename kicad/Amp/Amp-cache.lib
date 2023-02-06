@@ -1,11 +1,11 @@
 EESchema-LIBRARY Version 2.4
 #encoding utf-8
 #
-# Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue
+# Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue
 #
-DEF Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue J 0 40 N N 1 F N
+DEF Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue J 0 40 N N 1 F N
 F0 "J" 0 100 50 H V C CNN
-F1 "Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue" 0 -100 50 H V C CNN
+F1 "Amp-rescue_Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue" 0 -100 50 H V C CNN
 F2 "My-library:SMD-CONN" 50 -150 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -14,6 +14,65 @@ $ENDFPLIST
 DRAW
 A 0 0 20 901 -901 1 1 6 N 0 20 0 -20
 X ~ 1 -100 0 79 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Amp-rescue_MAX4477-My_Library
+#
+DEF Amp-rescue_MAX4477-My_Library D 0 40 Y Y 2 L N
+F0 "D" 50 150 50 H V C CNN
+F1 "Amp-rescue_MAX4477-My_Library" -50 0 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+P 4 0 1 0 -250 250 -250 -250 250 0 -250 250 f
+X ~ 1 350 0 100 L 50 50 1 1 O
+X - 2 -350 150 100 R 50 50 1 1 I
+X + 3 -350 -150 100 R 50 50 1 1 I
+X ~ 4 -50 -250 100 U 50 50 1 1 W
+X ~ 8 -50 250 100 D 50 50 1 1 W
+X + 5 -350 -150 100 R 50 50 2 1 I
+X - 6 -350 150 100 R 50 50 2 1 I
+X ~ 7 350 0 100 L 50 50 2 1 I
+ENDDRAW
+ENDDEF
+#
+# Amp-rescue_MCUSD18A40B12RS-My_Library
+#
+DEF Amp-rescue_MCUSD18A40B12RS-My_Library Z 0 40 Y Y 1 F N
+F0 "Z" 50 -100 50 H V C CNN
+F1 "Amp-rescue_MCUSD18A40B12RS-My_Library" -600 400 50 H V C CNN
+F2 "My-library:MCUSD18A40B12RS" 111 -256 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+C 0 -100 6 0 1 0 N
+C 0 0 100 0 1 0 f
+S -50 10 50 -10 0 1 0 N
+P 2 0 1 0 -40 -20 40 -20 N
+P 2 0 1 0 -40 20 40 20 N
+P 2 0 1 0 0 -100 0 -20 N
+P 2 0 1 0 0 20 0 100 N
+X ~ + 0 200 100 D 50 50 1 1 I
+X ~ - 0 -200 100 U 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# Amp-rescue_TLV3501-2-My_Library
+#
+DEF Amp-rescue_TLV3501-2-My_Library D 0 40 Y Y 1 F N
+F0 "D" -75 0 50 H V C CNN
+F1 "Amp-rescue_TLV3501-2-My_Library" 100 300 50 H V C CNN
+F2 "" 100 0 50 H I C CNN
+F3 "" 100 0 50 H I C CNN
+DRAW
+P 2 0 1 0 100 -100 100 -50 N
+P 4 0 1 0 -200 200 -200 -200 200 0 -200 200 f
+X - 1 -300 -100 100 R 50 25 1 1 I
+X ~ 2 0 -200 100 U 50 50 1 1 I
+X + 3 -300 100 100 R 50 25 1 1 I
+X ~ 4 0 200 100 D 50 50 1 1 I
+X ~ 5 300 0 100 L 50 50 1 1 I
+X ~ 6 100 -200 100 U 50 25 1 1 I
 ENDDRAW
 ENDDEF
 #
@@ -113,65 +172,6 @@ DRAW
 S -40 -100 40 100 0 1 10 N
 X ~ 1 0 150 50 D 50 50 1 1 P
 X ~ 2 0 -150 50 U 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
-# My_Library_MAX4477
-#
-DEF My_Library_MAX4477 D 0 40 Y Y 2 L N
-F0 "D" 50 150 50 H V C CNN
-F1 "My_Library_MAX4477" -50 0 50 H V C CNN
-F2 "" 0 0 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-DRAW
-P 4 0 1 0 -250 250 -250 -250 250 0 -250 250 f
-X ~ 1 350 0 100 L 50 50 1 1 O
-X - 2 -350 150 100 R 50 50 1 1 I
-X + 3 -350 -150 100 R 50 50 1 1 I
-X ~ 4 -50 -250 100 U 50 50 1 1 W
-X ~ 8 -50 250 100 D 50 50 1 1 W
-X + 5 -350 -150 100 R 50 50 2 1 I
-X - 6 -350 150 100 R 50 50 2 1 I
-X ~ 7 350 0 100 L 50 50 2 1 I
-ENDDRAW
-ENDDEF
-#
-# My_Library_MCUSD18A40B12RS
-#
-DEF My_Library_MCUSD18A40B12RS Z 0 40 Y Y 1 F N
-F0 "Z" 50 -100 50 H V C CNN
-F1 "My_Library_MCUSD18A40B12RS" -600 400 50 H V C CNN
-F2 "My-library:MCUSD18A40B12RS" 111 -256 50 H I C CNN
-F3 "" 0 0 50 H I C CNN
-DRAW
-C 0 -100 6 0 1 0 N
-C 0 0 100 0 1 0 f
-S -50 10 50 -10 0 1 0 N
-P 2 0 1 0 -40 -20 40 -20 N
-P 2 0 1 0 -40 20 40 20 N
-P 2 0 1 0 0 -100 0 -20 N
-P 2 0 1 0 0 20 0 100 N
-X ~ + 0 200 100 D 50 50 1 1 I
-X ~ - 0 -200 100 U 50 50 1 1 I
-ENDDRAW
-ENDDEF
-#
-# My_Library_TLV3501-2
-#
-DEF My_Library_TLV3501-2 D 0 40 Y Y 1 F N
-F0 "D" -75 0 50 H V C CNN
-F1 "My_Library_TLV3501-2" 100 300 50 H V C CNN
-F2 "" 100 0 50 H I C CNN
-F3 "" 100 0 50 H I C CNN
-DRAW
-P 2 0 1 0 100 -100 100 -50 N
-P 4 0 1 0 -200 200 -200 -200 200 0 -200 200 f
-X - 1 -300 -100 100 R 50 25 1 1 I
-X ~ 2 0 -200 100 U 50 50 1 1 I
-X + 3 -300 100 100 R 50 25 1 1 I
-X ~ 4 0 200 100 D 50 50 1 1 I
-X ~ 5 300 0 100 L 50 50 1 1 I
-X ~ 6 100 -200 100 U 50 25 1 1 I
 ENDDRAW
 ENDDEF
 #
