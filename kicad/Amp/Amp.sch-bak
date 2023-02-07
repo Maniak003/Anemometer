@@ -250,7 +250,7 @@ Text Label 9050 3000 0    50   ~ 0
 +5v
 Text Label 8400 4900 0    50   ~ 0
 Sel
-Text Label 4000 3750 0    50   ~ 0
+Text Label 4000 3600 0    50   ~ 0
 In
 $Comp
 L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue J1
