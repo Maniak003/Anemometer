@@ -25,7 +25,7 @@ F 3 "~" H 6200 3150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue J3
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue J3
 U 1 1 63C80349
 P 8600 4650
 F 0 "J3" H 8628 4696 50  0001 L CNN
@@ -85,7 +85,7 @@ U 1 1 63C85D62
 P 4300 3600
 F 0 "C2" V 4050 3600 50  0000 C CNN
 F 1 "1.5n" V 4150 3600 50  0000 C CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" H 4338 3450 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 4338 3450 50  0001 C CNN
 F 3 "~" H 4300 3600 50  0001 C CNN
 	1    4300 3600
 	0    1    1    0   
@@ -113,7 +113,7 @@ F 3 "~" H 7700 4450 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue J5
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue J5
 U 1 1 63C8F41C
 P 9150 3000
 F 0 "J5" H 9178 3046 50  0001 L CNN
@@ -124,7 +124,7 @@ F 3 "~" H 9150 3000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue J4
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue J4
 U 1 1 63C92E60
 P 8600 4900
 F 0 "J4" H 8628 4946 50  0001 L CNN
@@ -253,7 +253,7 @@ Sel
 Text Label 4000 3750 0    50   ~ 0
 In
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue J1
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue J1
 U 1 1 63D437C1
 P 2950 3600
 F 0 "J1" H 2978 3646 50  0001 L CNN
@@ -291,7 +291,7 @@ F 3 "~" H 8900 3000 50  0001 C CNN
 $EndComp
 Connection ~ 8750 3000
 $Comp
-L My_Library:MAX4477 D1
+L Amp-rescue:MAX4477-My_Library-Amp-rescue D1
 U 1 1 63E14065
 P 5250 3750
 F 0 "D1" H 5050 3850 50  0000 L CNN
@@ -302,7 +302,7 @@ F 3 "" H 5250 3750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:MAX4477 D1
+L Amp-rescue:MAX4477-My_Library-Amp-rescue D1
 U 2 1 63E14B3D
 P 6600 3900
 F 0 "D1" H 6500 3900 50  0000 C CNN
@@ -313,7 +313,7 @@ F 3 "" H 6600 3900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:TLV3501-2 D2
+L Amp-rescue:TLV3501-2-My_Library-Amp-rescue D2
 U 1 1 63E15A52
 P 8050 4000
 F 0 "D2" H 8100 4150 50  0000 L CNN
@@ -340,7 +340,7 @@ U 1 1 63E32371
 P 5750 3750
 F 0 "C4" V 5500 3750 50  0000 C CNN
 F 1 "100n" V 5600 3750 50  0000 C CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" H 5788 3600 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 5788 3600 50  0001 C CNN
 F 3 "~" H 5750 3750 50  0001 C CNN
 	1    5750 3750
 	0    1    1    0   
@@ -374,7 +374,7 @@ U 1 1 63E6E57D
 P 7100 3900
 F 0 "C6" V 7250 3900 50  0000 C CNN
 F 1 "1.5n" V 7350 3900 50  0000 C CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" H 7138 3750 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 7138 3750 50  0001 C CNN
 F 3 "~" H 7100 3900 50  0001 C CNN
 	1    7100 3900
 	0    1    1    0   
@@ -599,7 +599,7 @@ Wire Wire Line
 Wire Wire Line
 	3050 3600 3150 3600
 $Comp
-L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue J2
+L Amp-rescue:Conn-My_Library-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue-Amp-rescue J2
 U 1 1 63C8F7BE
 P 8600 4000
 F 0 "J2" H 8628 4046 50  0001 L CNN
@@ -614,7 +614,7 @@ Wire Wire Line
 Text Label 8400 4000 0    50   ~ 0
 Out
 $Comp
-L My_Library:MCUSD18A40B12RS Z1
+L Amp-rescue:MCUSD18A40B12RS-My_Library-Amp-rescue Z1
 U 1 1 640B9EB9
 P 4150 4200
 F 0 "Z1" H 4278 4200 50  0000 L CNN
