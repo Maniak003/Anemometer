@@ -83,7 +83,7 @@ union {
 #define FALSE 0
 #define START_CAPTURE HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
 #define STOP_CAPTURE HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
-#define CALIBRATE_START 35000
+#define CALIBRATE_START 40000
 #define Z1Receive 1
 #define Z2Receive 2
 #define Z3Receive 3
