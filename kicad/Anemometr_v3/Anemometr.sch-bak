@@ -25,7 +25,7 @@ F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/da
 	1    0    0    -1  
 $EndComp
 Text GLabel 5800 3650 2    50   Input ~ 0
-SInput
+SIn
 Wire Wire Line
 	5050 5350 4950 5350
 Connection ~ 5050 5350
@@ -391,9 +391,9 @@ F 3 "" H 6100 5450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 4450 3850 0    50   Input ~ 0
-Z2
+Z2Sel
 Text GLabel 4450 3750 0    50   Input ~ 0
-Z1
+Z1Sel
 $Comp
 L Anemometr-rescue:W5500-My_Library D3
 U 1 1 61EEF122
@@ -2449,9 +2449,9 @@ F 3 "" H 8500 2150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 4450 3950 0    50   Input ~ 0
-Z3
+Z3Sel
 Text GLabel 4450 4050 0    50   Input ~ 0
-Z4
+Z4Sel
 Wire Wire Line
 	5050 5350 5150 5350
 Connection ~ 5150 5350
@@ -2480,81 +2480,9 @@ F 3 "~" H 9050 5150 50  0001 C CNN
 	1    9050 5150
 	1    0    0    -1  
 $EndComp
-$Comp
-L Regulator_Linear:MCP1700-3302E_SOT23 U8
-U 1 1 6555B82D
-P 8500 3150
-F 0 "U8" H 8500 3150 50  0000 C CNN
-F 1 "MCP1703-3.3" H 8500 3301 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 8500 3375 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/20001826C.pdf" H 8500 3150 50  0001 C CNN
-	1    8500 3150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C C61
-U 1 1 6555F578
-P 8850 3300
-F 0 "C61" H 8600 3250 50  0000 L CNN
-F 1 "10uF" H 8550 3350 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 8888 3150 50  0001 C CNN
-F 3 "~" H 8850 3300 50  0001 C CNN
-	1    8850 3300
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:C C60
-U 1 1 65560B4F
-P 8150 3300
-F 0 "C60" H 8250 3300 50  0000 L CNN
-F 1 "10uF" H 8250 3400 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 8188 3150 50  0001 C CNN
-F 3 "~" H 8150 3300 50  0001 C CNN
-	1    8150 3300
-	-1   0    0    1   
-$EndComp
-$Comp
-L power:GND #PWR0102
-U 1 1 65561FD4
-P 8500 3450
-F 0 "#PWR0102" H 8500 3200 50  0001 C CNN
-F 1 "GND" H 8505 3277 50  0001 C CNN
-F 2 "" H 8500 3450 50  0001 C CNN
-F 3 "" H 8500 3450 50  0001 C CNN
-	1    8500 3450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8150 3150 8200 3150
-Wire Wire Line
-	8150 3450 8500 3450
-Connection ~ 8500 3450
-Wire Wire Line
-	8500 3450 8850 3450
-$Comp
-L power:+3.3VP #PWR0108
-U 1 1 655A5C60
-P 8900 3150
-F 0 "#PWR0108" H 9050 3100 50  0001 C CNN
-F 1 "+3.3VP" V 8800 3100 50  0000 L CNN
-F 2 "" H 8900 3150 50  0001 C CNN
-F 3 "" H 8900 3150 50  0001 C CNN
-	1    8900 3150
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	8800 3150 8850 3150
-Connection ~ 8850 3150
-Wire Wire Line
-	8850 3150 8900 3150
 Text GLabel 9800 4500 2    50   Input ~ 0
 6v
 Connection ~ 9700 4750
-Text GLabel 8100 3150 0    50   Input ~ 0
-6v
-Wire Wire Line
-	8100 3150 8150 3150
-Connection ~ 8150 3150
 Text GLabel 8100 2500 0    50   Input ~ 0
 6v
 Wire Wire Line
@@ -2607,12 +2535,12 @@ NoConn ~ 5750 3750
 NoConn ~ 5750 3850
 NoConn ~ 4450 3650
 Text GLabel 6500 2400 0    50   Input ~ 0
-SInput
+SIn
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J28
 U 1 1 64020FA1
 P 6850 2250
-F 0 "J?" H 7100 2250 50  0001 R CNN
+F 0 "J28" H 7100 2250 50  0001 R CNN
 F 1 "+Z1" H 6850 2250 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 2250 50  0001 C CNN
 F 3 "~" H 6850 2250 50  0001 C CNN
@@ -2620,10 +2548,10 @@ F 3 "~" H 6850 2250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J29
 U 1 1 64021F5F
 P 6850 2400
-F 0 "J?" H 7100 2400 50  0001 R CNN
+F 0 "J29" H 7100 2400 50  0001 R CNN
 F 1 "+Z1" H 6850 2400 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 2400 50  0001 C CNN
 F 3 "~" H 6850 2400 50  0001 C CNN
@@ -2631,10 +2559,10 @@ F 3 "~" H 6850 2400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J30
 U 1 1 64022D61
 P 6850 2550
-F 0 "J?" H 7100 2550 50  0001 R CNN
+F 0 "J30" H 7100 2550 50  0001 R CNN
 F 1 "+Z1" H 6850 2550 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 2550 50  0001 C CNN
 F 3 "~" H 6850 2550 50  0001 C CNN
@@ -2642,10 +2570,10 @@ F 3 "~" H 6850 2550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J31
 U 1 1 64023BA2
 P 6850 2700
-F 0 "J?" H 7100 2700 50  0001 R CNN
+F 0 "J31" H 7100 2700 50  0001 R CNN
 F 1 "+Z1" H 6850 2700 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 2700 50  0001 C CNN
 F 3 "~" H 6850 2700 50  0001 C CNN
@@ -2653,18 +2581,18 @@ F 3 "~" H 6850 2700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 6500 3000 0    50   Input ~ 0
-Z1
+Z1Sel
 Text GLabel 6500 3150 0    50   Input ~ 0
-Z2
+Z2Sel
 Text GLabel 6500 3300 0    50   Input ~ 0
-Z3
+Z3Sel
 Text GLabel 6500 3450 0    50   Input ~ 0
-Z4
+Z4Sel
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J32
 U 1 1 64027EDE
 P 6850 3000
-F 0 "J?" H 7100 3000 50  0001 R CNN
+F 0 "J32" H 7100 3000 50  0001 R CNN
 F 1 "+Z1" H 6850 3000 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 3000 50  0001 C CNN
 F 3 "~" H 6850 3000 50  0001 C CNN
@@ -2672,10 +2600,10 @@ F 3 "~" H 6850 3000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J33
 U 1 1 64028D78
 P 6850 3150
-F 0 "J?" H 7100 3150 50  0001 R CNN
+F 0 "J33" H 7100 3150 50  0001 R CNN
 F 1 "+Z1" H 6850 3150 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 3150 50  0001 C CNN
 F 3 "~" H 6850 3150 50  0001 C CNN
@@ -2683,10 +2611,10 @@ F 3 "~" H 6850 3150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J34
 U 1 1 64029C0D
 P 6850 3300
-F 0 "J?" H 7100 3300 50  0001 R CNN
+F 0 "J34" H 7100 3300 50  0001 R CNN
 F 1 "+Z1" H 6850 3300 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 3300 50  0001 C CNN
 F 3 "~" H 6850 3300 50  0001 C CNN
@@ -2694,10 +2622,10 @@ F 3 "~" H 6850 3300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J35
 U 1 1 6402AA66
 P 6850 3450
-F 0 "J?" H 7100 3450 50  0001 R CNN
+F 0 "J35" H 7100 3450 50  0001 R CNN
 F 1 "+Z1" H 6850 3450 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 3450 50  0001 C CNN
 F 3 "~" H 6850 3450 50  0001 C CNN
@@ -2705,10 +2633,10 @@ F 3 "~" H 6850 3450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0103
 U 1 1 6402B8C4
 P 6650 4050
-F 0 "#PWR?" H 6650 3800 50  0001 C CNN
+F 0 "#PWR0103" H 6650 3800 50  0001 C CNN
 F 1 "GND" H 6655 3877 50  0001 C CNN
 F 2 "" H 6650 4050 50  0001 C CNN
 F 3 "" H 6650 4050 50  0001 C CNN
@@ -2716,10 +2644,10 @@ F 3 "" H 6650 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J36
 U 1 1 6402C942
 P 6850 3600
-F 0 "J?" H 7100 3600 50  0001 R CNN
+F 0 "J36" H 7100 3600 50  0001 R CNN
 F 1 "+Z1" H 6850 3600 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 3600 50  0001 C CNN
 F 3 "~" H 6850 3600 50  0001 C CNN
@@ -2727,10 +2655,10 @@ F 3 "~" H 6850 3600 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J37
 U 1 1 6402D815
 P 6850 3750
-F 0 "J?" H 7100 3750 50  0001 R CNN
+F 0 "J37" H 7100 3750 50  0001 R CNN
 F 1 "+Z1" H 6850 3750 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 3750 50  0001 C CNN
 F 3 "~" H 6850 3750 50  0001 C CNN
@@ -2738,10 +2666,10 @@ F 3 "~" H 6850 3750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J38
 U 1 1 6402E78F
 P 6850 3900
-F 0 "J?" H 7100 3900 50  0001 R CNN
+F 0 "J38" H 7100 3900 50  0001 R CNN
 F 1 "+Z1" H 6850 3900 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 3900 50  0001 C CNN
 F 3 "~" H 6850 3900 50  0001 C CNN
@@ -2749,10 +2677,10 @@ F 3 "~" H 6850 3900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J39
 U 1 1 6402F677
 P 6850 4050
-F 0 "J?" H 7100 4050 50  0001 R CNN
+F 0 "J39" H 7100 4050 50  0001 R CNN
 F 1 "+Z1" H 6850 4050 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 4050 50  0001 C CNN
 F 3 "~" H 6850 4050 50  0001 C CNN
@@ -2760,10 +2688,10 @@ F 3 "~" H 6850 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J27
 U 1 1 640305D2
 P 6850 2100
-F 0 "J?" H 7100 2100 50  0001 R CNN
+F 0 "J27" H 7100 2100 50  0001 R CNN
 F 1 "+Z1" H 6850 2100 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 2100 50  0001 C CNN
 F 3 "~" H 6850 2100 50  0001 C CNN
@@ -2771,10 +2699,10 @@ F 3 "~" H 6850 2100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J26
 U 1 1 64031520
 P 6850 1950
-F 0 "J?" H 7100 1950 50  0001 R CNN
+F 0 "J26" H 7100 1950 50  0001 R CNN
 F 1 "+Z1" H 6850 1950 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 1950 50  0001 C CNN
 F 3 "~" H 6850 1950 50  0001 C CNN
@@ -2782,10 +2710,10 @@ F 3 "~" H 6850 1950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J25
 U 1 1 640324C0
 P 6850 1800
-F 0 "J?" H 7100 1800 50  0001 R CNN
+F 0 "J25" H 7100 1800 50  0001 R CNN
 F 1 "+Z1" H 6850 1800 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 1800 50  0001 C CNN
 F 3 "~" H 6850 1800 50  0001 C CNN
@@ -2793,10 +2721,10 @@ F 3 "~" H 6850 1800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J?
+L Connector:Conn_01x01_Female J24
 U 1 1 640333C8
 P 6850 1650
-F 0 "J?" H 7100 1650 50  0001 R CNN
+F 0 "J24" H 7100 1650 50  0001 R CNN
 F 1 "+Z1" H 6850 1650 50  0001 L CNN
 F 2 "My-library:SMD-CONN" H 6850 1650 50  0001 C CNN
 F 3 "~" H 6850 1650 50  0001 C CNN
@@ -2804,10 +2732,10 @@ F 3 "~" H 6850 1650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+5VA #PWR?
+L power:+5VA #PWR0104
 U 1 1 64034323
 P 6500 1950
-F 0 "#PWR?" H 6500 1800 50  0001 C CNN
+F 0 "#PWR0104" H 6500 1800 50  0001 C CNN
 F 1 "+5VA" V 6400 1950 50  0000 C CNN
 F 2 "" H 6500 1950 50  0001 C CNN
 F 3 "" H 6500 1950 50  0001 C CNN
