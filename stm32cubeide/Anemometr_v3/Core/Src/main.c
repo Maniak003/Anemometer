@@ -454,7 +454,7 @@ int main(void)
 
   /* Таймер задержки запуска измерения */
   C_13 = CALIBRATE_START;
-  TIM3->ARR = C_13; 		// Коррекция для таймера запуска измерения Z13
+  //TIM3->ARR = C_13; 		// Коррекция для таймера запуска измерения Z13
 
   //HAL_GPIO_WritePin(Z34_GPIO_Port, Z34_Pin, GPIO_PIN_SET);    // Выключение компаратора 34
   //HAL_GPIO_WritePin(Z12_GPIO_Port, Z12_Pin, GPIO_PIN_RESET);  // Включение компаратора 12
@@ -469,6 +469,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  errMax = 0;
+  errMin = 65565;
   while (1)
   {
 	  if (readyFlag) {
@@ -916,13 +918,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, Z34_Pin|Z12_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED_Pin|nRst_Pin, GPIO_PIN_RESET);
@@ -930,13 +928,6 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, Z1_Pin|Z2_Pin|SCSN_Pin|Z3_Pin
                           |Z4_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : Z34_Pin Z12_Pin */
-  GPIO_InitStruct.Pin = Z34_Pin|Z12_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_Pin nRst_Pin */
   GPIO_InitStruct.Pin = LED_Pin|nRst_Pin;

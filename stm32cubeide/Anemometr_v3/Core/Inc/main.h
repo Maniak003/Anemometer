@@ -88,18 +88,11 @@ union {
 #define Z2Receive 2
 #define Z3Receive 3
 #define Z4Receive 4
-#define Z12Comparator 14
-#define Z34Comparator 13
-#define receiversOff GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive)); \
-	GPIOC->ODR |= ((1 << Z34Comparator) |  (1 << Z12Comparator));
-#define setZ1receive GPIOB->ODR |= (1 << Z1Receive); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8)) | GPIO_CRH_CNF8_0;\
-	GPIOC->ODR &= ~(1 << Z12Comparator);
-#define setZ2receive GPIOB->ODR |= (1 << Z2Receive); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9)) | GPIO_CRH_CNF9_0;\
-	GPIOC->ODR &= ~(1 << Z12Comparator);
-#define setZ3receive GPIOB->ODR |= (1 << Z3Receive); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10)) | GPIO_CRH_CNF10_0;\
-	GPIOC->ODR &= ~(1 << Z34Comparator);
-#define setZ4receive GPIOB->ODR |= (1 << Z4Receive); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11)) | GPIO_CRH_CNF11_0;\
-	GPIOC->ODR &= ~(1 << Z34Comparator);
+#define receiversOff GPIOB->ODR |= (1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive);
+#define setZ1receive GPIOB->ODR &= ~((1 << Z1Receive)); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8)) | GPIO_CRH_CNF8_0;
+#define setZ2receive GPIOB->ODR &= ~((1 << Z2Receive)); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9)) | GPIO_CRH_CNF9_0;
+#define setZ3receive GPIOB->ODR &= ~((1 << Z3Receive)); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10)) | GPIO_CRH_CNF10_0;
+#define setZ4receive GPIOB->ODR &= ~((1 << Z4Receive)); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11)) | GPIO_CRH_CNF11_0;
 
 //#define LED_PULSE LED_GPIO_Port->BSRR = (uint32_t)LED_Pin; LED_GPIO_Port->BSRR = (uint32_t)LED_Pin << 16u;
 #define LED_PULSE HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET); HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);;
@@ -115,10 +108,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Z34_Pin GPIO_PIN_13
-#define Z34_GPIO_Port GPIOC
-#define Z12_Pin GPIO_PIN_14
-#define Z12_GPIO_Port GPIOC
 #define LED_Pin GPIO_PIN_7
 #define LED_GPIO_Port GPIOA
 #define Z1_Pin GPIO_PIN_1
