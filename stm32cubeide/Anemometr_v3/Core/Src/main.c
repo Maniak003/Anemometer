@@ -454,7 +454,7 @@ int main(void)
 
   /* Таймер задержки запуска измерения */
   C_13 = CALIBRATE_START;
-  //TIM3->ARR = C_13; 		// Коррекция для таймера запуска измерения Z13
+  TIM3->ARR = C_13; 		// Коррекция для таймера запуска измерения Z13
 
   //HAL_GPIO_WritePin(Z34_GPIO_Port, Z34_Pin, GPIO_PIN_SET);    // Выключение компаратора 34
   //HAL_GPIO_WritePin(Z12_GPIO_Port, Z12_Pin, GPIO_PIN_RESET);  // Включение компаратора 12
@@ -490,7 +490,7 @@ int main(void)
 		  }
 		  readyFlag = FALSE;
 		  memset(SndBuffer, 0, sizeof(SndBuffer));
-		  sprintf(SndBuffer, "Capture :%lu, Error:%lu   \r", (uint32_t) resulMeass, err);
+		  sprintf(SndBuffer, "Cap:%lu, Err:%lu   \r", (uint32_t) resulMeass, err);
 		  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 	  }
     /* USER CODE END WHILE */
@@ -632,7 +632,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 796;
+  htim1.Init.Period = 799;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 91;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
@@ -796,7 +796,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 65000;
+  htim3.Init.Period = 40000;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -849,7 +849,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 10;
+  htim4.Init.Prescaler = 1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
