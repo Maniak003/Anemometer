@@ -52,10 +52,11 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 uint32_t runFlag;
-uint16_t front_sum, resulMeass;
-bool readyFlag;
-
-uint16_t C_13, C_24;
+uint16_t front_sum, resulMeass, test_cnt, calibrateCount, calibrateMode, currentMode, measCount;
+bool readyFlag, test_flag, calibrate13, calibrate24, firstTime;
+double Xsum, Ysum, Vmax, A, V, Vmaxfin, Xmaxfin, Ymaxfin, X, Y, Xmax, Ymax, Xsum1, Ysum1;
+float ZX1, ZX2, ZY1, ZY2, temperature, pressure, humidity;
+uint16_t C_13, C_24, C_31, C_42;
 
 union {
 	float f;
@@ -84,6 +85,10 @@ union {
 #define START_CAPTURE HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
 #define STOP_CAPTURE HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
 #define CALIBRATE_START 40000
+#define CHANNELS 4
+#define PREFETCH 20
+#define SPEED_CALIBRATE 42.19f // cos(atg(17/18)) * (49.52/330000 - 49.52/331000) / (1/64000000) * 2
+#define MEDIAN_FILTER_ENABLE
 #define Z1Receive 1
 #define Z2Receive 2
 #define Z3Receive 3
@@ -134,8 +139,19 @@ void Error_Handler(void);
 #define INIT_FINISH_TEXT "\n\rFinish init...\n\r"
 #define INIT_START_TEXT "\n\rStart init...\n\r"
 #define DHCP_ERROR_ASSIGN "\r\nIP was not assigned :(\r\n"
-#define COUNT_FRONT 40
+#define CALIBRATE_TEXT "\r\nStart callibrate \r\n"
+#define CALIBRATE_ERROR_RANGE "\r\nCalibrate ERROR.\r\nDelta out of range.\r\n"
+#define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
+#define TEST_TEXT "\r\nStart test.\r\n"
+#define TEST_TERMINATE "\r\nTerminate test or calibrate.\r\n"
 
+#define COUNT_FRONT 10
+#define MEASSURE_COUNT 100
+#define CALIBRATE_MAX_COUNT 1600
+#define CALIBRATE_TIMES 5
+#define CALIBRATE_ACURACY 1
+
+float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT];
 /* For W5500*/
 #define DHCP_SOCKET     0
 #define DNS_SOCKET      1
