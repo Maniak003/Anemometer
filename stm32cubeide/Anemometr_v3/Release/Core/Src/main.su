@@ -1,5 +1,5 @@
 main.c:84:6:rwFlash	56	static
 main.c:724:6:SystemClock_Config	80	static,ignoring_inline_asm
-main.c:414:5:main	248	static,ignoring_inline_asm
+main.c:414:5:main	240	static,ignoring_inline_asm
 main.c:1210:6:HAL_TIM_IC_CaptureCallback	16	static
 main.c:1262:6:Error_Handler	0	static,ignoring_inline_asm
