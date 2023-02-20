@@ -640,8 +640,8 @@ int main(void)
 			#endif
 			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 			  if ( ! firstTime ) {
-				  sprintf(SndBuffer, "V:%5.2f, X:%5.2f, Y:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f, FS:%8.3f   \r",
-						  V, Xsum, Ysum, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity, resul_arrayY1[1]);
+				  sprintf(SndBuffer, "V:%5.2f, X:%5.2f, Y:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r",
+						  V, Xsum, Ysum, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
 			  firstTime = FALSE;
