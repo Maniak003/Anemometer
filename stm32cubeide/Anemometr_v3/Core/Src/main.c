@@ -92,9 +92,9 @@ void rwFlash(uint8_t rwFlag) {
 			C_13 = CALIBRATE_START;
 			C_24 = CALIBRATE_START;
 			DX1.f = 1;
-			DX2.f = 1;
+			//DX2.f = 1;
 			DY1.f = 1;
-			DY2.f = 1;
+			//DY2.f = 1;
 		}
 		FLASH_EraseInitTypeDef EraseInitStruct;
 		uint32_t PAGEError = 0;
@@ -113,7 +113,7 @@ void rwFlash(uint8_t rwFlag) {
 			while(flash_ok != HAL_OK){
 				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr, dataForSave); // Write  magic key
 			}
-			dataForSave = (uint64_t) (C_13 | ((uint64_t) C_24 << 16) | ((uint64_t) C_31 << 32) | ((uint64_t) C_42 << 48));
+			dataForSave = (uint64_t) (C_13 | ((uint64_t) C_24 << 16));
 			flash_ok = HAL_ERROR;
 			while(flash_ok != HAL_OK){
 				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr + 16, dataForSave); // Write C_12 C_34 C_14 C_23
@@ -122,18 +122,18 @@ void rwFlash(uint8_t rwFlag) {
 			while(flash_ok != HAL_OK){
 				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 24, DX1.u); // Write DX1
 			}
-			flash_ok = HAL_ERROR;
-			while(flash_ok != HAL_OK){
-				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DX2.u); // Write DX2
-			}
+			//flash_ok = HAL_ERROR;
+			//while(flash_ok != HAL_OK){
+			//	flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 28, DX2.u); // Write DX2
+			//}
 			flash_ok = HAL_ERROR;
 			while(flash_ok != HAL_OK){
 				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 32, DY1.u); // Write DY1
 			}
-			flash_ok = HAL_ERROR;
-			while(flash_ok != HAL_OK){
-				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, DY2.u); // Write DY2
-			}
+			//flash_ok = HAL_ERROR;
+			//while(flash_ok != HAL_OK){
+			//	flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, DY2.u); // Write DY2
+			//}
 		}
 		// Lock flash
 		flash_ok = HAL_ERROR;
@@ -144,19 +144,19 @@ void rwFlash(uint8_t rwFlag) {
 		/* Задержки измерения в каналах */
 		C_13 = *(__IO uint16_t*) (pageAdr + 16);
 		C_24 = *(__IO uint16_t*) (pageAdr + 18);
-		C_31 = *(__IO uint16_t*) (pageAdr + 20);
-		C_42 = *(__IO uint16_t*) (pageAdr + 22);
+		//C_31 = *(__IO uint16_t*) (pageAdr + 20);
+		//C_42 = *(__IO uint16_t*) (pageAdr + 22);
 		memset(SndBuffer, 0, sizeof(SndBuffer));
-		sprintf(SndBuffer, "C_13: %5d, C_24: %5d, C_31: %5d, C_42: %5d\r\n", C_13, C_24, C_31, C_42);
+		sprintf(SndBuffer, "C_13: %5d, C_24: %5d  \r\n", C_13, C_24);
 		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 
 		/* Поправочные коэффициенты */
 		DX1.u = *(__IO uint32_t*) (pageAdr + 24);
-		DX2.u = *(__IO uint32_t*) (pageAdr + 28);
+		//DX2.u = *(__IO uint32_t*) (pageAdr + 28);
 		DY1.u = *(__IO uint32_t*) (pageAdr + 32);
-		DY2.u = *(__IO uint32_t*) (pageAdr + 36);
+		//DY2.u = *(__IO uint32_t*) (pageAdr + 36);
 		memset(SndBuffer, 0, sizeof(SndBuffer));
-		sprintf(SndBuffer, "DX1: %7.6f, DX2: %7.6f, DY1: %7.6f, DY2: %7.6f\r\n", DX1.f, DX2.f, DY1.f, DY2.f);
+		sprintf(SndBuffer, "DX1: %7.6f, DY1: %7.6f \r\n", DX1.f, DY1.f);
 		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 	}
 }
@@ -1035,6 +1035,7 @@ static void MX_TIM3_Init(void)
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_SlaveConfigTypeDef sSlaveConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM3_Init 1 */
 
@@ -1054,6 +1055,10 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_TIM_OnePulse_Init(&htim3, TIM_OPMODE_SINGLE) != HAL_OK)
   {
     Error_Handler();
@@ -1067,6 +1072,14 @@ static void MX_TIM3_Init(void)
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_OC1;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_ACTIVE;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -1213,7 +1226,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 					}
 					/* Отключим все мультиплексоры */
 					receiversOff
-					runFlag = 0;
+					//runFlag = 0;
 					#ifdef SYSTICK_DISABLE
 						SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 					#endif

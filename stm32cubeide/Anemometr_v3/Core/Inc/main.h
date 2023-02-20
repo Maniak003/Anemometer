@@ -56,24 +56,24 @@ uint16_t front_sum, resulMeass, test_cnt, calibrateCount, calibrateMode, current
 bool readyFlag, test_flag, calibrate13, calibrate24, firstTime;
 double Xsum, Ysum, Vmax, A, V, Vmaxfin, Xmaxfin, Ymaxfin, X, Y, Xmax, Ymax, Xsum1, Ysum1;
 float ZX1, ZX2, ZY1, ZY2, temperature, pressure, humidity;
-uint16_t C_13, C_24, C_31, C_42;
+uint16_t C_13, C_24;
 
 union {
 	float f;
 	uint32_t u;
 } DX1;
-union {
-	float f;
-	uint32_t u;
-} DX2;
+//union {
+//	float f;
+//	uint32_t u;
+//} DX2;
 union {
 	float f;
 	uint32_t u;
 } DY1;
-union {
-	float f;
-	uint32_t u;
-} DY2;
+//union {
+//	float f;
+//	uint32_t u;
+//} DY2;
 
 /* USER CODE END EC */
 
