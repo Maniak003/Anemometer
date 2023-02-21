@@ -521,9 +521,9 @@ int main(void)
 			  if (( calibrate13 || calibrate24 ) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
 				  memset(SndBuffer, 0, sizeof(SndBuffer));
 				  if (test_flag) {
-					  sprintf(SndBuffer, "Z13-Z31:%5.0f, Z42-Z24:%5.0f   \r",
-							  resul_arrayY1[0] - resul_arrayY2[0] * DY1.f,
-							  resul_arrayX1[0] - resul_arrayX2[0] * DX1.f);
+					  sprintf(SndBuffer, "Z13(%4.0f)-Z31(%4.0f):%5.0f, Z42(%4.0f)-Z24(%4.0f):%5.0f   \r",
+							  resul_arrayY1[0], resul_arrayY2[0], resul_arrayY1[0] - resul_arrayY2[0] * DY1.f,
+							  resul_arrayX1[0], resul_arrayX2[0], resul_arrayX1[0] - resul_arrayX2[0] * DX1.f);
 				  } else {
 					  sprintf(SndBuffer, "Z13-Z31:%5.0f-%5.0f, Z42-Z24:%5.0f-%5.0f   \r",
 							  resul_arrayY1[0], resul_arrayY2[0], resul_arrayX1[0], resul_arrayX2[0]);
@@ -576,7 +576,7 @@ int main(void)
 						  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_13:%5d, C_24:%5d\r\n", C_13, C_24);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
-						  sprintf(SndBuffer, "DX1:%5.4f, DY1:%5.4f\r\n\r\n", DX1.f, DY1.f);
+						  sprintf(SndBuffer, "DY1:%5.4f, DX1:%5.4f\r\n\r\n", DY1.f, DX1.f);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 						  if (abs(DX1.f) < 2 && abs(DY1.f) < 2) {
 							  rwFlash(1);  // Запись данных калибровки во Flash.

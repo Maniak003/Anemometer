@@ -145,7 +145,7 @@ void Error_Handler(void);
 #define TEST_TEXT "\r\nStart test.\r\n"
 #define TEST_TERMINATE "\r\nTerminate test or calibrate.\r\n"
 
-#define COUNT_FRONT 10
+#define COUNT_FRONT 2
 #define MEASSURE_COUNT 100
 #define CALIBRATE_MAX_COUNT 1600
 #define CALIBRATE_TIMES 5
