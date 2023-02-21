@@ -51,11 +51,11 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-uint32_t runFlag;
-uint16_t front_sum, resulMeass, test_cnt, calibrateCount, calibrateMode, currentMode, measCount;
+uint32_t runFlag, front_sum;
+uint16_t resulMeass, test_cnt, calibrateCount, calibrateMode, currentMode, measCount;
 bool readyFlag, test_flag, calibrate13, calibrate24, firstTime;
 double Xsum, Ysum, Vmax, A, V, Vmaxfin, Xmaxfin, Ymaxfin, X, Y, Xmax, Ymax, Xsum1, Ysum1;
-float ZX1, ZX2, ZY1, ZY2, temperature, pressure, humidity;
+float ZX1, ZX2, ZY1, ZY2, temperature, pressure, humidity, front_sumf;
 uint16_t C_13, C_24;
 
 union {
@@ -88,7 +88,7 @@ union {
 #define CHANNELS 4
 #define PREFETCH 20
 #define SPEED_CALIBRATE 42.19f // cos(atg(17/18)) * (49.52/330000 - 49.52/331000) / (1/64000000) * 2
-#define MEDIAN_FILTER_ENABLE
+//#define MEDIAN_FILTER_ENABLE
 #define Z1Receive 1
 #define Z2Receive 2
 #define Z3Receive 3

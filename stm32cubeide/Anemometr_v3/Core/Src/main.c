@@ -469,7 +469,7 @@ int main(void)
 
   /* Таймер задержки запуска измерения */
   receiversOff
-  C_13 = CALIBRATE_START;
+  //C_13 = CALIBRATE_START;
   TIM3->ARR = C_13; 		// Коррекция для таймера запуска измерения Z13
   /*
    * calibrateMode == 0 -- Нормальный режим
@@ -1212,17 +1212,17 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 		if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
 			if ((runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
 				if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
-					front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1) & 0x0FFFF);
+					front_sum = front_sum + HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1);
 				} else {   // Активен спад
-					front_sum = front_sum + (uint16_t) (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2) & 0x0FFFF);
+					front_sum = front_sum + HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2);
 				}
 				runFlag--;
 				if (runFlag == 0) {
 					//LED_PULSE
 					STOP_CAPTURE
-					front_sum = front_sum / COUNT_FRONT - 3600;  // Расчитываем задержку от средины импульсов
-					if (front_sum > 1500) {		// Ошибка измерения.
-						front_sum = 1500;		// Значение необходимое для калибровки.
+					front_sumf = (float) front_sum / ((COUNT_FRONT + COUNT_FRONT * COUNT_FRONT) / 2);  // Расчитываем задержку от средины импульсов
+					if (front_sumf > 1500) {	// Ошибка измерения.
+						front_sumf = 1500;		// Значение необходимое для калибровки.
 					}
 					/* Отключим все мультиплексоры */
 					receiversOff
@@ -1232,19 +1232,19 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 					#endif
 					switch (currentMode) {
 						case 1: { // Z1 > Z3, Z13
-							resul_arrayY1[measCount] = front_sum;
+							resul_arrayY1[measCount] = front_sumf;
 							break;
 						}
 						case 2: { // Z3 > Z1, Z31
-							resul_arrayY2[measCount] = front_sum;
+							resul_arrayY2[measCount] = front_sumf;
 							break;
 						}
 						case 3: { // Z2 > Z4 Z24
-							resul_arrayX1[measCount] = front_sum;
+							resul_arrayX1[measCount] = front_sumf;
 							break;
 						}
 						case 4: { // Z4 > Z2 Z42
-							resul_arrayX2[measCount] = front_sum;
+							resul_arrayX2[measCount] = front_sumf;
 							break;
 						}
 					}
