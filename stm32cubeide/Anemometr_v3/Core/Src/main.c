@@ -1210,7 +1210,8 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if (runFlag > 0) {								// Разрешено измерение ?
 		if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
-			if ((runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
+			//if ((runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
+			if ((runFlag < COUNT_FRONT) || (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
 				if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
 					front_sum = front_sum + HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1);
 				} else {   // Активен спад
