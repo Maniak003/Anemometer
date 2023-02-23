@@ -84,11 +84,18 @@ union {
 #define FALSE 0
 #define START_CAPTURE HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
 #define STOP_CAPTURE HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
-#define CALIBRATE_START 40000
+#define CALIBRATE_START 35000
 #define CHANNELS 4
-#define PREFETCH 20
-#define SPEED_CALIBRATE 42.19f // cos(atg(17/18)) * (49.52/330000 - 49.52/331000) / (1/64000000) * 2
-//#define MEDIAN_FILTER_ENABLE
+#define PREFETCH 0
+/* cos(arctg(L/2 / H)) * (sqrt((L/2)^2 + H^2) / 330000 - (L/2)^2 + H^2) / 331000) / (1/64000000) * 2
+ * L = 40; L/2 = 20
+ * H = 20
+ * a = 45
+ * cos(atg(20/20)) * (56.57/330000 - 56.57/331000) / (1/64000000) * 2 = 46.87
+ *  */
+#define SPEED_CALIBRATE 46.87f
+#define MAX_SPD 40.00f
+#define MEDIAN_FILTER_ENABLE
 #define Z1Receive 1
 #define Z2Receive 2
 #define Z3Receive 3
@@ -145,7 +152,7 @@ void Error_Handler(void);
 #define TEST_TEXT "\r\nStart test.\r\n"
 #define TEST_TERMINATE "\r\nTerminate test or calibrate.\r\n"
 
-#define COUNT_FRONT 2
+#define COUNT_FRONT 8
 #define MEASSURE_COUNT 100
 #define CALIBRATE_MAX_COUNT 1600
 #define CALIBRATE_TIMES 5
@@ -160,7 +167,7 @@ float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX
 #define _DHCP_DEBUG_
 
 //#define ZABBIX_DEBUG
-//#define ZABBIX_ENABLE
+#define ZABBIX_ENABLE
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128

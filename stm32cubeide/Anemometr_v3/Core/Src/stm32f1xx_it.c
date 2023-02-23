@@ -288,7 +288,6 @@ void TIM4_IRQHandler(void)
 		//LED_PULSE
 		if ((measCount == MEASSURE_COUNT) && (calibrateMode == 0)) {
 			//LED_PULSE
-			//HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			#ifdef SYSTICK_DISABLE
 			SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 			#endif
@@ -386,7 +385,7 @@ void TIM4_IRQHandler(void)
 			} else {
 				switch (currentMode++) {
 					case 0: { 					// Z1 (transmit) > Z3 (receive) Y1
-						LED_PULSE
+						//LED_PULSE
 						setZ3receive 			// Turn on multiplexer for input Z2 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в 1 канале
 						break;
@@ -399,7 +398,7 @@ void TIM4_IRQHandler(void)
 						break;
 					}
 					case 2: { 					// Z2 (transmit) > Z4 (receive) X1
-						//LED_PULSE
+						LED_PULSE
 						setZ4receive 			// Turn on multiplexer for input Z4 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);	// Генерация для пьезокристалла в 2 канале
 						break;

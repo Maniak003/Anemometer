@@ -369,6 +369,7 @@ void init_w5500() {
         DHCP_run();
         ctr--;
         HAL_Delay(100);
+        HAL_IWDG_Refresh(&hiwdg);
     }
     if(!ip_assigned) {
 		#ifdef ZABBIX_DEBUG
@@ -626,13 +627,13 @@ int main(void)
 			  	  }
 				#endif
 			  if ( V != 0 ) {
-				  if ( (! firstTime) && (V < MAX_SPEED) && (Vmaxfin < MAX_SPEED) ) {  // Первый раз пропускаем для инициализации переменных.
+				  if ( (! firstTime) && (V < MAX_SPD) && (Vmaxfin < MAX_SPD) ) {  // Первый раз пропускаем для инициализации переменных.
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
 				  }
 			  } else {
-				  if ( (! firstTime) && (Vmaxfin < MAX_SPEED) ) {
+				  if ( (! firstTime) && (Vmaxfin < MAX_SPD) ) {
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
 				  }
@@ -805,7 +806,7 @@ static void MX_IWDG_Init(void)
 
   /* USER CODE END IWDG_Init 1 */
   hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_128;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
   hiwdg.Init.Reload = 4095;
   if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
   {
@@ -899,7 +900,7 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_OC1;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
   {
@@ -1108,7 +1109,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 1;
+  htim4.Init.Prescaler = 4;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -1210,42 +1211,38 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if (runFlag > 0) {								// Разрешено измерение ?
 		if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
-			//if ((runFlag < COUNT_FRONT) || ((GPIOA->IDR & GPIO_PIN_0) != 0) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
 			if ((runFlag < COUNT_FRONT) || (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
+				LED_PULSE
 				if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
-					front_sum = front_sum + HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1);
+					front_sum = front_sum + (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1) & 0x0FFFF);
 				} else {   // Активен спад
-					front_sum = front_sum + HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2);
+					front_sum = front_sum + (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2) & 0x0FFFF);
 				}
 				runFlag--;
-				if (runFlag == 0) {
+				if (runFlag == 0) {  // Измерения закончены ?
 					//LED_PULSE
-					STOP_CAPTURE
-					front_sumf = (float) front_sum / ((COUNT_FRONT + COUNT_FRONT * COUNT_FRONT) / 2);  // Расчитываем задержку от средины импульсов
-					if (front_sumf > 1500) {	// Ошибка измерения.
-						front_sumf = 1500;		// Значение необходимое для калибровки.
+					STOP_CAPTURE  // Таймер больше не нужен, выключаем
+					front_sum = front_sum / COUNT_FRONT - (800 * (COUNT_FRONT - 1) / 2);  // Расчитываем задержку от средины импульсов
+					if (front_sum > 1600) {		// Ошибка измерения.
+						front_sum = 1600;		// Значение необходимое для калибровки.
 					}
-					/* Отключим все мультиплексоры */
-					receiversOff
-					//runFlag = 0;
-					#ifdef SYSTICK_DISABLE
-						SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
-					#endif
+					/* Turn off all multiplexer */
+					GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 					switch (currentMode) {
-						case 1: { // Z1 > Z3, Z13
-							resul_arrayY1[measCount] = front_sumf;
+						case 1: { // Z1 > Z2, Z12
+							resul_arrayY1[measCount] = front_sum;
 							break;
 						}
-						case 2: { // Z3 > Z1, Z31
-							resul_arrayY2[measCount] = front_sumf;
+						case 2: { // Z2 > Z1, Z21
+							resul_arrayY2[measCount] = front_sum;
 							break;
 						}
-						case 3: { // Z2 > Z4 Z24
-							resul_arrayX1[measCount] = front_sumf;
+						case 3: { // Z3 > Z4 Z34
+							resul_arrayX1[measCount] = front_sum;
 							break;
 						}
-						case 4: { // Z4 > Z2 Z42
-							resul_arrayX2[measCount] = front_sumf;
+						case 4: { // Z4 > Z3 Z43
+							resul_arrayX2[measCount] = front_sum;
 							break;
 						}
 					}
