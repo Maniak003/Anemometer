@@ -498,6 +498,7 @@ int main(void)
   firstTime = TRUE;
   currentMode = 0;
   STOP_CAPTURE
+  TIM1->ARR = TIM1_PERIOD;
   measCount = 0;
   /*
    *	Очистка массива результатов.
@@ -550,8 +551,8 @@ int main(void)
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  if (! test_flag) {
 					  /* Y1 */
-					  if ( calibrate1 && (abs(resul_arrayY1[0] - 800.0f) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayY1[0] > 800.0f) {
+					  if ( calibrate1 && (abs(resul_arrayY1[0] - (float) TIM1_PERIOD) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayY1[0] > (float) TIM1_PERIOD) {
 							  C_3++;
 						  } else {
 							  C_3--;
@@ -560,8 +561,8 @@ int main(void)
 						  calibrate1 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
 					  }
 					  /* Y2 */
-					  if ( calibrate3 && (abs(resul_arrayY2[0] - 800.0f) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayY2[0] > 800.0f) {
+					  if ( calibrate3 && (abs(resul_arrayY2[0] - (float) TIM1_PERIOD) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayY2[0] > (float) TIM1_PERIOD) {
 							  C_1++;
 						  } else {
 							  C_1--;
@@ -570,8 +571,8 @@ int main(void)
 						  calibrate3 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
 					  }
 					  /* X1 */
-					  if ( calibrate2 && (abs(resul_arrayX1[0] - 800.0f) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayX1[0] > 800.0f) {
+					  if ( calibrate2 && (abs(resul_arrayX1[0] - (float) TIM1_PERIOD) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayX1[0] > (float) TIM1_PERIOD) {
 							  C_4++;
 						  } else {
 							  C_4--;
@@ -580,8 +581,8 @@ int main(void)
 						  calibrate2 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
 					  }
 					  /* X2 */
-					  if ( calibrate4 && (abs(resul_arrayX2[0] - 800.0f) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayX2[0] > 800.0f) {
+					  if ( calibrate4 && (abs(resul_arrayX2[0] - (float) TIM1_PERIOD) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayX2[0] > (float) TIM1_PERIOD) {
 							  C_2++;
 						  } else {
 							  C_2--;
@@ -776,12 +777,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV2;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -925,7 +927,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 810;
+  htim1.Init.Period = 799;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 91;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
@@ -1229,14 +1231,14 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_Pin|nRst_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, TP_Pin|LED_Pin|nRst_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, Z1_Pin|Z2_Pin|SCSN_Pin|Z3_Pin
                           |Z4_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_Pin nRst_Pin */
-  GPIO_InitStruct.Pin = LED_Pin|nRst_Pin;
+  /*Configure GPIO pins : TP_Pin LED_Pin nRst_Pin */
+  GPIO_InitStruct.Pin = TP_Pin|LED_Pin|nRst_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -1258,7 +1260,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if (runFlag > 0) {								// Разрешено измерение ?
 		if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 || htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
 			if ((runFlag < COUNT_FRONT) || (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) ) {  // Ждем фронт первого импульса, дальше обрабатываем все импульсы.
-				LED_PULSE
+				//LED_PULSE
 				if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1 ) {  // Активен фронт
 					front_sum = front_sum + (HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1) & 0x0FFFF);
 				} else {   // Активен спад
@@ -1268,7 +1270,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 				if (runFlag == 0) {  // Измерения закончены ?
 					//LED_PULSE
 					STOP_CAPTURE  // Таймер больше не нужен, выключаем
-					front_sum = front_sum / COUNT_FRONT - (800 * (COUNT_FRONT - 1) / 2);  // Расчитываем задержку от средины импульсов
+					front_sum = front_sum / COUNT_FRONT - (TIM1_PERIOD * (COUNT_FRONT - 1) / 2);  // Расчитываем задержку от средины импульсов
 					if (front_sum > 1600) {		// Ошибка измерения.
 						front_sum = 1600;		// Значение необходимое для калибровки.
 					}

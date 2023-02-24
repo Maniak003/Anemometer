@@ -82,24 +82,34 @@ union {
 #define SYSTICK_DISABLE
 #define TRUE 1
 #define FALSE 0
-#define START_CAPTURE HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
-#define STOP_CAPTURE HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
-#define CALIBRATE_START 40000
-#define CHANNELS 4
-#define PREFETCH 0
-/* cos(arctg(L/2 / H)) * (sqrt((L/2)^2 + H^2) / 330000 - (L/2)^2 + H^2) / 331000) / (1/64000000) * 2
+/*
+ *   Количество тактов на 1м/с
+ *
+ *  cos(arctg(L/2 / H)) * (sqrt((L/2)^2 + H^2) / 330000 - (L/2)^2 + H^2) / 331000) / (1/64000000) * 2
  * L = 40; L/2 = 20
  * H = 20
  * a = 45
  * cos(atg(20/20)) * (56.57/330000 - 56.57/331000) / (1/64000000) * 2 = 46.87
  *  */
 #define SPEED_CALIBRATE 46.87f
-#define MAX_SPD 40.00f
+#define CHANNELS 4
+#define PREFETCH 0					/* Количество игнорируемых измерений. Для устранения шума. */
+#define CALIBRATE_START 25000		/* Начальное смещение начала измерения */
+#define TIM1_PERIOD 800				/* Количество тактов для одного периода ~40kHz */
+#define MAX_SPD 40.00f				/* Допустимая максимальная скорость, все, что выше -- игнорируется */
 #define MEDIAN_FILTER_ENABLE
+#define COUNT_FRONT 28				/* Количество переходов в одном цикле измерения */
+#define MEASSURE_COUNT 100			/* Количество циклов в стандартном измерении */
+#define CALIBRATE_MAX_COUNT 1600	/* Диапазон перебора смещения задержки измерения */
+#define CALIBRATE_TIMES 5			/* Количество стандартных измерений измерений для точной калибровки */
+#define CALIBRATE_ACURACY 1.0f		/* Максимальное отклонение при переборе смещения измерения */
+
 #define Z1Receive 1
 #define Z2Receive 2
 #define Z3Receive 3
 #define Z4Receive 4
+#define START_CAPTURE HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
+#define STOP_CAPTURE HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
 #define receiversOff GPIOB->ODR |= (1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive);
 #define setZ1receive GPIOB->ODR &= ~((1 << Z1Receive)); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF8 | GPIO_CRH_MODE8)) | GPIO_CRH_CNF8_0;
 #define setZ2receive GPIOB->ODR &= ~((1 << Z2Receive)); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9)) | GPIO_CRH_CNF9_0;
@@ -108,6 +118,7 @@ union {
 
 //#define LED_PULSE LED_GPIO_Port->BSRR = (uint32_t)LED_Pin; LED_GPIO_Port->BSRR = (uint32_t)LED_Pin << 16u;
 #define LED_PULSE HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET); HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);;
+#define TP_PULSE HAL_GPIO_WritePin(TP_GPIO_Port, TP_Pin, GPIO_PIN_SET); HAL_GPIO_WritePin(TP_GPIO_Port, TP_Pin, GPIO_PIN_RESET);;
 /* USER CODE END EM */
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
@@ -120,6 +131,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define TP_Pin GPIO_PIN_2
+#define TP_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_7
 #define LED_GPIO_Port GPIOA
 #define Z1_Pin GPIO_PIN_1
@@ -152,12 +165,6 @@ void Error_Handler(void);
 #define TEST_TEXT "\r\nStart test.\r\n"
 #define TEST_TERMINATE "\r\nTerminate test or calibrate.\r\n"
 
-#define COUNT_FRONT 28
-#define MEASSURE_COUNT 100
-#define CALIBRATE_MAX_COUNT 1600
-#define CALIBRATE_TIMES 5
-#define CALIBRATE_ACURACY 1.0f
-
 float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT];
 /* For W5500*/
 #define DHCP_SOCKET     0
@@ -166,8 +173,8 @@ float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX
 #define DHCP_TRY_CNT	1000
 #define _DHCP_DEBUG_
 
-//#define ZABBIX_DEBUG
-#define ZABBIX_ENABLE
+//#define ZABBIX_DEBUG					/* Вывод хода подключения и записи данных в zabbix */
+//#define ZABBIX_ENABLE					/* Включает сетевой интерфейс и инициирует запись данных в zabbix */
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128
