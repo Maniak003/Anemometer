@@ -74,6 +74,7 @@ void NMI_Handler(void)
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
 
   /* USER CODE END NonMaskableInt_IRQn 0 */
+  HAL_RCC_NMI_IRQHandler();
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
   while (1)
   {
@@ -385,29 +386,29 @@ void TIM4_IRQHandler(void)
 			} else {
 				switch (currentMode++) {
 					case 0: { 					// Z1 (transmit) > Z3 (receive) Y1
-						//LED_PULSE
-						TIM3->ARR = C_1; 		// Коррекция для таймера запуска измерения Z13, Z31
+						//TP_PULSE
+						TIM3->ARR = C_1; 		// Коррекция для таймера запуска измерения Z13
 						setZ3receive 			// Turn on multiplexer for input Z2 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в 1 канале
 						break;
 					}
 					case 1: { 					// Z3 (transmit) > Z1 (receive) Y2
-						//LED_PULSE
-						TIM3->ARR = C_4; 		// Коррекция для таймера запуска измерения Z24, Z42
+						TP_PULSE
+						TIM3->ARR = C_4; 		// Коррекция для таймера запуска измерения Z31
 						setZ1receive 			// Turn on multiplexer for input Z1 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3); // Генерация для пьезокристалла в 3 канале
 						break;
 					}
 					case 2: { 					// Z2 (transmit) > Z4 (receive) X1
 						//LED_PULSE
-						TIM3->ARR = C_2; 		// Коррекция для таймера запуска измерения Z13, Z31
+						TIM3->ARR = C_2; 		// Коррекция для таймера запуска измерения Z24
 						setZ4receive 			// Turn on multiplexer for input Z4 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);	// Генерация для пьезокристалла в 2 канале
 						break;
 					}
 					case 3: { 					// Z4 (transmit) > Z3 (receive) X2
 						//LED_PULSE
-						TIM3->ARR = C_3; 		// Коррекция для таймера запуска измерения Z13, Z31
+						TIM3->ARR = C_3; 		// Коррекция для таймера запуска измерения Z42
 						setZ2receive 			// Turn on multiplexer for input Z3 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);	// Генерация для пьезокристалла в 4 канале
 						break;

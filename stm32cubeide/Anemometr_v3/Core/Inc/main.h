@@ -94,7 +94,7 @@ union {
 #define SPEED_CALIBRATE 46.87f
 #define CHANNELS 4
 #define PREFETCH 0					/* Количество игнорируемых измерений. Для устранения шума. */
-#define CALIBRATE_START 25000		/* Начальное смещение начала измерения */
+#define CALIBRATE_START 40000		/* Начальное смещение начала измерения */
 #define TIM1_PERIOD 800				/* Количество тактов для одного периода ~40kHz */
 #define MAX_SPD 40.00f				/* Допустимая максимальная скорость, все, что выше -- игнорируется */
 #define MEDIAN_FILTER_ENABLE
@@ -117,8 +117,8 @@ union {
 #define setZ4receive GPIOB->ODR &= ~((1 << Z4Receive)); GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11)) | GPIO_CRH_CNF11_0;
 
 //#define LED_PULSE LED_GPIO_Port->BSRR = (uint32_t)LED_Pin; LED_GPIO_Port->BSRR = (uint32_t)LED_Pin << 16u;
-#define LED_PULSE HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET); HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);;
-#define TP_PULSE HAL_GPIO_WritePin(TP_GPIO_Port, TP_Pin, GPIO_PIN_SET); HAL_GPIO_WritePin(TP_GPIO_Port, TP_Pin, GPIO_PIN_RESET);;
+#define LED_PULSE HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET); HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+#define TP_PULSE HAL_GPIO_WritePin(TP_GPIO_Port, TP_Pin, GPIO_PIN_SET); HAL_GPIO_WritePin(TP_GPIO_Port, TP_Pin, GPIO_PIN_RESET);
 /* USER CODE END EM */
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);

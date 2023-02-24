@@ -802,6 +802,9 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  /** Enables the Clock Security System
+  */
+  HAL_RCC_EnableCSS();
 }
 
 /**
@@ -1275,7 +1278,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 						front_sum = 1600;		// Значение необходимое для калибровки.
 					}
 					/* Turn off all multiplexer */
-					GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
+					GPIOB->ODR |= ((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 					switch (currentMode) {
 						case 1: { // Z1 > Z3, Z13
 							resul_arrayY1[measCount] = front_sum;
