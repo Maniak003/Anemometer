@@ -53,10 +53,10 @@ extern "C" {
 /* USER CODE BEGIN EC */
 uint32_t runFlag, front_sum;
 uint16_t resulMeass, test_cnt, calibrateCount, calibrateMode, currentMode, measCount;
-bool readyFlag, test_flag, calibrate13, calibrate24, firstTime;
+bool readyFlag, test_flag, calibrate1, calibrate3, calibrate2, calibrate4, firstTime;
 double Xsum, Ysum, Vmax, A, V, Vmaxfin, Xmaxfin, Ymaxfin, X, Y, Xmax, Ymax, Xsum1, Ysum1;
 float ZX1, ZX2, ZY1, ZY2, temperature, pressure, humidity, front_sumf;
-uint16_t C_13, C_24;
+uint16_t C_1, C_3, C_2, C_4;
 
 union {
 	float f;
@@ -84,7 +84,7 @@ union {
 #define FALSE 0
 #define START_CAPTURE HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
 #define STOP_CAPTURE HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1); HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_2);
-#define CALIBRATE_START 35000
+#define CALIBRATE_START 40000
 #define CHANNELS 4
 #define PREFETCH 0
 /* cos(arctg(L/2 / H)) * (sqrt((L/2)^2 + H^2) / 330000 - (L/2)^2 + H^2) / 331000) / (1/64000000) * 2
@@ -152,11 +152,11 @@ void Error_Handler(void);
 #define TEST_TEXT "\r\nStart test.\r\n"
 #define TEST_TERMINATE "\r\nTerminate test or calibrate.\r\n"
 
-#define COUNT_FRONT 8
+#define COUNT_FRONT 28
 #define MEASSURE_COUNT 100
 #define CALIBRATE_MAX_COUNT 1600
 #define CALIBRATE_TIMES 5
-#define CALIBRATE_ACURACY 1
+#define CALIBRATE_ACURACY 1.0f
 
 float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT];
 /* For W5500*/

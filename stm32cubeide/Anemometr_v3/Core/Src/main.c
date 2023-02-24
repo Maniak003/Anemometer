@@ -89,8 +89,10 @@ void rwFlash(uint8_t rwFlag) {
 	if ((magicKey != 0x12349876) || (rwFlag == 1)) { // rwFlag == 1 for wrtite data to flash
 		magicKey = 0x12349876;
 		if (rwFlag == 0) { // For first initial
-			C_13 = CALIBRATE_START;
-			C_24 = CALIBRATE_START;
+			C_1 = CALIBRATE_START;
+			C_3 = CALIBRATE_START;
+			C_2 = CALIBRATE_START;
+			C_4 = CALIBRATE_START;
 			DX1.f = 1;
 			//DX2.f = 1;
 			DY1.f = 1;
@@ -113,7 +115,7 @@ void rwFlash(uint8_t rwFlag) {
 			while(flash_ok != HAL_OK){
 				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr, dataForSave); // Write  magic key
 			}
-			dataForSave = (uint64_t) (C_13 | ((uint64_t) C_24 << 16));
+			dataForSave = (uint64_t) (C_1 | ((uint64_t) C_2 << 16) | ((uint64_t) C_3 << 32) | ((uint64_t) C_4 << 48));
 			flash_ok = HAL_ERROR;
 			while(flash_ok != HAL_OK){
 				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pageAdr + 16, dataForSave); // Write C_12 C_34 C_14 C_23
@@ -142,12 +144,12 @@ void rwFlash(uint8_t rwFlag) {
 		}
 	} else {
 		/* Задержки измерения в каналах */
-		C_13 = *(__IO uint16_t*) (pageAdr + 16);
-		C_24 = *(__IO uint16_t*) (pageAdr + 18);
-		//C_31 = *(__IO uint16_t*) (pageAdr + 20);
-		//C_42 = *(__IO uint16_t*) (pageAdr + 22);
+		C_1 = *(__IO uint16_t*) (pageAdr + 16);
+		C_2 = *(__IO uint16_t*) (pageAdr + 18);
+		C_3 = *(__IO uint16_t*) (pageAdr + 20);
+		C_4 = *(__IO uint16_t*) (pageAdr + 22);
 		memset(SndBuffer, 0, sizeof(SndBuffer));
-		sprintf(SndBuffer, "C_13: %5d, C_24: %5d  \r\n", C_13, C_24);
+		sprintf(SndBuffer, "C_1: %5d, C_2: %5d, C_3: %5d, C_4: %5d  \r\n", C_1, C_2, C_3, C_4);
 		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 
 		/* Поправочные коэффициенты */
@@ -471,7 +473,19 @@ int main(void)
   /* Таймер задержки запуска измерения */
   receiversOff
   //C_13 = CALIBRATE_START;
-  TIM3->ARR = C_13; 		// Коррекция для таймера запуска измерения Z13
+  if (C_1 == 0) {
+	  C_1 = CALIBRATE_START;
+  }
+  if (C_2 == 0) {
+	  C_2 = CALIBRATE_START;
+  }
+  if (C_3 == 0) {
+	  C_3 = CALIBRATE_START;
+  }
+  if (C_4 == 0) {
+	  C_4 = CALIBRATE_START;
+  }
+  TIM3->ARR = C_3; 		// Коррекция для таймера запуска измерения Z13
   /*
    * calibrateMode == 0 -- Нормальный режим
    * calibrateMode > 0 -- Режим калибровки
@@ -491,9 +505,13 @@ int main(void)
   for (int ii = 0; ii < MEASSURE_COUNT; ii++) {
 	  resul_arrayX1[ii] = 0;
 	  resul_arrayY1[ii] = 0;
+	  resul_arrayX2[ii] = 0;
+	  resul_arrayY2[ii] = 0;
   }
-  calibrate13 = FALSE;
-  calibrate24 = FALSE;
+  calibrate1 = FALSE;
+  calibrate3 = FALSE;
+  calibrate2 = FALSE;
+  calibrate4 = FALSE;
 
   HAL_UART_Transmit(&huart1, (uint8_t *) INIT_FINISH_TEXT, sizeof(INIT_FINISH_TEXT), HAL_MAX_DELAY);
 
@@ -519,37 +537,57 @@ int main(void)
 		  readyFlag = FALSE;
 		  if (calibrateMode > 0) {
 			  /* Процедура калибровки */
-			  if (( calibrate13 || calibrate24 ) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
+			  if (( calibrate1 || calibrate3 || calibrate2 || calibrate4 ) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
 				  memset(SndBuffer, 0, sizeof(SndBuffer));
 				  if (test_flag) {
 					  sprintf(SndBuffer, "Z13(%4.0f)-Z31(%4.0f):%5.0f, Z42(%4.0f)-Z24(%4.0f):%5.0f   \r",
 							  resul_arrayY1[0], resul_arrayY2[0], resul_arrayY1[0] - resul_arrayY2[0] * DY1.f,
 							  resul_arrayX1[0], resul_arrayX2[0], resul_arrayX1[0] - resul_arrayX2[0] * DX1.f);
 				  } else {
-					  sprintf(SndBuffer, "Z13-Z31:%5.0f-%5.0f, Z42-Z24:%5.0f-%5.0f   \r",
+					  sprintf(SndBuffer, "Z13:%5.0f, Z31:%5.0f, Z42:%5.0f, Z24:%5.0f   \r",
 							  resul_arrayY1[0], resul_arrayY2[0], resul_arrayX1[0], resul_arrayX2[0]);
 				  }
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-				  /* Y */
 				  if (! test_flag) {
-					  if ( calibrate13 && (abs(resul_arrayY1[0] + resul_arrayY2[0] - 1600) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayY1[0] + resul_arrayY2[0] > 1600) {
-							  C_13++;
+					  /* Y1 */
+					  if ( calibrate1 && (abs(resul_arrayY1[0] - 800.0f) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayY1[0] > 800.0f) {
+							  C_3++;
 						  } else {
-							  C_13--;
+							  C_3--;
 						  }
 					  } else {
-						  calibrate13 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
+						  calibrate1 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
 					  }
-					  /* X */
-					  if ( calibrate24 && (abs(resul_arrayX1[0] + resul_arrayX2[0] - 1600) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayX1[0] + resul_arrayX2[0] > 1600) {
-							  C_24++;
+					  /* Y2 */
+					  if ( calibrate3 && (abs(resul_arrayY2[0] - 800.0f) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayY2[0] > 800.0f) {
+							  C_1++;
 						  } else {
-							  C_24--;
+							  C_1--;
 						  }
 					  } else {
-						  calibrate24 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
+						  calibrate3 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
+					  }
+					  /* X1 */
+					  if ( calibrate2 && (abs(resul_arrayX1[0] - 800.0f) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayX1[0] > 800.0f) {
+							  C_4++;
+						  } else {
+							  C_4--;
+						  }
+					  } else {
+						  calibrate2 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
+					  }
+					  /* X2 */
+					  if ( calibrate4 && (abs(resul_arrayX2[0] - 800.0f) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayX2[0] > 800.0f) {
+							  C_2++;
+						  } else {
+							  C_2--;
+						  }
+					  } else {
+						  calibrate4 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
 					  }
 					  calibrateCount++;
 				  }
@@ -574,7 +612,7 @@ int main(void)
 						  DX1.f = ZX1 / ZX2;
 						  DY1.f = ZY1 / ZY2;
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
-						  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_13:%5d, C_24:%5d\r\n", C_13, C_24);
+						  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_1:%5d, C_3:%5d, C_2:%5d, C_4:%5d\r\n", C_1, C_3, C_2, C_4);
 						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 						  memset(SndBuffer, 0, sizeof(SndBuffer));
 						  sprintf(SndBuffer, "DY1:%5.4f, DX1:%5.4f\r\n\r\n", DY1.f, DX1.f);
@@ -663,12 +701,16 @@ int main(void)
 			  HAL_TIM_Base_Stop_IT(&htim4); // Остановим измерения
 			  STOP_CAPTURE
 			  memset(SndBuffer, 0, sizeof(SndBuffer));
-			  calibrate13 = TRUE;
-			  calibrate24 = TRUE;
+			  calibrate1 = TRUE;
+			  calibrate3 = TRUE;
+			  calibrate2 = TRUE;
+			  calibrate4 = TRUE;
 			  test_flag = FALSE;
 			  calibrateCount = 0;
-			  C_13 = CALIBRATE_START;
-			  C_24 = CALIBRATE_START;
+			  C_1 = CALIBRATE_START;
+			  C_3 = CALIBRATE_START;
+			  C_2 = CALIBRATE_START;
+			  C_4 = CALIBRATE_START;
 			  ZX1 = 0;
 			  ZX2 = 0;
 			  ZY1 = 0;
@@ -688,8 +730,10 @@ int main(void)
 				  calibrateMode = 1;
 				  calibrateCount = 0;
 				  test_flag = TRUE;
-				  calibrate13 = TRUE;
-				  calibrate24 = TRUE;
+				  calibrate1 = TRUE;
+				  calibrate3 = TRUE;
+				  calibrate2 = TRUE;
+				  calibrate4 = TRUE;
 				  measCount = 0;
 				  HAL_TIM_Base_Start_IT(&htim4); // Запуск измерения
 			  } else {
@@ -698,8 +742,10 @@ int main(void)
 					  STOP_CAPTURE
 					  HAL_UART_Transmit(&huart1, (uint8_t *) TEST_TERMINATE, sizeof(TEST_TERMINATE), 1000);
 					  test_flag = 0;
-					  calibrate13 = TRUE;
-					  calibrate24 = TRUE;
+					  calibrate1 = TRUE;
+					  calibrate3 = TRUE;
+					  calibrate2 = TRUE;
+					  calibrate4 = TRUE;
 					  calibrateMode = 0;
 					  calibrateCount = 0;
 					  measCount = 0;
@@ -1109,7 +1155,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 4;
+  htim4.Init.Prescaler = 6;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -1229,19 +1275,19 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 					/* Turn off all multiplexer */
 					GPIOB->ODR &= ~((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
 					switch (currentMode) {
-						case 1: { // Z1 > Z2, Z12
+						case 1: { // Z1 > Z3, Z13
 							resul_arrayY1[measCount] = front_sum;
 							break;
 						}
-						case 2: { // Z2 > Z1, Z21
+						case 2: { // Z3 > Z1, Z31
 							resul_arrayY2[measCount] = front_sum;
 							break;
 						}
-						case 3: { // Z3 > Z4 Z34
+						case 3: { // Z2 > Z4 Z24
 							resul_arrayX1[measCount] = front_sum;
 							break;
 						}
-						case 4: { // Z4 > Z3 Z43
+						case 4: { // Z4 > Z2 Z42
 							resul_arrayX2[measCount] = front_sum;
 							break;
 						}
