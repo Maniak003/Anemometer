@@ -174,7 +174,7 @@ float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX
 #define _DHCP_DEBUG_
 
 //#define ZABBIX_DEBUG					/* Вывод хода подключения и записи данных в zabbix */
-//#define ZABBIX_ENABLE					/* Включает сетевой интерфейс и инициирует запись данных в zabbix */
+#define ZABBIX_ENABLE					/* Включает сетевой интерфейс и инициирует запись данных в zabbix */
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128

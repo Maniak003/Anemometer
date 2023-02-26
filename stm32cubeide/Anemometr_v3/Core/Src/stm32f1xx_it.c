@@ -386,14 +386,14 @@ void TIM4_IRQHandler(void)
 			} else {
 				switch (currentMode++) {
 					case 0: { 					// Z1 (transmit) > Z3 (receive) Y1
-						//TP_PULSE
+						TP_PULSE
 						TIM3->ARR = C_1; 		// Коррекция для таймера запуска измерения Z13
 						setZ3receive 			// Turn on multiplexer for input Z2 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в 1 канале
 						break;
 					}
 					case 1: { 					// Z3 (transmit) > Z1 (receive) Y2
-						TP_PULSE
+						//TP_PULSE
 						TIM3->ARR = C_4; 		// Коррекция для таймера запуска измерения Z31
 						setZ1receive 			// Turn on multiplexer for input Z1 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_3); // Генерация для пьезокристалла в 3 канале
