@@ -951,7 +951,7 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_ENABLE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
   {
@@ -1271,7 +1271,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 				}
 				runFlag--;
 				if (runFlag == 0) {  // Измерения закончены ?
-					//LED_PULSE
+					LED_PULSE
 					STOP_CAPTURE  // Таймер больше не нужен, выключаем
 					front_sum = front_sum / COUNT_FRONT - (TIM1_PERIOD * (COUNT_FRONT - 1) / 2);  // Расчитываем задержку от средины импульсов
 					if (front_sum > 1600) {		// Ошибка измерения.
