@@ -269,6 +269,10 @@ void TIM4_IRQHandler(void)
 
 		front_sum = 0;
 		runFlag = 0;
+		avg_X1 = 0;
+		avg_X2 = 0;
+		avg_Y1 = 0;
+		avg_Y2 = 0;
 		HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
 		HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_2);
 		HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_3);
@@ -348,11 +352,54 @@ void TIM4_IRQHandler(void)
 				if (abs(Y) > Ymax) {
 					Ymax = abs(Y);
 				}
+				/* Для тестирования температурного коэффициента */
+				avg_X1 = avg_X1 + resul_arrayX1[ii];
+				avg_X2 = avg_X2 + resul_arrayX2[ii];
+				avg_Y1 = avg_Y1 + resul_arrayY1[ii];
+				avg_Y2 = avg_Y2 + resul_arrayY2[ii];
+
 				resul_arrayX1[ii] = 0;
 				resul_arrayX2[ii] = 0;
 				resul_arrayY1[ii] = 0;
 				resul_arrayY2[ii] = 0;
 			}
+			avg_X1 = avg_X1 / ((MEASSURE_COUNT - PREFETCH));
+			avg_X2 = avg_X2 / ((MEASSURE_COUNT - PREFETCH)) * DX1.f;
+			avg_Y1 = avg_Y1 / ((MEASSURE_COUNT - PREFETCH));
+			avg_Y2 = avg_Y2 / ((MEASSURE_COUNT - PREFETCH)) * DY1.f;
+
+			/* Автоматическая подстройка центра диапазона для компенсации температуры и деформаций корпуса */
+			#ifdef AUTO_CALIBRATE
+			float corr;
+			if (abs((avg_X1 + avg_X2) - 1600) > CALIBRATE_ACURACY) {
+				if (abs((avg_X1 + avg_X2) - 1600) > 100) {
+					corr = 20;
+				} else {
+					corr = 1;
+				}
+				if ((avg_X1 + avg_X2) > 1600) {
+					C_2 = C_2 + corr;
+					C_4 = C_4 + corr;
+				} else {
+					C_2 = C_2 - corr;
+					C_4 = C_4 - corr;
+				}
+			}
+			if (abs((avg_Y1 + avg_Y2) - 1600) > CALIBRATE_ACURACY) {
+				if (abs((avg_Y1 + avg_Y2) - 1600) > 100) {
+					corr = 20;
+				} else {
+					corr = 1;
+				}
+				if ((avg_Y1 + avg_Y2) > 1600) {
+					C_1 = C_1 + corr;
+					C_3 = C_3 + corr;
+				} else {
+					C_1 = C_1 - corr;
+					C_3 = C_3 - corr;
+				}
+			}
+			#endif
 			Xsum = Xsum1;
 			Xsum = Xsum / ((MEASSURE_COUNT - PREFETCH));		// Среднее количество тактов по X
 			Xsum = Xsum / SPEED_CALIBRATE;	// Скорость по X

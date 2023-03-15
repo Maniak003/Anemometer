@@ -32,6 +32,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+//#define TMP117_ENABLE
+#define BME280_ENABLE
 #include <stdio.h>
 #include <stdbool.h>
 #include "wizchip_conf.h"
@@ -42,6 +44,12 @@ extern "C" {
 #include "stdarg.h"
 #include <math.h>
 #include <string.h>
+#ifdef TMP117_ENABLE
+#include "tmp117.h"
+#endif
+#ifdef BME280_ENABLE
+#include "BME280.h"
+#endif
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -58,6 +66,10 @@ double Xsum, Ysum, Vmax, A, V, Vmaxfin, Xmaxfin, Ymaxfin, X, Y, Xmax, Ymax, Xsum
 float ZX1, ZX2, ZY1, ZY2, temperature, pressure, humidity, front_sumf;
 uint16_t C_1, C_3, C_2, C_4;
 
+union {
+	float f;
+	uint32_t u;
+} t0;
 union {
 	float f;
 	uint32_t u;
@@ -79,7 +91,7 @@ union {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define SYSTICK_DISABLE
+//#define SYSTICK_DISABLE
 #define TRUE 1
 #define FALSE 0
 /*
@@ -93,7 +105,7 @@ union {
  *  */
 #define SPEED_CALIBRATE 46.87f
 #define CHANNELS 4
-#define PREFETCH 0					/* Количество игнорируемых измерений. Для устранения шума. */
+#define PREFETCH 2					/* Количество игнорируемых измерений. Для устранения шума. */
 #define CALIBRATE_START 40000		/* Начальное смещение начала измерения */
 #define TIM1_PERIOD 800				/* Количество тактов для одного периода ~40kHz */
 #define MAX_SPD 40.00f				/* Допустимая максимальная скорость, все, что выше -- игнорируется */
@@ -103,6 +115,7 @@ union {
 #define CALIBRATE_MAX_COUNT 1600	/* Диапазон перебора смещения задержки измерения */
 #define CALIBRATE_TIMES 5			/* Количество стандартных измерений измерений для точной калибровки */
 #define CALIBRATE_ACURACY 1.0f		/* Максимальное отклонение при переборе смещения измерения */
+#define AUTO_CALIBRATE				/* Подстройка средней точки диапазона для компенсации температуры и деформации корпуса */
 
 #define Z1Receive 1
 #define Z2Receive 2
@@ -166,6 +179,7 @@ void Error_Handler(void);
 #define TEST_TERMINATE "\r\nTerminate test or calibrate.\r\n"
 
 float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT];
+float avg_X1, avg_X2, avg_Y1, avg_Y2;
 /* For W5500*/
 #define DHCP_SOCKET     0
 #define DNS_SOCKET      1
@@ -175,10 +189,11 @@ float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX
 
 //#define ZABBIX_DEBUG					/* Вывод хода подключения и записи данных в zabbix */
 #define ZABBIX_ENABLE					/* Включает сетевой интерфейс и инициирует запись данных в zabbix */
+#define ZABBIX_RAW_DATA					/* Сохранение исходных значений, для температурной калибровки. */
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128
-#define MAC_ADDRESS		0x00, 0x11, 0x22, 0x33, 0x44, 0xEA
+#define MAC_ADDRESS		0x00, 0x11, 0x22, 0x35, 0x44, 0xEA
 char ZabbixHostName[255];
 /* USER CODE END Private defines */
 

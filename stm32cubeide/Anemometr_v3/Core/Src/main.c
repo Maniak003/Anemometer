@@ -93,6 +93,7 @@ void rwFlash(uint8_t rwFlag) {
 			C_3 = CALIBRATE_START;
 			C_2 = CALIBRATE_START;
 			C_4 = CALIBRATE_START;
+			t0.f = 20.0;  /* Около комнатной температуры */
 			DX1.f = 1;
 			//DX2.f = 1;
 			DY1.f = 1;
@@ -132,10 +133,10 @@ void rwFlash(uint8_t rwFlag) {
 			while(flash_ok != HAL_OK){
 				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 32, DY1.u); // Write DY1
 			}
-			//flash_ok = HAL_ERROR;
-			//while(flash_ok != HAL_OK){
-			//	flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, DY2.u); // Write DY2
-			//}
+			flash_ok = HAL_ERROR;
+			while(flash_ok != HAL_OK){
+				flash_ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, pageAdr + 36, t0.u); // Сохраним температуру калибровки
+			}
 		}
 		// Lock flash
 		flash_ok = HAL_ERROR;
@@ -156,9 +157,15 @@ void rwFlash(uint8_t rwFlag) {
 		DX1.u = *(__IO uint32_t*) (pageAdr + 24);
 		//DX2.u = *(__IO uint32_t*) (pageAdr + 28);
 		DY1.u = *(__IO uint32_t*) (pageAdr + 32);
-		//DY2.u = *(__IO uint32_t*) (pageAdr + 36);
 		memset(SndBuffer, 0, sizeof(SndBuffer));
 		sprintf(SndBuffer, "DX1: %7.6f, DY1: %7.6f \r\n", DX1.f, DY1.f);
+		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+		t0.u = *(__IO uint32_t*) (pageAdr + 36);	// Восстановим температуру калибровки
+		if (t0.u == 0xffffffff) {  // Начальная температура не определена.
+			t0.f = 20.0;
+		}
+		memset(SndBuffer, 0, sizeof(SndBuffer));
+		sprintf(SndBuffer, "T0: %5.2f \r\n", t0.f);
 		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 	}
 }
@@ -486,6 +493,9 @@ int main(void)
 	  C_4 = CALIBRATE_START;
   }
   TIM3->ARR = C_3; 		// Коррекция для таймера запуска измерения Z13
+	#ifdef BME280_ENABLE
+	  BME280_Init();
+	#endif
   /*
    * calibrateMode == 0 -- Нормальный режим
    * calibrateMode > 0 -- Режим калибровки
@@ -612,14 +622,22 @@ int main(void)
 						  /* Вычисление поправок */
 						  DX1.f = ZX1 / ZX2;
 						  DY1.f = ZY1 / ZY2;
-						  memset(SndBuffer, 0, sizeof(SndBuffer));
-						  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_1:%5d, C_3:%5d, C_2:%5d, C_4:%5d\r\n", C_1, C_3, C_2, C_4);
-						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
-						  memset(SndBuffer, 0, sizeof(SndBuffer));
-						  sprintf(SndBuffer, "DY1:%5.4f, DX1:%5.4f\r\n\r\n", DY1.f, DX1.f);
-						  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 						  if (abs(DX1.f) < 2 && abs(DY1.f) < 2) {
+							#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
+							  t0.f = temperature;
+							#else
+							  t0.f = 20.0;
+							#endif
 							  rwFlash(1);  // Запись данных калибровки во Flash.
+							  memset(SndBuffer, 0, sizeof(SndBuffer));
+							  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_1:%5d, C_3:%5d, C_2:%5d, C_4:%5d\r\n", C_1, C_3, C_2, C_4);
+							  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+							  memset(SndBuffer, 0, sizeof(SndBuffer));
+							  sprintf(SndBuffer, "DY1:%5.4f, DX1:%5.4f\r\n", DY1.f, DX1.f);
+							  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+							  memset(SndBuffer, 0, sizeof(SndBuffer));
+							  sprintf(SndBuffer, "T0:%5.2f \r\n\r\n", t0.f);
+							  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 						  } else {
 							  HAL_UART_Transmit(&huart1, (uint8_t *) CALIBRATE_ERROR_RANGE, sizeof(CALIBRATE_ERROR_RANGE), 1000);
 						  }
@@ -632,9 +650,7 @@ int main(void)
 				#endif
 				  HAL_TIM_Base_Start_IT(&htim4);  // Перезапуск для начала измерений
 			  }
-			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
 		  } else {
-			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_SET);
 			#ifdef TMP117_ENABLE
 			  temperature = TMP117_get_Temperature(hi2c1);
 			#endif
@@ -649,13 +665,14 @@ int main(void)
 				  sprintf(SndBuffer, "X3:%5.2f, X4:%5.2f                 \r\n", resul_arrayX3[iii], resul_arrayX4[iii]);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }*/
-			#ifdef ZABBIX_ENABLE
 				#if defined(TMP117_ENABLE) || defined(BME280_ENABLE)
 			  	  if ((temperature < 60.0) && (temperature > -40.0)) {
+					#ifdef ZABBIX_ENABLE
 			  		  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_TEMPERATURE", temperature);
 					#ifdef BME280_ENABLE
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_PRESSURE", pressure);
 					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_HUMIDITY", humidity);
+					#endif
 					#endif
 			  	  } else {
 					#ifdef BME280_ENABLE
@@ -665,23 +682,30 @@ int main(void)
 					#endif
 			  	  }
 				#endif
-			  if ( V != 0 ) {
-				  if ( (! firstTime) && (V < MAX_SPD) && (Vmaxfin < MAX_SPD) ) {  // Первый раз пропускаем для инициализации переменных.
-					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
-					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
-					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
+			  if (! firstTime) {
+				#ifdef ZABBIX_ENABLE
+				  if ( V != 0 ) {
+					  if ((V < MAX_SPD) && (Vmaxfin < MAX_SPD) ) {  // Первый раз пропускаем для инициализации переменных.
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_DIRECT", A);
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
+					  }
+				  } else {
+					  if ((Vmaxfin < MAX_SPD) ) {
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
+						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
+					  }
 				  }
-			  } else {
-				  if ( (! firstTime) && (Vmaxfin < MAX_SPD) ) {
-					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", 0);
-					  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_MAXSPEED", Vmaxfin);
-				  }
-			  }
-			#endif
-			  //HAL_GPIO_WritePin(GPIOA, LED_Pin, GPIO_PIN_RESET);
-			  if ( ! firstTime ) {
-				  sprintf(SndBuffer, "V:%5.2f, X:%5.2f, Y:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f   \r",
-						  V, Xsum, Ysum, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity);
+				  /* Мониторинг исходных значений */
+				#ifdef ZABBIX_RAW_DATA
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "X1", avg_X1);
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "X2", avg_X2);
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "Y1", avg_Y1);
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "Y2", avg_Y2);
+				#endif
+				#endif
+				  sprintf(SndBuffer, "V:%5.2f, X:%5.2f, Y:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f, X1:%4.0f, X2:%4.0f, Y1:%4.0f, Y2:%4.0f   \r",
+						  V, Xsum, Ysum, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity, avg_X1, avg_X2, avg_Y1, avg_Y2);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
 			  firstTime = FALSE;
@@ -892,7 +916,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

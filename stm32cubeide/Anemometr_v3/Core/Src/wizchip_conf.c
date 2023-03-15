@@ -802,7 +802,7 @@ void wizphy_getphyconf(wiz_PhyConf* phyconf)
          phyconf->speed = PHY_SPEED_100;
          break;
       default:
-         phyconf->speed = PHY_SPEED_10;
+         phyconf->speed = PHY_SPEED_100;
          break;
    }
    switch(tmp & PHYCFGR_OPMDC_ALLA)
