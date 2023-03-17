@@ -372,8 +372,8 @@ void TIM4_IRQHandler(void)
 			#ifdef AUTO_CALIBRATE
 			float corr;
 			if (abs((avg_X1 + avg_X2) - 1600) > CALIBRATE_ACURACY) {
-				if (abs((avg_X1 + avg_X2) - 1600) > 100) {
-					corr = 20;
+				if (abs((avg_X1 + avg_X2) - 1600) > FAST_CALIBRATE) {
+					corr = FAST_CALIBRATE_STEP;
 				} else {
 					corr = 1;
 				}
@@ -386,8 +386,8 @@ void TIM4_IRQHandler(void)
 				}
 			}
 			if (abs((avg_Y1 + avg_Y2) - 1600) > CALIBRATE_ACURACY) {
-				if (abs((avg_Y1 + avg_Y2) - 1600) > 100) {
-					corr = 20;
+				if (abs((avg_Y1 + avg_Y2) - 1600) > FAST_CALIBRATE) {
+					corr = FAST_CALIBRATE_STEP;
 				} else {
 					corr = 1;
 				}

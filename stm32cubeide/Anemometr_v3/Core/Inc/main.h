@@ -64,7 +64,7 @@ uint16_t resulMeass, test_cnt, calibrateCount, calibrateMode, currentMode, measC
 bool readyFlag, test_flag, calibrate1, calibrate3, calibrate2, calibrate4, firstTime;
 double Xsum, Ysum, Vmax, A, V, Vmaxfin, Xmaxfin, Ymaxfin, X, Y, Xmax, Ymax, Xsum1, Ysum1;
 float ZX1, ZX2, ZY1, ZY2, temperature, pressure, humidity, front_sumf;
-uint16_t C_1, C_3, C_2, C_4;
+uint16_t C_1, C_3, C_2, C_4, C_X, C_Y;
 
 union {
 	float f;
@@ -116,6 +116,8 @@ union {
 #define CALIBRATE_TIMES 5			/* Количество стандартных измерений измерений для точной калибровки */
 #define CALIBRATE_ACURACY 1.0f		/* Максимальное отклонение при переборе смещения измерения */
 #define AUTO_CALIBRATE				/* Подстройка средней точки диапазона для компенсации температуры и деформации корпуса */
+#define FAST_CALIBRATE 50			/* Порог для ускоренной калибровки */
+#define FAST_CALIBRATE_STEP 30		/* Шаг быстрой калибровки */
 
 #define Z1Receive 1
 #define Z2Receive 2
@@ -193,7 +195,7 @@ float avg_X1, avg_X2, avg_Y1, avg_Y2;
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128
-#define MAC_ADDRESS		0x00, 0x11, 0x22, 0x35, 0x44, 0xEA
+#define MAC_ADDRESS		0x00, 0x11, 0x22, 0x33, 0x44, 0xEA
 char ZabbixHostName[255];
 /* USER CODE END Private defines */
 

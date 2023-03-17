@@ -149,6 +149,9 @@ void rwFlash(uint8_t rwFlag) {
 		C_2 = *(__IO uint16_t*) (pageAdr + 18);
 		C_3 = *(__IO uint16_t*) (pageAdr + 20);
 		C_4 = *(__IO uint16_t*) (pageAdr + 22);
+		/* Значения для температурной калибровки */
+		C_Y = C_1;
+		C_X = C_2;
 		memset(SndBuffer, 0, sizeof(SndBuffer));
 		sprintf(SndBuffer, "C_1: %5d, C_2: %5d, C_3: %5d, C_4: %5d  \r\n", C_1, C_2, C_3, C_4);
 		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
@@ -629,6 +632,9 @@ int main(void)
 							  t0.f = 20.0;
 							#endif
 							  rwFlash(1);  // Запись данных калибровки во Flash.
+							  /* Значения смещения для температурной калибровки */
+							  C_Y = C_1;
+							  C_X = C_2;
 							  memset(SndBuffer, 0, sizeof(SndBuffer));
 							  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_1:%5d, C_3:%5d, C_2:%5d, C_4:%5d\r\n", C_1, C_3, C_2, C_4);
 							  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
@@ -702,10 +708,12 @@ int main(void)
 				  sendToZabbix(net_info.zabbix, ZabbixHostName, "X2", avg_X2);
 				  sendToZabbix(net_info.zabbix, ZabbixHostName, "Y1", avg_Y1);
 				  sendToZabbix(net_info.zabbix, ZabbixHostName, "Y2", avg_Y2);
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "CX", C_2 - C_X);
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "CY", C_1 - C_Y);
 				#endif
 				#endif
-				  sprintf(SndBuffer, "V:%5.2f, X:%5.2f, Y:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f, X1:%4.0f, X2:%4.0f, Y1:%4.0f, Y2:%4.0f   \r",
-						  V, Xsum, Ysum, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity, avg_X1, avg_X2, avg_Y1, avg_Y2);
+				  sprintf(SndBuffer, "V:%5.2f, X:%5.2f, Y:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f, X1:%4.0f, X2:%4.0f, Y1:%4.0f, Y2:%4.0f, CX:%4d, CY:%4d   \r",
+						  V, Xsum, Ysum, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity, avg_X1, avg_X2, avg_Y1, avg_Y2, C_2 - C_X, C_1 - C_Y);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
 			  firstTime = FALSE;
@@ -916,7 +924,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
