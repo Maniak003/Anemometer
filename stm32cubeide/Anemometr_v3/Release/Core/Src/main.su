@@ -12,5 +12,5 @@ main.c:252:9:sendToZabbix	280	static
 main.c:347:6:init_w5500	32	static,ignoring_inline_asm
 main.c:808:6:SystemClock_Config	72	static,ignoring_inline_asm
 main.c:427:5:main	264	static,ignoring_inline_asm
-main.c:1298:6:HAL_TIM_IC_CaptureCallback	16	static
+main.c:1298:6:HAL_TIM_IC_CaptureCallback	8	static
 main.c:1347:6:Error_Handler	0	static,ignoring_inline_asm
