@@ -179,6 +179,9 @@ void Error_Handler(void);
 #define CALIBRATE_ERROR_TOUT "\r\nCalibrate ERROR.\r\nTime out\r\n"
 #define TEST_TEXT "\r\nStart test.\r\n"
 #define TEST_TERMINATE "\r\nTerminate test or calibrate.\r\n"
+#define WAIT_BME280 "Wait BME280."
+#define OK "Ok.\r\n"
+#define WAIT_W5500  "Wait W5500."
 
 float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT];
 float avg_X1, avg_X2, avg_Y1, avg_Y2;

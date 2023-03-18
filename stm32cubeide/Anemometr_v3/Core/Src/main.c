@@ -473,8 +473,10 @@ int main(void)
   HAL_GPIO_WritePin(nRst_GPIO_Port, nRst_Pin, GPIO_PIN_RESET);	// Reset W5500
   HAL_GPIO_WritePin(nRst_GPIO_Port, nRst_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(SCSN_GPIO_Port, SCSN_Pin, GPIO_PIN_SET);
+  HAL_UART_Transmit(&huart1, (uint8_t *) WAIT_W5500, sizeof(WAIT_W5500), HAL_MAX_DELAY);
   HAL_Delay(2000);
   init_w5500();
+  HAL_UART_Transmit(&huart1, (uint8_t *) OK, sizeof(OK), HAL_MAX_DELAY);
 #else
   HAL_GPIO_WritePin(nRst_GPIO_Port, nRst_Pin, GPIO_PIN_RESET);	// Reset W5500
 #endif
@@ -497,7 +499,9 @@ int main(void)
   }
   TIM3->ARR = C_3; 		// Коррекция для таймера запуска измерения Z13
 	#ifdef BME280_ENABLE
+  	  HAL_UART_Transmit(&huart1, (uint8_t *) WAIT_BME280, sizeof(WAIT_BME280), HAL_MAX_DELAY);
 	  BME280_Init();
+	  HAL_UART_Transmit(&huart1, (uint8_t *) OK, sizeof(OK), HAL_MAX_DELAY);
 	#endif
   /*
    * calibrateMode == 0 -- Нормальный режим
@@ -962,9 +966,9 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 799;
+  htim1.Init.Period = 159;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 91;
+  htim1.Init.RepetitionCounter = 31;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
@@ -1303,7 +1307,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 				}
 				runFlag--;
 				if (runFlag == 0) {  // Измерения закончены ?
-					LED_PULSE
+					//LED_PULSE
 					STOP_CAPTURE  // Таймер больше не нужен, выключаем
 					front_sum = front_sum / COUNT_FRONT - (TIM1_PERIOD * (COUNT_FRONT - 1) / 2);  // Расчитываем задержку от средины импульсов
 					if (front_sum > 1600) {		// Ошибка измерения.

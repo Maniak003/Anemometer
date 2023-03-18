@@ -230,7 +230,7 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 	//HAL_TIM_Base_Stop_IT(&htim3);
 	runFlag = COUNT_FRONT;		// Сработал таймер сброса таймера захвата, начинаем измерение.
-	LED_PULSE
+	//LED_PULSE
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */
@@ -440,6 +440,7 @@ void TIM4_IRQHandler(void)
 						break;
 					}
 					case 1: { 					// Z3 (transmit) > Z1 (receive) Y2
+						LED_PULSE
 						//TP_PULSE
 						TIM3->ARR = C_4; 		// Коррекция для таймера запуска измерения Z31
 						setZ1receive 			// Turn on multiplexer for input Z1 channel.
