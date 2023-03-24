@@ -480,6 +480,12 @@ int main(void)
 #else
   HAL_GPIO_WritePin(nRst_GPIO_Port, nRst_Pin, GPIO_PIN_RESET);	// Reset W5500
 #endif
+#ifdef BME280_ENABLE
+	  HAL_UART_Transmit(&huart1, (uint8_t *) WAIT_BME280, sizeof(WAIT_BME280), HAL_MAX_DELAY);
+  BME280_Init();
+  HAL_UART_Transmit(&huart1, (uint8_t *) OK, sizeof(OK), HAL_MAX_DELAY);
+#endif
+
   rwFlash(0);		// Чтение параметров калибровки из Flash.
 
   /* Таймер задержки запуска измерения */
@@ -498,11 +504,6 @@ int main(void)
 	  C_4 = CALIBRATE_START;
   }
   TIM3->ARR = C_3; 		// Коррекция для таймера запуска измерения Z13
-	#ifdef BME280_ENABLE
-  	  HAL_UART_Transmit(&huart1, (uint8_t *) WAIT_BME280, sizeof(WAIT_BME280), HAL_MAX_DELAY);
-	  BME280_Init();
-	  HAL_UART_Transmit(&huart1, (uint8_t *) OK, sizeof(OK), HAL_MAX_DELAY);
-	#endif
   /*
    * calibrateMode == 0 -- Нормальный режим
    * calibrateMode > 0 -- Режим калибровки

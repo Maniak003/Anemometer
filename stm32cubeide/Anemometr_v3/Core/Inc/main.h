@@ -198,7 +198,7 @@ float avg_X1, avg_X2, avg_Y1, avg_Y2;
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051
 #define ZABBIXMAXLEN	128
-#define MAC_ADDRESS		0x00, 0x11, 0x22, 0x33, 0x44, 0xEA
+#define MAC_ADDRESS		0x00, 0x11, 0x22, 0x35, 0x44, 0xEA
 char ZabbixHostName[255];
 /* USER CODE END Private defines */
 

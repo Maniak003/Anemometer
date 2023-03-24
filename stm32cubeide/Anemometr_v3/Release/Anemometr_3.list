@@ -4643,69 +4643,69 @@ Disassembly of section .text:
  8003272:	4996      	ldr	r1, [pc, #600]	; (80034cc <main+0x774>)
  8003274:	4891      	ldr	r0, [pc, #580]	; (80034bc <main+0x764>)
  8003276:	f004 fef1 	bl	800805c <HAL_UART_Transmit>
- 800327a:	2000      	movs	r0, #0
- 800327c:	f7ff fb1c 	bl	80028b8 <rwFlash>
- 8003280:	68e3      	ldr	r3, [r4, #12]
- 8003282:	f043 031e 	orr.w	r3, r3, #30
- 8003286:	60e3      	str	r3, [r4, #12]
- 8003288:	4c91      	ldr	r4, [pc, #580]	; (80034d0 <main+0x778>)
- 800328a:	961d      	str	r6, [sp, #116]	; 0x74
- 800328c:	8823      	ldrh	r3, [r4, #0]
- 800328e:	b913      	cbnz	r3, 8003296 <main+0x53e>
- 8003290:	f649 4340 	movw	r3, #40000	; 0x9c40
- 8003294:	8023      	strh	r3, [r4, #0]
- 8003296:	4b8f      	ldr	r3, [pc, #572]	; (80034d4 <main+0x77c>)
- 8003298:	881a      	ldrh	r2, [r3, #0]
- 800329a:	b912      	cbnz	r2, 80032a2 <main+0x54a>
- 800329c:	f649 4240 	movw	r2, #40000	; 0x9c40
- 80032a0:	801a      	strh	r2, [r3, #0]
- 80032a2:	4b8d      	ldr	r3, [pc, #564]	; (80034d8 <main+0x780>)
- 80032a4:	881a      	ldrh	r2, [r3, #0]
- 80032a6:	b912      	cbnz	r2, 80032ae <main+0x556>
- 80032a8:	f649 4240 	movw	r2, #40000	; 0x9c40
- 80032ac:	801a      	strh	r2, [r3, #0]
- 80032ae:	4a8b      	ldr	r2, [pc, #556]	; (80034dc <main+0x784>)
- 80032b0:	8811      	ldrh	r1, [r2, #0]
- 80032b2:	b911      	cbnz	r1, 80032ba <main+0x562>
- 80032b4:	f649 4140 	movw	r1, #40000	; 0x9c40
- 80032b8:	8011      	strh	r1, [r2, #0]
- 80032ba:	2500      	movs	r5, #0
- 80032bc:	881a      	ldrh	r2, [r3, #0]
- 80032be:	4b88      	ldr	r3, [pc, #544]	; (80034e0 <main+0x788>)
- 80032c0:	2600      	movs	r6, #0
- 80032c2:	2700      	movs	r7, #0
- 80032c4:	4987      	ldr	r1, [pc, #540]	; (80034e4 <main+0x78c>)
- 80032c6:	62da      	str	r2, [r3, #44]	; 0x2c
- 80032c8:	487c      	ldr	r0, [pc, #496]	; (80034bc <main+0x764>)
- 80032ca:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
- 80032ce:	220d      	movs	r2, #13
- 80032d0:	f004 fec4 	bl	800805c <HAL_UART_Transmit>
- 80032d4:	f7fe fb4e 	bl	8001974 <BME280_Init>
- 80032d8:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
- 80032dc:	2206      	movs	r2, #6
- 80032de:	497b      	ldr	r1, [pc, #492]	; (80034cc <main+0x774>)
- 80032e0:	4876      	ldr	r0, [pc, #472]	; (80034bc <main+0x764>)
- 80032e2:	f004 febb 	bl	800805c <HAL_UART_Transmit>
- 80032e6:	2201      	movs	r2, #1
- 80032e8:	4b7f      	ldr	r3, [pc, #508]	; (80034e8 <main+0x790>)
- 80032ea:	f8df 9270 	ldr.w	r9, [pc, #624]	; 800355c <main+0x804>
- 80032ee:	801d      	strh	r5, [r3, #0]
- 80032f0:	4b7e      	ldr	r3, [pc, #504]	; (80034ec <main+0x794>)
- 80032f2:	f8df 826c 	ldr.w	r8, [pc, #620]	; 8003560 <main+0x808>
- 80032f6:	701d      	strb	r5, [r3, #0]
- 80032f8:	4b7d      	ldr	r3, [pc, #500]	; (80034f0 <main+0x798>)
- 80032fa:	4629      	mov	r1, r5
- 80032fc:	e9c3 6700 	strd	r6, r7, [r3]
- 8003300:	4b7c      	ldr	r3, [pc, #496]	; (80034f4 <main+0x79c>)
- 8003302:	487d      	ldr	r0, [pc, #500]	; (80034f8 <main+0x7a0>)
- 8003304:	701a      	strb	r2, [r3, #0]
- 8003306:	4b7d      	ldr	r3, [pc, #500]	; (80034fc <main+0x7a4>)
- 8003308:	e9c9 6700 	strd	r6, r7, [r9]
- 800330c:	801d      	strh	r5, [r3, #0]
- 800330e:	e9c8 6700 	strd	r6, r7, [r8]
+ 800327a:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 800327e:	220d      	movs	r2, #13
+ 8003280:	4993      	ldr	r1, [pc, #588]	; (80034d0 <main+0x778>)
+ 8003282:	488e      	ldr	r0, [pc, #568]	; (80034bc <main+0x764>)
+ 8003284:	f004 feea 	bl	800805c <HAL_UART_Transmit>
+ 8003288:	f7fe fb74 	bl	8001974 <BME280_Init>
+ 800328c:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 8003290:	2206      	movs	r2, #6
+ 8003292:	498e      	ldr	r1, [pc, #568]	; (80034cc <main+0x774>)
+ 8003294:	4889      	ldr	r0, [pc, #548]	; (80034bc <main+0x764>)
+ 8003296:	f004 fee1 	bl	800805c <HAL_UART_Transmit>
+ 800329a:	2000      	movs	r0, #0
+ 800329c:	f7ff fb0c 	bl	80028b8 <rwFlash>
+ 80032a0:	68e3      	ldr	r3, [r4, #12]
+ 80032a2:	f043 031e 	orr.w	r3, r3, #30
+ 80032a6:	60e3      	str	r3, [r4, #12]
+ 80032a8:	4c8a      	ldr	r4, [pc, #552]	; (80034d4 <main+0x77c>)
+ 80032aa:	961d      	str	r6, [sp, #116]	; 0x74
+ 80032ac:	8823      	ldrh	r3, [r4, #0]
+ 80032ae:	b913      	cbnz	r3, 80032b6 <main+0x55e>
+ 80032b0:	f649 4340 	movw	r3, #40000	; 0x9c40
+ 80032b4:	8023      	strh	r3, [r4, #0]
+ 80032b6:	4b88      	ldr	r3, [pc, #544]	; (80034d8 <main+0x780>)
+ 80032b8:	881a      	ldrh	r2, [r3, #0]
+ 80032ba:	b912      	cbnz	r2, 80032c2 <main+0x56a>
+ 80032bc:	f649 4240 	movw	r2, #40000	; 0x9c40
+ 80032c0:	801a      	strh	r2, [r3, #0]
+ 80032c2:	4b86      	ldr	r3, [pc, #536]	; (80034dc <main+0x784>)
+ 80032c4:	881a      	ldrh	r2, [r3, #0]
+ 80032c6:	b912      	cbnz	r2, 80032ce <main+0x576>
+ 80032c8:	f649 4240 	movw	r2, #40000	; 0x9c40
+ 80032cc:	801a      	strh	r2, [r3, #0]
+ 80032ce:	4a84      	ldr	r2, [pc, #528]	; (80034e0 <main+0x788>)
+ 80032d0:	8811      	ldrh	r1, [r2, #0]
+ 80032d2:	b911      	cbnz	r1, 80032da <main+0x582>
+ 80032d4:	f649 4140 	movw	r1, #40000	; 0x9c40
+ 80032d8:	8011      	strh	r1, [r2, #0]
+ 80032da:	2500      	movs	r5, #0
+ 80032dc:	881a      	ldrh	r2, [r3, #0]
+ 80032de:	2600      	movs	r6, #0
+ 80032e0:	2700      	movs	r7, #0
+ 80032e2:	4b80      	ldr	r3, [pc, #512]	; (80034e4 <main+0x78c>)
+ 80032e4:	f8df 9274 	ldr.w	r9, [pc, #628]	; 800355c <main+0x804>
+ 80032e8:	62da      	str	r2, [r3, #44]	; 0x2c
+ 80032ea:	2201      	movs	r2, #1
+ 80032ec:	4b7e      	ldr	r3, [pc, #504]	; (80034e8 <main+0x790>)
+ 80032ee:	f8df 8270 	ldr.w	r8, [pc, #624]	; 8003560 <main+0x808>
+ 80032f2:	801d      	strh	r5, [r3, #0]
+ 80032f4:	4b7d      	ldr	r3, [pc, #500]	; (80034ec <main+0x794>)
+ 80032f6:	4629      	mov	r1, r5
+ 80032f8:	701d      	strb	r5, [r3, #0]
+ 80032fa:	4b7d      	ldr	r3, [pc, #500]	; (80034f0 <main+0x798>)
+ 80032fc:	487d      	ldr	r0, [pc, #500]	; (80034f4 <main+0x79c>)
+ 80032fe:	e9c3 6700 	strd	r6, r7, [r3]
+ 8003302:	4b7d      	ldr	r3, [pc, #500]	; (80034f8 <main+0x7a0>)
+ 8003304:	e9c9 6700 	strd	r6, r7, [r9]
+ 8003308:	701a      	strb	r2, [r3, #0]
+ 800330a:	4b7c      	ldr	r3, [pc, #496]	; (80034fc <main+0x7a4>)
+ 800330c:	e9c8 6700 	strd	r6, r7, [r8]
+ 8003310:	801d      	strh	r5, [r3, #0]
  8003312:	f004 fd73 	bl	8007dfc <HAL_TIM_IC_Stop_IT>
  8003316:	2104      	movs	r1, #4
- 8003318:	4877      	ldr	r0, [pc, #476]	; (80034f8 <main+0x7a0>)
+ 8003318:	4876      	ldr	r0, [pc, #472]	; (80034f4 <main+0x79c>)
  800331a:	f004 fd6f 	bl	8007dfc <HAL_TIM_IC_Stop_IT>
  800331e:	f44f 7248 	mov.w	r2, #800	; 0x320
  8003322:	4b77      	ldr	r3, [pc, #476]	; (8003500 <main+0x7a8>)
@@ -4860,17 +4860,17 @@ Disassembly of section .text:
  80034c4:	40010c00 	.word	0x40010c00
  80034c8:	0800b75f 	.word	0x0800b75f
  80034cc:	0800b76b 	.word	0x0800b76b
- 80034d0:	200005ec 	.word	0x200005ec
- 80034d4:	200005b4 	.word	0x200005b4
- 80034d8:	2000098c 	.word	0x2000098c
- 80034dc:	200005b8 	.word	0x200005b8
- 80034e0:	40000400 	.word	0x40000400
- 80034e4:	0800b771 	.word	0x0800b771
+ 80034d0:	0800b771 	.word	0x0800b771
+ 80034d4:	200005ec 	.word	0x200005ec
+ 80034d8:	200005b4 	.word	0x200005b4
+ 80034dc:	2000098c 	.word	0x2000098c
+ 80034e0:	200005b8 	.word	0x200005b8
+ 80034e4:	40000400 	.word	0x40000400
  80034e8:	20000b30 	.word	0x20000b30
  80034ec:	20000658 	.word	0x20000658
  80034f0:	200005c0 	.word	0x200005c0
- 80034f4:	20000dec 	.word	0x20000dec
- 80034f8:	200013f4 	.word	0x200013f4
+ 80034f4:	200013f4 	.word	0x200013f4
+ 80034f8:	20000dec 	.word	0x20000dec
  80034fc:	2000098e 	.word	0x2000098e
  8003500:	40012c00 	.word	0x40012c00
  8003504:	200005c8 	.word	0x200005c8
