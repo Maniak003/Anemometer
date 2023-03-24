@@ -1,0 +1,20 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# Conn-My_Library
+#
+DEF Conn-My_Library J 0 40 N N 1 F N
+F0 "J" 0 100 50 H V C CNN
+F1 "Conn-My_Library" 0 -100 50 H V C CNN
+F2 "My-library:SMD-CONN" 50 -150 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*
+$ENDFPLIST
+DRAW
+A 0 0 20 901 -901 1 1 6 N 0 20 0 -20
+X ~ 1 -100 0 79 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+#End Library

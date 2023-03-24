@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name invertor-rescue)(type Legacy)(uri ${KIPRJMOD}/invertor-rescue.lib)(options "")(descr ""))
+)
