@@ -378,10 +378,10 @@ void TIM4_IRQHandler(void)
 					corr = 1;
 				}
 				if ((avg_X1 + avg_X2) > 1600) {
-					C_2 = C_2 + corr;
+					//C_2 = C_2 + corr;
 					C_4 = C_4 + corr;
 				} else {
-					C_2 = C_2 - corr;
+					//C_2 = C_2 - corr;
 					C_4 = C_4 - corr;
 				}
 			}
@@ -392,10 +392,10 @@ void TIM4_IRQHandler(void)
 					corr = 1;
 				}
 				if ((avg_Y1 + avg_Y2) > 1600) {
-					C_1 = C_1 + corr;
+					//C_1 = C_1 + corr;
 					C_3 = C_3 + corr;
 				} else {
-					C_1 = C_1 - corr;
+					//C_1 = C_1 - corr;
 					C_3 = C_3 - corr;
 				}
 			}
@@ -434,7 +434,7 @@ void TIM4_IRQHandler(void)
 				switch (currentMode++) {
 					case 0: { 					// Z1 (transmit) > Z3 (receive) Y1
 						TP_PULSE
-						TIM3->ARR = C_1; 		// Коррекция для таймера запуска измерения Z13
+						//TIM3->ARR = C_1; 		// Коррекция для таймера запуска измерения Z13
 						setZ3receive 			// Turn on multiplexer for input Z2 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1); // Генерация для пьезокристалла в 1 канале
 						break;
@@ -449,7 +449,7 @@ void TIM4_IRQHandler(void)
 					}
 					case 2: { 					// Z2 (transmit) > Z4 (receive) X1
 						//TP_PULSE
-						TIM3->ARR = C_2; 		// Коррекция для таймера запуска измерения Z24
+						//TIM3->ARR = C_2; 		// Коррекция для таймера запуска измерения Z24
 						setZ4receive 			// Turn on multiplexer for input Z4 channel.
 						HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_2);	// Генерация для пьезокристалла в 2 канале
 						break;

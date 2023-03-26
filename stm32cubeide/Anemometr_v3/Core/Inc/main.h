@@ -91,7 +91,6 @@ union {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-//#define SYSTICK_DISABLE
 #define TRUE 1
 #define FALSE 0
 /*
@@ -103,6 +102,7 @@ union {
  * a = 45
  * cos(atg(20/20)) * (56.57/330000 - 56.57/331000) / (1/64000000) * 2 = 46.87
  *  */
+#define SYSTICK_DISABLE
 #define SPEED_CALIBRATE 46.87f
 #define CHANNELS 4
 #define PREFETCH 2					/* Количество игнорируемых измерений. Для устранения шума. */

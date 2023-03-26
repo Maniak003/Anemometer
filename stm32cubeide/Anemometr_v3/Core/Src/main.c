@@ -150,8 +150,8 @@ void rwFlash(uint8_t rwFlag) {
 		C_3 = *(__IO uint16_t*) (pageAdr + 20);
 		C_4 = *(__IO uint16_t*) (pageAdr + 22);
 		/* Значения для температурной калибровки */
-		C_Y = C_1;
-		C_X = C_2;
+		C_Y = C_3;
+		C_X = C_4;
 		memset(SndBuffer, 0, sizeof(SndBuffer));
 		sprintf(SndBuffer, "C_1: %5d, C_2: %5d, C_3: %5d, C_4: %5d  \r\n", C_1, C_2, C_3, C_4);
 		HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
@@ -556,7 +556,7 @@ int main(void)
 		  readyFlag = FALSE;
 		  if (calibrateMode > 0) {
 			  /* Процедура калибровки */
-			  if (( calibrate1 || calibrate3 || calibrate2 || calibrate4 ) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
+			  if (( calibrate1 || /*calibrate3 ||*/ calibrate2 /*|| calibrate4*/ ) && (calibrateCount < CALIBRATE_MAX_COUNT)) {
 				  memset(SndBuffer, 0, sizeof(SndBuffer));
 				  if (test_flag) {
 					  sprintf(SndBuffer, "Z13(%4.0f)-Z31(%4.0f):%5.0f, Z42(%4.0f)-Z24(%4.0f):%5.0f   \r",
@@ -569,8 +569,8 @@ int main(void)
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  if (! test_flag) {
 					  /* Y1 */
-					  if ( calibrate1 && (abs(resul_arrayY1[0] - (float) TIM1_PERIOD) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayY1[0] > (float) TIM1_PERIOD) {
+					  if ( calibrate1 && (abs(resul_arrayY1[0] + resul_arrayY2[0] - (float) TIM1_PERIOD * 2) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayY1[0] + resul_arrayY2[0] > (float) TIM1_PERIOD * 2) {
 							  C_3++;
 						  } else {
 							  C_3--;
@@ -579,6 +579,7 @@ int main(void)
 						  calibrate1 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
 					  }
 					  /* Y2 */
+					  /*
 					  if ( calibrate3 && (abs(resul_arrayY2[0] - (float) TIM1_PERIOD) > CALIBRATE_ACURACY) ) {
 						  if (resul_arrayY2[0] > (float) TIM1_PERIOD) {
 							  C_1++;
@@ -587,10 +588,10 @@ int main(void)
 						  }
 					  } else {
 						  calibrate3 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
-					  }
+					  } */
 					  /* X1 */
-					  if ( calibrate2 && (abs(resul_arrayX1[0] - (float) TIM1_PERIOD) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayX1[0] > (float) TIM1_PERIOD) {
+					  if ( calibrate2 && (abs(resul_arrayX1[0] + resul_arrayX2[0] - (float) TIM1_PERIOD * 2) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayX1[0] + resul_arrayX2[0] > (float) TIM1_PERIOD * 2) {
 							  C_4++;
 						  } else {
 							  C_4--;
@@ -599,6 +600,7 @@ int main(void)
 						  calibrate2 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
 					  }
 					  /* X2 */
+					  /*
 					  if ( calibrate4 && (abs(resul_arrayX2[0] - (float) TIM1_PERIOD) > CALIBRATE_ACURACY) ) {
 						  if (resul_arrayX2[0] > (float) TIM1_PERIOD) {
 							  C_2++;
@@ -607,7 +609,7 @@ int main(void)
 						  }
 					  } else {
 						  calibrate4 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y2
-					  }
+					  }*/
 					  calibrateCount++;
 				  }
 				#ifdef SYSTICK_DISABLE
@@ -638,8 +640,8 @@ int main(void)
 							#endif
 							  rwFlash(1);  // Запись данных калибровки во Flash.
 							  /* Значения смещения для температурной калибровки */
-							  C_Y = C_1;
-							  C_X = C_2;
+							  C_Y = C_3;
+							  C_X = C_4;
 							  memset(SndBuffer, 0, sizeof(SndBuffer));
 							  sprintf(SndBuffer, "\r\nCalibrate complite.\r\nC_1:%5d, C_3:%5d, C_2:%5d, C_4:%5d\r\n", C_1, C_3, C_2, C_4);
 							  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
@@ -713,12 +715,12 @@ int main(void)
 				  sendToZabbix(net_info.zabbix, ZabbixHostName, "X2", avg_X2);
 				  sendToZabbix(net_info.zabbix, ZabbixHostName, "Y1", avg_Y1);
 				  sendToZabbix(net_info.zabbix, ZabbixHostName, "Y2", avg_Y2);
-				  sendToZabbix(net_info.zabbix, ZabbixHostName, "CX", C_2 - C_X);
-				  sendToZabbix(net_info.zabbix, ZabbixHostName, "CY", C_1 - C_Y);
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "CX", C_4 - C_X);
+				  sendToZabbix(net_info.zabbix, ZabbixHostName, "CY", C_3 - C_Y);
 				#endif
 				#endif
 				  sprintf(SndBuffer, "V:%5.2f, X:%5.2f, Y:%5.2f, Vmax:%5.2f, Xmax:%5.2f, Ymax:%5.2f, A:%3.0f, T:%5.2f, P:%8.3f, H:%5.2f, X1:%4.0f, X2:%4.0f, Y1:%4.0f, Y2:%4.0f, CX:%4d, CY:%4d   \r",
-						  V, Xsum, Ysum, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity, avg_X1, avg_X2, avg_Y1, avg_Y2, C_2 - C_X, C_1 - C_Y);
+						  V, Xsum, Ysum, Vmaxfin, Xmaxfin, Ymaxfin, A, temperature, pressure, humidity, avg_X1, avg_X2, avg_Y1, avg_Y2, C_4 - C_X, C_3 - C_Y);
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			  }
 			  firstTime = FALSE;

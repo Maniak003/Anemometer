@@ -274,7 +274,7 @@ F 3 "http://www.irf.com/product-info/datasheets/data/irf7343ipbf.pdf" H 5700 275
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J4
+L invertor-rescue:Conn-My_Library J4
 U 1 1 645979CD
 P 5800 1150
 F 0 "J4" H 5828 1150 50  0001 L CNN
@@ -286,7 +286,7 @@ F 3 "~" H 5800 1150 50  0001 C CNN
 $EndComp
 Connection ~ 5700 1150
 $Comp
-L My_Library:Conn J5
+L invertor-rescue:Conn-My_Library J5
 U 1 1 6459E72C
 P 6000 2050
 F 0 "J5" H 6028 2050 50  0001 L CNN
@@ -297,7 +297,7 @@ F 3 "~" H 6000 2050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J1
+L invertor-rescue:Conn-My_Library J1
 U 1 1 6459EF77
 P 4100 2050
 F 0 "J1" H 4042 1957 50  0001 C CNN
@@ -308,7 +308,7 @@ F 3 "~" H 4100 2050 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L My_Library:Conn J3
+L invertor-rescue:Conn-My_Library J3
 U 1 1 645A03DA
 P 3250 2750
 F 0 "J3" H 3278 2750 50  0001 L CNN
@@ -330,7 +330,7 @@ F 3 "" H 5050 3150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J6
+L invertor-rescue:Conn-My_Library J6
 U 1 1 645A527F
 P 5800 3150
 F 0 "J6" H 5828 3150 50  0001 L CNN
