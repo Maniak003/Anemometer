@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L My_Library:MAX4477 D1
+L Amp200-rescue:MAX4477-My_Library D1
 U 1 1 64214348
 P 4200 3000
 F 0 "D1" H 4000 3100 50  0000 L CNN
@@ -25,7 +25,7 @@ F 3 "" H 4200 3000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:MAX4477 D1
+L Amp200-rescue:MAX4477-My_Library D1
 U 2 1 64214619
 P 6300 3650
 F 0 "D1" H 6200 3650 50  0000 C CNN
@@ -47,7 +47,7 @@ F 3 "~" H 5650 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J7
+L Amp200-rescue:Conn-My_Library J7
 U 1 1 64215621
 P 8500 4500
 F 0 "J7" H 8528 4546 50  0001 L CNN
@@ -113,7 +113,7 @@ F 3 "~" H 5600 3300 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L My_Library:X9C103 D2
+L Amp200-rescue:X9C103-My_Library D2
 U 1 1 64223D95
 P 4850 3300
 F 0 "D2" H 4600 3050 50  0000 C CNN
@@ -135,7 +135,7 @@ Wire Wire Line
 	5150 3600 4850 3600
 Connection ~ 4850 3600
 $Comp
-L My_Library:TLV3501-2 D3
+L Amp200-rescue:TLV3501-2-My_Library D3
 U 1 1 64231BA0
 P 7750 3750
 F 0 "D3" H 7800 3900 50  0000 L CNN
@@ -235,7 +235,7 @@ F 3 "~" H 2800 2850 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L My_Library:Conn J6
+L Amp200-rescue:Conn-My_Library J6
 U 1 1 6426C541
 P 8500 3750
 F 0 "J6" H 8528 3796 50  0001 L CNN
@@ -246,7 +246,7 @@ F 3 "~" H 8500 3750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J8
+L Amp200-rescue:Conn-My_Library J8
 U 1 1 6426CAB6
 P 8500 4250
 F 0 "J8" H 8528 4296 50  0001 L CNN
@@ -257,7 +257,7 @@ F 3 "~" H 8500 4250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J9
+L Amp200-rescue:Conn-My_Library J9
 U 1 1 6426D093
 P 7350 1750
 F 0 "J9" H 7378 1796 50  0001 L CNN
@@ -268,7 +268,7 @@ F 3 "~" H 7350 1750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J2
+L Amp200-rescue:Conn-My_Library J2
 U 1 1 6426D58E
 P 4350 3200
 F 0 "J2" H 4378 3246 50  0001 L CNN
@@ -279,7 +279,7 @@ F 3 "~" H 4350 3200 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L My_Library:Conn J3
+L Amp200-rescue:Conn-My_Library J3
 U 1 1 6426DCFC
 P 4350 3300
 F 0 "J3" H 4378 3346 50  0001 L CNN
@@ -290,7 +290,7 @@ F 3 "~" H 4350 3300 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L My_Library:Conn J4
+L Amp200-rescue:Conn-My_Library J4
 U 1 1 6426E453
 P 4350 3400
 F 0 "J4" H 4378 3446 50  0001 L CNN
@@ -301,7 +301,7 @@ F 3 "~" H 4350 3400 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L My_Library:Conn J1
+L Amp200-rescue:Conn-My_Library J1
 U 1 1 6426E9F0
 P 2450 2850
 F 0 "J1" H 2478 2896 50  0001 L CNN
@@ -424,7 +424,7 @@ F 3 "" H 6550 2800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:Conn J5
+L Amp200-rescue:Conn-My_Library J5
 U 1 1 642CF5AB
 P 8500 3300
 F 0 "J5" H 8528 3346 50  0001 L CNN
@@ -584,7 +584,7 @@ Connection ~ 8100 4250
 Wire Wire Line
 	8100 4250 8400 4250
 $Comp
-L My_Library:TS5A4595 D5
+L Amp200-rescue:TS5A4595-My_Library D5
 U 1 1 643F68CC
 P 3250 3050
 F 0 "D5" H 3300 3100 50  0000 L CNN
@@ -843,7 +843,7 @@ Connection ~ 6500 2200
 Wire Wire Line
 	4450 1450 6900 1450
 $Comp
-L My_Library:Conn J10
+L Amp200-rescue:Conn-My_Library J10
 U 1 1 64445C9E
 P 2450 4250
 F 0 "J10" H 2478 4296 50  0001 L CNN

@@ -371,13 +371,13 @@ void TIM4_IRQHandler(void)
 			/* Автоматическая подстройка центра диапазона для компенсации температуры и деформаций корпуса */
 			#ifdef AUTO_CALIBRATE
 			float corr;
-			if (abs((avg_X1 + avg_X2) - 1600) > CALIBRATE_ACURACY) {
-				if (abs((avg_X1 + avg_X2) - 1600) > FAST_CALIBRATE) {
+			if (abs((avg_X1 + avg_X2) - CALIBRATE_MAX_COUNT) > CALIBRATE_ACURACY) {
+				if (abs((avg_X1 + avg_X2) - CALIBRATE_MAX_COUNT) > FAST_CALIBRATE) {
 					corr = FAST_CALIBRATE_STEP;
 				} else {
 					corr = 1;
 				}
-				if ((avg_X1 + avg_X2) > 1600) {
+				if ((avg_X1 + avg_X2) > CALIBRATE_MAX_COUNT) {
 					//C_2 = C_2 + corr;
 					C_4 = C_4 + corr;
 				} else {
@@ -385,13 +385,13 @@ void TIM4_IRQHandler(void)
 					C_4 = C_4 - corr;
 				}
 			}
-			if (abs((avg_Y1 + avg_Y2) - 1600) > CALIBRATE_ACURACY) {
-				if (abs((avg_Y1 + avg_Y2) - 1600) > FAST_CALIBRATE) {
+			if (abs((avg_Y1 + avg_Y2) - CALIBRATE_MAX_COUNT) > CALIBRATE_ACURACY) {
+				if (abs((avg_Y1 + avg_Y2) - CALIBRATE_MAX_COUNT) > FAST_CALIBRATE) {
 					corr = FAST_CALIBRATE_STEP;
 				} else {
 					corr = 1;
 				}
-				if ((avg_Y1 + avg_Y2) > 1600) {
+				if ((avg_Y1 + avg_Y2) > CALIBRATE_MAX_COUNT) {
 					//C_1 = C_1 + corr;
 					C_3 = C_3 + corr;
 				} else {

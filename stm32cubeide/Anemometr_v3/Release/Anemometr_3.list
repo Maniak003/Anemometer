@@ -4708,7 +4708,7 @@ Disassembly of section .text:
  8003318:	2104      	movs	r1, #4
  800331a:	4879      	ldr	r0, [pc, #484]	; (8003500 <main+0x7a8>)
  800331c:	f004 fd00 	bl	8007d20 <HAL_TIM_IC_Stop_IT>
- 8003320:	f44f 7248 	mov.w	r2, #800	; 0x320
+ 8003320:	f240 321f 	movw	r2, #799	; 0x31f
  8003324:	4b79      	ldr	r3, [pc, #484]	; (800350c <main+0x7b4>)
  8003326:	f04f 0c00 	mov.w	ip, #0
  800332a:	62da      	str	r2, [r3, #44]	; 0x2c

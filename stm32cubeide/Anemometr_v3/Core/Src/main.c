@@ -516,7 +516,7 @@ int main(void)
   firstTime = TRUE;
   currentMode = 0;
   STOP_CAPTURE
-  TIM1->ARR = TIM1_PERIOD;
+  TIM1->ARR = TIM1_PERIOD - 1;
   measCount = 0;
   /*
    *	Очистка массива результатов.
@@ -569,8 +569,8 @@ int main(void)
 				  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 				  if (! test_flag) {
 					  /* Y1 */
-					  if ( calibrate1 && (abs(resul_arrayY1[0] + resul_arrayY2[0] - (float) TIM1_PERIOD * 2) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayY1[0] + resul_arrayY2[0] > (float) TIM1_PERIOD * 2) {
+					  if ( calibrate1 && (abs(resul_arrayY1[0] + resul_arrayY2[0] - (float) CALIBRATE_MAX_COUNT) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayY1[0] + resul_arrayY2[0] > (float) CALIBRATE_MAX_COUNT) {
 							  C_3++;
 						  } else {
 							  C_3--;
@@ -590,8 +590,8 @@ int main(void)
 						  calibrate3 = FALSE;	// Закончена калибровка таймера запуска измерения в канале Y1
 					  } */
 					  /* X1 */
-					  if ( calibrate2 && (abs(resul_arrayX1[0] + resul_arrayX2[0] - (float) TIM1_PERIOD * 2) > CALIBRATE_ACURACY) ) {
-						  if (resul_arrayX1[0] + resul_arrayX2[0] > (float) TIM1_PERIOD * 2) {
+					  if ( calibrate2 && (abs(resul_arrayX1[0] + resul_arrayX2[0] - (float) CALIBRATE_MAX_COUNT) > CALIBRATE_ACURACY) ) {
+						  if (resul_arrayX1[0] + resul_arrayX2[0] > (float) CALIBRATE_MAX_COUNT) {
 							  C_4++;
 						  } else {
 							  C_4--;
@@ -1313,8 +1313,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 					//LED_PULSE
 					STOP_CAPTURE  // Таймер больше не нужен, выключаем
 					front_sum = front_sum / COUNT_FRONT - (TIM1_PERIOD * (COUNT_FRONT - 1) / 2);  // Расчитываем задержку от средины импульсов
-					if (front_sum > 1600) {		// Ошибка измерения.
-						front_sum = 1600;		// Значение необходимое для калибровки.
+					if (front_sum > CALIBRATE_MAX_COUNT) {		// Ошибка измерения.
+						front_sum = CALIBRATE_MAX_COUNT;		// Значение необходимое для калибровки.
 					}
 					/* Turn off all multiplexer */
 					GPIOB->ODR |= ((1 << Z1Receive) | (1 << Z2Receive) | (1 << Z3Receive) | (1 << Z4Receive));
