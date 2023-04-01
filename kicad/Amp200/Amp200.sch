@@ -19,7 +19,7 @@ U 1 1 64214348
 P 4200 3000
 F 0 "D1" H 4000 3100 50  0000 L CNN
 F 1 "MAX4477" H 4000 3000 50  0000 L CNN
-F 2 "Package_SO:TSSOP-8_4.4x3mm_P0.65mm" H 4200 3000 50  0001 C CNN
+F 2 "Package_SO:MSOP-8_3x3mm_P0.65mm" H 4200 3000 50  0001 C CNN
 F 3 "" H 4200 3000 50  0001 C CNN
 	1    4200 3000
 	1    0    0    -1  
@@ -30,7 +30,7 @@ U 2 1 64214619
 P 6300 3650
 F 0 "D1" H 6200 3650 50  0000 C CNN
 F 1 "MAX4477" H 6300 3974 50  0001 C CNN
-F 2 "Package_SO:TSSOP-8_4.4x3mm_P0.65mm" H 6300 3650 50  0001 C CNN
+F 2 "Package_SO:MSOP-8_3x3mm_P0.65mm" H 6300 3650 50  0001 C CNN
 F 3 "" H 6300 3650 50  0001 C CNN
 	2    6300 3650
 	1    0    0    -1  
@@ -500,9 +500,7 @@ Connection ~ 4150 4250
 Wire Wire Line
 	7850 3950 7850 4500
 Wire Wire Line
-	7850 4500 2950 4500
-Wire Wire Line
-	2950 4500 2950 2950
+	7850 4500 3550 4500
 $Comp
 L Device:C C13
 U 1 1 64367121
@@ -592,7 +590,7 @@ F 1 "TS5A4595" H 3300 2950 50  0000 L CNN
 F 2 "Package_TO_SOT_SMD:SOT-23-5" H 3250 3050 50  0001 C CNN
 F 3 "" H 3250 3050 50  0001 C CNN
 	1    3250 3050
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 Wire Wire Line
 	3250 4250 4150 4250
@@ -789,7 +787,7 @@ F 1 "NCP1117-3.3" H 6200 1901 50  0000 C CNN
 F 2 "Package_TO_SOT_SMD:SOT-223-3_TabPin2" H 6200 1950 50  0001 C CNN
 F 3 "http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF" H 6300 1500 50  0001 C CNN
 	1    6200 1750
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Regulator_Linear:NCP1117-5.0_SOT223 U1
@@ -800,7 +798,7 @@ F 1 "NCP1117-5.0" H 3750 1901 50  0000 C CNN
 F 2 "Package_TO_SOT_SMD:SOT-223-3_TabPin2" H 3750 1950 50  0001 C CNN
 F 3 "http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF" H 3850 1500 50  0001 C CNN
 	1    3750 1750
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 Connection ~ 4050 1750
 Connection ~ 6500 1750
@@ -856,4 +854,6 @@ $EndComp
 Wire Wire Line
 	2550 4250 3250 4250
 Connection ~ 3250 4250
+Wire Wire Line
+	3550 2950 3550 4500
 $EndSCHEMATC
