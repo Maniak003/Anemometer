@@ -193,7 +193,7 @@ float avg_X1, avg_X2, avg_Y1, avg_Y2;
 #define _DHCP_DEBUG_
 
 //#define ZABBIX_DEBUG					/* Вывод хода подключения и записи данных в zabbix */
-//#define ZABBIX_ENABLE					/* Включает сетевой интерфейс и инициирует запись данных в zabbix */
+#define ZABBIX_ENABLE					/* Включает сетевой интерфейс и инициирует запись данных в zabbix */
 #define ZABBIX_RAW_DATA					/* Сохранение исходных значений, для температурной калибровки. */
 #define ZABBIXAGHOST	"Anemometer"  // Default hostname.
 #define ZABBIXPORT		10051

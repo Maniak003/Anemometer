@@ -548,8 +548,7 @@ int main(void)
   Xmaxfin = 0;
   Ymaxfin = 0;
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-  while (1)
-  {
+  while (1) {
 	  if (readyFlag) {
 		  SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 		  HAL_IWDG_Refresh(&hiwdg);

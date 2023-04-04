@@ -367,10 +367,21 @@ void TIM4_IRQHandler(void)
 			avg_X2 = avg_X2 / ((MEASSURE_COUNT - PREFETCH)) * DX1.f;
 			avg_Y1 = avg_Y1 / ((MEASSURE_COUNT - PREFETCH));
 			avg_Y2 = avg_Y2 / ((MEASSURE_COUNT - PREFETCH)) * DY1.f;
+			float corr;
+			/* Коррекция диапазона. Сумма измерений всегда равна CALIBRATE_MAX_COUNT */
+			if (avg_X1 + avg_X2 != CALIBRATE_MAX_COUNT) {
+				corr = abs(avg_X1 + avg_X2 - CALIBRATE_MAX_COUNT) / 2;
+				if (avg_X1 > avg_X2) {
+					avg_X1 = avg_X1 - corr;
+					avg_X2 = avg_X2 + corr;
+				} else {
+					avg_X1 = avg_X1 + corr;
+					avg_X2 = avg_X2 - corr;
+				}
+			}
 
 			/* Автоматическая подстройка центра диапазона для компенсации температуры и деформаций корпуса */
 			#ifdef AUTO_CALIBRATE
-			float corr;
 			if (abs((avg_X1 + avg_X2) - CALIBRATE_MAX_COUNT) > CALIBRATE_ACURACY) {
 				if (abs((avg_X1 + avg_X2) - CALIBRATE_MAX_COUNT) > FAST_CALIBRATE) {
 					corr = FAST_CALIBRATE_STEP;
