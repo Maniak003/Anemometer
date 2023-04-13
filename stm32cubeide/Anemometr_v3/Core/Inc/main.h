@@ -116,6 +116,7 @@ union {
 #define CALIBRATE_TIMES 5			/* Количество стандартных измерений измерений для точной калибровки */
 #define CALIBRATE_ACURACY 1.0f		/* Максимальное отклонение при переборе смещения измерения */
 #define AUTO_CALIBRATE				/* Подстройка средней точки диапазона для компенсации температуры и деформации корпуса */
+//#define AUTO_CALIBRATE_2			/* Выравнивание диапазона */
 #define FAST_CALIBRATE 50			/* Порог для ускоренной калибровки */
 #define FAST_CALIBRATE_STEP 30		/* Шаг быстрой калибровки */
 
@@ -186,6 +187,8 @@ void Error_Handler(void);
 float resul_arrayX1[MEASSURE_COUNT], resul_arrayY1[MEASSURE_COUNT], resul_arrayX2[MEASSURE_COUNT], resul_arrayY2[MEASSURE_COUNT];
 float avg_X1, avg_X2, avg_Y1, avg_Y2;
 /* For W5500*/
+uint16_t eternetErrorCount;	/* Счетчик ошибок eth интерфейса для перезапуска */
+#define MAX_ETH_ERROR	100
 #define DHCP_SOCKET     0
 #define DNS_SOCKET      1
 #define TCP_SOCKET		2

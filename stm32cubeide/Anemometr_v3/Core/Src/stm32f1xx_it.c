@@ -266,6 +266,9 @@ void TIM4_IRQHandler(void)
 	#ifdef SYSTICK_DISABLE
 		SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;  // Включение SysTick
 	#endif
+	#ifdef AUTO_CALIBRATE
+		float corr;
+	#endif
 
 		front_sum = 0;
 		runFlag = 0;
@@ -312,23 +315,51 @@ void TIM4_IRQHandler(void)
 			#endif
 			//LED_PULSE
 			for (int ii = PREFETCH; ii < MEASSURE_COUNT; ii++) {
+				float curX1, curX2, curY1, curY2;
+				curX1 = resul_arrayX1[ii];
+				curX2 = resul_arrayX2[ii] * DX1.f;
+				curY1 = resul_arrayY1[ii];
+				curY2 = resul_arrayY2[ii] * DY1.f;
+				#ifdef AUTO_CALIBRATE_2
+				/* Коррекция диапазона. Сумма измерений всегда равна CALIBRATE_MAX_COUNT */
+				if (curX1 + curX2 != CALIBRATE_MAX_COUNT) {
+					corr = abs(curX1 + curX2 - CALIBRATE_MAX_COUNT) / 2;
+					if (curX1 > curX2) {
+						curX1 = curX1 - corr;
+						curX2 = curX2 + corr;
+					} else {
+						curX1 = curX1 + corr;
+						curX2 = curX2 - corr;
+					}
+				}
+				if (curY1 + curY2 != CALIBRATE_MAX_COUNT) {
+					corr = abs(curY1 + curY2 - CALIBRATE_MAX_COUNT) / 2;
+					if (curY1 > curY2) {
+						curY1 = curY1 - corr;
+						curY2 = curY2 + corr;
+					} else {
+						curY1 = curY1 + corr;
+						curY2 = curY2 - corr;
+					}
+				}
+				#endif
 				// Медианный фильтр для X
 				#ifdef MEDIAN_FILTER_ENABLE
-				X1m[countX1] = resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f;
+				X1m[countX1] = curX1 - curX2;
 				if (++countX1 >= 3) countX1 = 0;
 				XX1 = (X1m[0] < X1m[1]) ? ((X1m[1] < X1m[2]) ? X1m[1] : ((X1m[2] < X1m[0]) ? X1m[0] : X1m[2])) : ((X1m[0] < X1m[2]) ? X1m[0] : ((X1m[2] < X1m[1]) ? X1m[1] : X1m[2]));
 				#else
-				XX1 = resul_arrayX1[ii] - resul_arrayX2[ii] * DX1.f;
+				XX1 = curX1 - curX2;
 				#endif
 				Xsum1 = Xsum1 + XX1;
 
 				// Медианный фильтр для Y
 				#ifdef MEDIAN_FILTER_ENABLE
-				Y1m[countY1] = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
+				Y1m[countY1] = curY1 - curY2;
 				if (++countY1 >= 3) countY1 = 0;
 				YY1 = (Y1m[0] < Y1m[1]) ? ((Y1m[1] < Y1m[2]) ? Y1m[1] : ((Y1m[2] < Y1m[0]) ? Y1m[0] : Y1m[2])) : ((Y1m[0] < Y1m[2]) ? Y1m[0] : ((Y1m[2] < Y1m[1]) ? Y1m[1] : Y1m[2]));
 				#else
-				YY1 = resul_arrayY1[ii] - resul_arrayY2[ii] * DY1.f;
+				YY1 = curY1 - curY2;
 				#endif
 				Ysum1 = Ysum1 + YY1;
 
@@ -346,17 +377,17 @@ void TIM4_IRQHandler(void)
 				if ( V > Vmax) {
 					Vmax = V;
 				}
-				if (abs(X) > Xmax) {
-					Xmax = abs(X);
+				if (abs(X) > abs(Xmax)) {
+					Xmax = X;
 				}
-				if (abs(Y) > Ymax) {
-					Ymax = abs(Y);
+				if (abs(Y) > abs(Ymax)) {
+					Ymax = Y;
 				}
-				/* Для тестирования температурного коэффициента */
+				/* Для температурной коррекции */
 				avg_X1 = avg_X1 + resul_arrayX1[ii];
-				avg_X2 = avg_X2 + resul_arrayX2[ii];
+				avg_X2 = avg_X2 + resul_arrayX2[ii] * DX1.f;
 				avg_Y1 = avg_Y1 + resul_arrayY1[ii];
-				avg_Y2 = avg_Y2 + resul_arrayY2[ii];
+				avg_Y2 = avg_Y2 + resul_arrayY2[ii] * DY1.f;
 
 				resul_arrayX1[ii] = 0;
 				resul_arrayX2[ii] = 0;
@@ -364,27 +395,18 @@ void TIM4_IRQHandler(void)
 				resul_arrayY2[ii] = 0;
 			}
 			avg_X1 = avg_X1 / ((MEASSURE_COUNT - PREFETCH));
-			avg_X2 = avg_X2 / ((MEASSURE_COUNT - PREFETCH)) * DX1.f;
+			avg_X2 = avg_X2 / ((MEASSURE_COUNT - PREFETCH));
 			avg_Y1 = avg_Y1 / ((MEASSURE_COUNT - PREFETCH));
-			avg_Y2 = avg_Y2 / ((MEASSURE_COUNT - PREFETCH)) * DY1.f;
-			float corr;
-			/* Коррекция диапазона. Сумма измерений всегда равна CALIBRATE_MAX_COUNT */
-			if (avg_X1 + avg_X2 != CALIBRATE_MAX_COUNT) {
-				corr = abs(avg_X1 + avg_X2 - CALIBRATE_MAX_COUNT) / 2;
-				if (avg_X1 > avg_X2) {
-					avg_X1 = avg_X1 - corr;
-					avg_X2 = avg_X2 + corr;
-				} else {
-					avg_X1 = avg_X1 + corr;
-					avg_X2 = avg_X2 - corr;
-				}
-			}
+			avg_Y2 = avg_Y2 / ((MEASSURE_COUNT - PREFETCH));
 
-			/* Автоматическая подстройка центра диапазона для компенсации температуры и деформаций корпуса */
 			#ifdef AUTO_CALIBRATE
+			/* Автоматическая подстройка центра диапазона для компенсации температуры и деформаций корпуса */
 			if (abs((avg_X1 + avg_X2) - CALIBRATE_MAX_COUNT) > CALIBRATE_ACURACY) {
 				if (abs((avg_X1 + avg_X2) - CALIBRATE_MAX_COUNT) > FAST_CALIBRATE) {
 					corr = FAST_CALIBRATE_STEP;
+					/* Нужно синхронизировать задержку в каналах при значительном смещении нуля
+					   Иначе измерения будут иметь погрешность. */
+					firstTime = TRUE;
 				} else {
 					corr = 1;
 				}
@@ -399,6 +421,9 @@ void TIM4_IRQHandler(void)
 			if (abs((avg_Y1 + avg_Y2) - CALIBRATE_MAX_COUNT) > CALIBRATE_ACURACY) {
 				if (abs((avg_Y1 + avg_Y2) - CALIBRATE_MAX_COUNT) > FAST_CALIBRATE) {
 					corr = FAST_CALIBRATE_STEP;
+					/* Нужно синхронизировать задержку в каналах при значительном смещении нуля
+					   Иначе измерения будут иметь погрешность. */
+					firstTime = TRUE;
 				} else {
 					corr = 1;
 				}

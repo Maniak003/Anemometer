@@ -256,21 +256,27 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
     uint8_t tcp_socket = TCP_SOCKET;
     uint8_t code = socket(tcp_socket, Sn_MR_TCP, 10888, 0);
     if(code != tcp_socket) {
+    	eternetErrorCount++;
 	#ifdef ZABBIX_DEBUG
         UART_Printf("socket() failed, code = %d\r\n", code);
 	#endif
         return(-1);
+    } else {
+    	eternetErrorCount = 0;
     }
 #ifdef ZABBIX_DEBUG
     UART_Printf("Socket created, connecting...\r\n");
 #endif
     code = connect(tcp_socket, addr, ZABBIXPORT);
     if(code != SOCK_OK) {
+    	eternetErrorCount++;
 	#ifdef ZABBIX_DEBUG
         UART_Printf("connect() failed, code = %d\r\n", code);
 	#endif
         close(tcp_socket);
         return(-2);
+    } else {
+    	eternetErrorCount = 0;
     }
 #ifdef ZABBIX_DEBUG
     UART_Printf("Connected, sending ZABBIX request...\r\n");
@@ -302,11 +308,14 @@ uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
 		#endif
             int32_t nbytes = send(tcp_socket, buff, len);
             if(nbytes <= 0) {
+            	eternetErrorCount++;
 			#ifdef ZABBIX_DEBUG
                 UART_Printf("send() failed, %d returned\r\n", nbytes);
 			#endif
                 close(tcp_socket);
                 return(-3);
+            } else {
+            	eternetErrorCount = 0;
             }
 			#ifdef ZABBIX_DEBUG
             UART_Printf("%d b sent!\r\n", nbytes);
@@ -477,6 +486,7 @@ int main(void)
   HAL_Delay(2000);
   init_w5500();
   HAL_UART_Transmit(&huart1, (uint8_t *) OK, sizeof(OK), HAL_MAX_DELAY);
+  eternetErrorCount = 0;
 #else
   HAL_GPIO_WritePin(nRst_GPIO_Port, nRst_Pin, GPIO_PIN_RESET);	// Reset W5500
 #endif
@@ -696,6 +706,9 @@ int main(void)
 				#endif
 			  if (! firstTime) {
 				#ifdef ZABBIX_ENABLE
+				  if (eternetErrorCount > MAX_ETH_ERROR) {
+					  HAL_NVIC_SystemReset(); /* Eternet не отвечает, перезапуск */
+				  }
 				  if ( V != 0 ) {
 					  if ((V < MAX_SPD) && (Vmaxfin < MAX_SPD) ) {  // Первый раз пропускаем для инициализации переменных.
 						  sendToZabbix(net_info.zabbix, ZabbixHostName, "ALTIM_SPEED", V);
