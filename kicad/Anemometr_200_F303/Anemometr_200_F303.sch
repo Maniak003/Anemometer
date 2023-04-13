@@ -1,0 +1,979 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_ST_STM32F3:STM32F303CCTx U2
+U 1 1 6432F995
+P 6050 3500
+F 0 "U2" H 6050 4500 50  0000 C CNN
+F 1 "STM32F303CCTx" H 6100 4350 50  0000 C CNN
+F 2 "Package_QFP:LQFP-48_7x7mm_P0.5mm" H 5450 2100 50  0001 R CNN
+F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00058181.pdf" H 6050 3500 50  0001 C CNN
+	1    6050 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:L L1
+U 1 1 64331810
+P 6250 1750
+F 0 "L1" H 6303 1796 50  0000 L CNN
+F 1 "L" H 6303 1705 50  0000 L CNN
+F 2 "Inductor_SMD:L_0805_2012Metric" H 6250 1750 50  0001 C CNN
+F 3 "~" H 6250 1750 50  0001 C CNN
+	1    6250 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R1
+U 1 1 64331C46
+P 6800 3900
+F 0 "R1" V 6850 4150 50  0000 C CNN
+F 1 "R" V 6750 4150 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 6730 3900 50  0001 C CNN
+F 3 "~" H 6800 3900 50  0001 C CNN
+	1    6800 3900
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:C C3
+U 1 1 643320C5
+P 6600 1700
+F 0 "C3" H 6715 1746 50  0000 L CNN
+F 1 "C" H 6715 1655 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 6638 1550 50  0001 C CNN
+F 3 "~" H 6600 1700 50  0001 C CNN
+	1    6600 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR05
+U 1 1 64332793
+P 5850 5100
+F 0 "#PWR05" H 5850 4850 50  0001 C CNN
+F 1 "GND" H 5855 4927 50  0001 C CNN
+F 2 "" H 5850 5100 50  0001 C CNN
+F 3 "" H 5850 5100 50  0001 C CNN
+	1    5850 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J13
+U 1 1 64333F62
+P 7150 4100
+F 0 "J13" H 7178 4126 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 4035 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 4100 50  0001 C CNN
+F 3 "~" H 7150 4100 50  0001 C CNN
+	1    7150 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Crystal_GND2_Small Y1
+U 1 1 64334766
+P 4650 2700
+F 0 "Y1" H 4650 2833 50  0000 C CNN
+F 1 "16MHz" H 4650 2834 50  0001 C CNN
+F 2 "Crystal:Resonator_SMD_muRata_CSTxExxV-3Pin_3.0x1.1mm" H 4650 2700 50  0001 C CNN
+F 3 "~" H 4650 2700 50  0001 C CNN
+	1    4650 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR04
+U 1 1 64337907
+P 4650 2800
+F 0 "#PWR04" H 4650 2550 50  0001 C CNN
+F 1 "GND" H 4655 2627 50  0001 C CNN
+F 2 "" H 4650 2800 50  0001 C CNN
+F 3 "" H 4650 2800 50  0001 C CNN
+	1    4650 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C4
+U 1 1 6433A788
+P 6900 2100
+F 0 "C4" H 7015 2146 50  0000 L CNN
+F 1 "C" H 7015 2055 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 6938 1950 50  0001 C CNN
+F 3 "~" H 6900 2100 50  0001 C CNN
+	1    6900 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR02
+U 1 1 6433ADF0
+P 6900 2250
+F 0 "#PWR02" H 6900 2000 50  0001 C CNN
+F 1 "GND" H 6905 2077 50  0001 C CNN
+F 2 "" H 6900 2250 50  0001 C CNN
+F 3 "" H 6900 2250 50  0001 C CNN
+	1    6900 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6250 2000 6250 1950
+Wire Wire Line
+	6900 1950 6250 1950
+Connection ~ 6250 1950
+Wire Wire Line
+	6250 1950 6250 1900
+Wire Wire Line
+	5850 2000 5850 1550
+Wire Wire Line
+	5850 1550 5950 1550
+Wire Wire Line
+	6250 1550 6250 1600
+Wire Wire Line
+	5950 2000 5950 1550
+Connection ~ 5950 1550
+Wire Wire Line
+	5950 1550 6050 1550
+Wire Wire Line
+	6050 2000 6050 1550
+Connection ~ 6050 1550
+Wire Wire Line
+	6050 1550 6150 1550
+Wire Wire Line
+	6150 2000 6150 1550
+Connection ~ 6150 1550
+Wire Wire Line
+	6150 1550 6250 1550
+Wire Wire Line
+	6250 1550 6600 1550
+Connection ~ 6250 1550
+$Comp
+L power:GND #PWR01
+U 1 1 6433E57A
+P 7550 1850
+F 0 "#PWR01" H 7550 1600 50  0001 C CNN
+F 1 "GND" H 7555 1677 50  0001 C CNN
+F 2 "" H 7550 1850 50  0001 C CNN
+F 3 "" H 7550 1850 50  0001 C CNN
+	1    7550 1850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C1
+U 1 1 6433EA97
+P 7200 1700
+F 0 "C1" H 7315 1746 50  0000 L CNN
+F 1 "C" H 7315 1655 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 7238 1550 50  0001 C CNN
+F 3 "~" H 7200 1700 50  0001 C CNN
+	1    7200 1700
+	1    0    0    -1  
+$EndComp
+Connection ~ 7200 1550
+Wire Wire Line
+	7200 1550 7250 1550
+Wire Wire Line
+	7200 1850 7550 1850
+Connection ~ 7550 1850
+$Comp
+L Device:C C2
+U 1 1 6433F4E3
+P 7950 1700
+F 0 "C2" H 8065 1746 50  0000 L CNN
+F 1 "C" H 8065 1655 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 7988 1550 50  0001 C CNN
+F 3 "~" H 7950 1700 50  0001 C CNN
+	1    7950 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7550 1850 7950 1850
+$Comp
+L Connector:Conn_01x01_Female J1
+U 1 1 6433FF4B
+P 8250 1550
+F 0 "J1" H 8278 1576 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 8278 1485 50  0001 L CNN
+F 2 "My-library:mini_conn" H 8250 1550 50  0001 C CNN
+F 3 "~" H 8250 1550 50  0001 C CNN
+	1    8250 1550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 1550 7950 1550
+Connection ~ 7950 1550
+Wire Wire Line
+	7950 1550 8050 1550
+$Comp
+L power:GND #PWR03
+U 1 1 643409F0
+P 4900 2400
+F 0 "#PWR03" H 4900 2150 50  0001 C CNN
+F 1 "GND" H 4905 2227 50  0001 C CNN
+F 2 "" H 4900 2400 50  0001 C CNN
+F 3 "" H 4900 2400 50  0001 C CNN
+	1    4900 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C5
+U 1 1 643410EF
+P 5100 2200
+F 0 "C5" V 4848 2200 50  0000 C CNN
+F 1 "C" V 4939 2200 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 5138 2050 50  0001 C CNN
+F 3 "~" H 5100 2200 50  0001 C CNN
+	1    5100 2200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4900 2400 4900 2200
+Wire Wire Line
+	4900 2200 4950 2200
+Wire Wire Line
+	5350 2400 4900 2400
+Connection ~ 4900 2400
+Wire Wire Line
+	5250 2200 5350 2200
+Wire Wire Line
+	5850 5100 5850 5000
+Wire Wire Line
+	5850 5000 5950 5000
+Connection ~ 5850 5000
+Connection ~ 5950 5000
+Wire Wire Line
+	5950 5000 6050 5000
+Connection ~ 6050 5000
+Wire Wire Line
+	6050 5000 6150 5000
+$Comp
+L Connector:Conn_01x01_Female J3
+U 1 1 6434A999
+P 7150 3300
+F 0 "J3" H 7178 3326 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 3235 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 3300 50  0001 C CNN
+F 3 "~" H 7150 3300 50  0001 C CNN
+	1    7150 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J9
+U 1 1 6434AF51
+P 7150 3800
+F 0 "J9" H 7178 3826 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 3735 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 3800 50  0001 C CNN
+F 3 "~" H 7150 3800 50  0001 C CNN
+	1    7150 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J15
+U 1 1 6434D795
+P 7150 4200
+F 0 "J15" H 7178 4226 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 4135 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 4200 50  0001 C CNN
+F 3 "~" H 7150 4200 50  0001 C CNN
+	1    7150 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J17
+U 1 1 6434DBD1
+P 7150 4300
+F 0 "J17" H 7178 4326 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 4235 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 4300 50  0001 C CNN
+F 3 "~" H 7150 4300 50  0001 C CNN
+	1    7150 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J19
+U 1 1 6434DFB4
+P 7150 4400
+F 0 "J19" H 7178 4426 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 4335 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 4400 50  0001 C CNN
+F 3 "~" H 7150 4400 50  0001 C CNN
+	1    7150 4400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J20
+U 1 1 6434E36D
+P 4850 4500
+F 0 "J20" H 4878 4526 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 4435 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 4500 50  0001 C CNN
+F 3 "~" H 4850 4500 50  0001 C CNN
+	1    4850 4500
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J21
+U 1 1 6434EB7B
+P 4850 4600
+F 0 "J21" H 4878 4626 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 4535 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 4600 50  0001 C CNN
+F 3 "~" H 4850 4600 50  0001 C CNN
+	1    4850 4600
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J22
+U 1 1 6434F03C
+P 4850 4700
+F 0 "J22" H 4878 4726 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 4635 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 4700 50  0001 C CNN
+F 3 "~" H 4850 4700 50  0001 C CNN
+	1    4850 4700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J24
+U 1 1 6434F444
+P 4850 4800
+F 0 "J24" H 4878 4826 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 4735 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 4800 50  0001 C CNN
+F 3 "~" H 4850 4800 50  0001 C CNN
+	1    4850 4800
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J18
+U 1 1 6434F836
+P 4850 4400
+F 0 "J18" H 4878 4426 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 4335 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 4400 50  0001 C CNN
+F 3 "~" H 4850 4400 50  0001 C CNN
+	1    4850 4400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J12
+U 1 1 6435061D
+P 4850 4100
+F 0 "J12" H 4878 4126 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 4035 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 4100 50  0001 C CNN
+F 3 "~" H 4850 4100 50  0001 C CNN
+	1    4850 4100
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J14
+U 1 1 64350A21
+P 4850 4200
+F 0 "J14" H 4878 4226 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 4135 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 4200 50  0001 C CNN
+F 3 "~" H 4850 4200 50  0001 C CNN
+	1    4850 4200
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J23
+U 1 1 64350EB0
+P 7150 4700
+F 0 "J23" H 7178 4726 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 4635 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 4700 50  0001 C CNN
+F 3 "~" H 7150 4700 50  0001 C CNN
+	1    7150 4700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J25
+U 1 1 6435149B
+P 4850 3700
+F 0 "J25" H 4878 3726 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 3635 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 3700 50  0001 C CNN
+F 3 "~" H 4850 3700 50  0001 C CNN
+	1    4850 3700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J5
+U 1 1 64351949
+P 7150 3400
+F 0 "J5" H 7178 3426 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 3335 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 3400 50  0001 C CNN
+F 3 "~" H 7150 3400 50  0001 C CNN
+	1    7150 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J7
+U 1 1 64351E4D
+P 7150 3500
+F 0 "J7" H 7178 3526 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 3435 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 3500 50  0001 C CNN
+F 3 "~" H 7150 3500 50  0001 C CNN
+	1    7150 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J8
+U 1 1 64352335
+P 7150 3600
+F 0 "J8" H 7178 3626 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 3535 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 3600 50  0001 C CNN
+F 3 "~" H 7150 3600 50  0001 C CNN
+	1    7150 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J2
+U 1 1 64352CE3
+P 4850 3300
+F 0 "J2" H 4878 3326 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 3235 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 3300 50  0001 C CNN
+F 3 "~" H 4850 3300 50  0001 C CNN
+	1    4850 3300
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J4
+U 1 1 643533AB
+P 4850 3400
+F 0 "J4" H 4878 3426 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 3335 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 3400 50  0001 C CNN
+F 3 "~" H 4850 3400 50  0001 C CNN
+	1    4850 3400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J6
+U 1 1 643538CB
+P 4850 3500
+F 0 "J6" H 4878 3526 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 3435 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 3500 50  0001 C CNN
+F 3 "~" H 4850 3500 50  0001 C CNN
+	1    4850 3500
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J16
+U 1 1 643551F6
+P 4850 4300
+F 0 "J16" H 4878 4326 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 4235 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 4300 50  0001 C CNN
+F 3 "~" H 4850 4300 50  0001 C CNN
+	1    4850 4300
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:C C7
+U 1 1 64357182
+P 7000 1700
+F 0 "C7" H 7115 1746 50  0000 L CNN
+F 1 "C" H 7115 1655 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 7038 1550 50  0001 C CNN
+F 3 "~" H 7000 1700 50  0001 C CNN
+	1    7000 1700
+	1    0    0    -1  
+$EndComp
+Connection ~ 7000 1550
+Wire Wire Line
+	7000 1550 7200 1550
+$Comp
+L Device:C C6
+U 1 1 64357937
+P 6800 1700
+F 0 "C6" H 6915 1746 50  0000 L CNN
+F 1 "C" H 6915 1655 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 6838 1550 50  0001 C CNN
+F 3 "~" H 6800 1700 50  0001 C CNN
+	1    6800 1700
+	1    0    0    -1  
+$EndComp
+Connection ~ 6800 1550
+Wire Wire Line
+	6800 1550 7000 1550
+Connection ~ 6600 1550
+Wire Wire Line
+	6600 1550 6800 1550
+Wire Wire Line
+	7200 1850 7000 1850
+Connection ~ 7200 1850
+Connection ~ 6800 1850
+Wire Wire Line
+	6800 1850 6600 1850
+Connection ~ 7000 1850
+Wire Wire Line
+	7000 1850 6800 1850
+$Comp
+L Device:LED D1
+U 1 1 64368D69
+P 7500 3900
+F 0 "D1" H 7493 3645 50  0000 C CNN
+F 1 "LED" H 7493 3736 50  0000 C CNN
+F 2 "LED_SMD:LED_0603_1608Metric" H 7500 3900 50  0001 C CNN
+F 3 "~" H 7500 3900 50  0001 C CNN
+	1    7500 3900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6950 3900 7350 3900
+$Comp
+L power:GND #PWR06
+U 1 1 6436A621
+P 7650 3900
+F 0 "#PWR06" H 7650 3650 50  0001 C CNN
+F 1 "GND" H 7655 3727 50  0001 C CNN
+F 2 "" H 7650 3900 50  0001 C CNN
+F 3 "" H 7650 3900 50  0001 C CNN
+	1    7650 3900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J26
+U 1 1 6439AC4E
+P 4850 3600
+F 0 "J26" H 4878 3626 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 3535 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 3600 50  0001 C CNN
+F 3 "~" H 4850 3600 50  0001 C CNN
+	1    4850 3600
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J27
+U 1 1 6439B2BE
+P 7150 4600
+F 0 "J27" H 7178 4626 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 4535 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 4600 50  0001 C CNN
+F 3 "~" H 7150 4600 50  0001 C CNN
+	1    7150 4600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6650 4600 6950 4600
+Wire Wire Line
+	6650 4700 6950 4700
+Text Label 6750 4600 0    50   ~ 0
+swd
+Text Label 6750 4700 0    50   ~ 0
+swc
+Wire Wire Line
+	6650 4100 6950 4100
+Wire Wire Line
+	6650 4200 6950 4200
+Wire Wire Line
+	6650 4300 6950 4300
+Wire Wire Line
+	6650 4400 6950 4400
+Text Label 6750 4100 0    50   ~ 0
+Z1
+Text Label 6750 4200 0    50   ~ 0
+Z2
+Text Label 6750 4300 0    50   ~ 0
+Z3
+Text Label 6750 4400 0    50   ~ 0
+Z4
+Wire Wire Line
+	6650 3300 6950 3300
+Wire Wire Line
+	6650 3400 6950 3400
+Wire Wire Line
+	6650 3500 6950 3500
+Wire Wire Line
+	6650 3600 6950 3600
+Text Label 6700 3300 0    50   ~ 0
+AnIn1
+Text Label 6700 3400 0    50   ~ 0
+AnIn2
+Text Label 6700 3500 0    50   ~ 0
+AnIn3
+Text Label 6700 3600 0    50   ~ 0
+AnIn4
+Text Label 5250 2200 0    50   ~ 0
+rst
+Wire Wire Line
+	5050 4300 5350 4300
+Wire Wire Line
+	5050 3500 5350 3500
+Wire Wire Line
+	5050 3400 5350 3400
+Wire Wire Line
+	5050 3300 5350 3300
+Text Label 5050 3300 0    50   ~ 0
+Z1Sel
+Text Label 5050 3400 0    50   ~ 0
+Z2Sel
+Text Label 5050 3500 0    50   ~ 0
+Z3Sel
+Text Label 5050 4300 0    50   ~ 0
+Z4Sel
+Wire Wire Line
+	5050 3600 5350 3600
+Wire Wire Line
+	5050 3700 5350 3700
+Text Label 5050 3600 0    50   ~ 0
+U2_TX
+Text Label 5050 3700 0    50   ~ 0
+U2_RX
+Text Label 5050 3900 0    50   ~ 0
+U1_TX
+Text Label 5050 4000 0    50   ~ 0
+U1_RX
+Wire Wire Line
+	5050 4100 5350 4100
+Wire Wire Line
+	5050 4200 5350 4200
+Text Label 5050 4100 0    50   ~ 0
+scl
+Text Label 5050 4200 0    50   ~ 0
+sda
+Wire Wire Line
+	5050 4400 5350 4400
+Wire Wire Line
+	5050 4500 5350 4500
+Wire Wire Line
+	5050 4600 5350 4600
+Wire Wire Line
+	5050 4700 5350 4700
+Wire Wire Line
+	5050 4800 5350 4800
+Text Label 5050 4400 0    50   ~ 0
+EthRST
+Text Label 5050 4500 0    50   ~ 0
+NSS
+Text Label 5050 4600 0    50   ~ 0
+SCK
+Text Label 5050 4700 0    50   ~ 0
+MISO
+Text Label 5050 4800 0    50   ~ 0
+MOSI
+NoConn ~ 6650 4000
+NoConn ~ 6650 4500
+NoConn ~ 6650 4800
+$Comp
+L Interface_USB:CH340C U3
+U 1 1 6432D493
+P 3300 4400
+F 0 "U3" H 3250 4300 50  0000 C CNN
+F 1 "CH340C" H 3200 4200 50  0000 C CNN
+F 2 "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm" H 3350 3850 50  0001 L CNN
+F 3 "https://datasheet.lcsc.com/szlcsc/Jiangsu-Qin-Heng-CH340C_C84681.pdf" H 2950 5200 50  0001 C CNN
+	1    3300 4400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0101
+U 1 1 643391F9
+P 3300 5000
+F 0 "#PWR0101" H 3300 4750 50  0001 C CNN
+F 1 "GND" H 3305 4827 50  0001 C CNN
+F 2 "" H 3300 5000 50  0001 C CNN
+F 3 "" H 3300 5000 50  0001 C CNN
+	1    3300 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R4
+U 1 1 6433F111
+P 3950 4000
+F 0 "R4" V 4050 4000 50  0000 C CNN
+F 1 "1k" V 4150 4000 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3880 4000 50  0001 C CNN
+F 3 "~" H 3950 4000 50  0001 C CNN
+	1    3950 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R5
+U 1 1 6434E6E6
+P 3950 4100
+F 0 "R5" V 3800 4100 50  0000 C CNN
+F 1 "1k" V 3700 4100 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3880 4100 50  0001 C CNN
+F 3 "~" H 3950 4100 50  0001 C CNN
+	1    3950 4100
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R2
+U 1 1 6434ECF4
+P 4200 4500
+F 0 "R2" V 4250 4750 50  0000 C CNN
+F 1 "1k" V 4150 4750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 4130 4500 50  0001 C CNN
+F 3 "~" H 4200 4500 50  0001 C CNN
+	1    4200 4500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:USB_B_Micro J10
+U 1 1 64351AB0
+P 2050 4300
+F 0 "J10" H 2107 4767 50  0000 C CNN
+F 1 "USB_B_Micro" H 2107 4676 50  0000 C CNN
+F 2 "Connector_USB:USB_Micro-B_Molex_47346-0001" H 2200 4250 50  0001 C CNN
+F 3 "~" H 2200 4250 50  0001 C CNN
+	1    2050 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:D D2
+U 1 1 643796A5
+P 2750 3100
+F 0 "D2" H 2750 2883 50  0000 C CNN
+F 1 "D" H 2750 2974 50  0000 C CNN
+F 2 "Diode_SMD:D_SOD-123" H 2750 3100 50  0001 C CNN
+F 3 "~" H 2750 3100 50  0001 C CNN
+	1    2750 3100
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2350 4100 2450 4100
+Wire Wire Line
+	2450 4100 2450 3100
+Wire Wire Line
+	2450 3100 2600 3100
+Wire Wire Line
+	2900 3100 3300 3100
+Wire Wire Line
+	3300 3100 3300 3800
+Connection ~ 3300 3100
+Wire Wire Line
+	3700 4000 3800 4000
+Wire Wire Line
+	3700 4100 3800 4100
+Wire Wire Line
+	2350 4300 2900 4300
+Wire Wire Line
+	2350 4400 2900 4400
+Wire Wire Line
+	3300 5000 2050 5000
+Wire Wire Line
+	2050 5000 2050 4700
+Connection ~ 3300 5000
+Wire Wire Line
+	1950 4700 2050 4700
+Connection ~ 2050 4700
+$Comp
+L power:+3.3V #PWR0102
+U 1 1 643A6662
+P 5850 1550
+F 0 "#PWR0102" H 5850 1400 50  0001 C CNN
+F 1 "+3.3V" H 5865 1723 50  0000 C CNN
+F 2 "" H 5850 1550 50  0001 C CNN
+F 3 "" H 5850 1550 50  0001 C CNN
+	1    5850 1550
+	1    0    0    -1  
+$EndComp
+Connection ~ 5850 1550
+$Comp
+L power:+3.3V #PWR0103
+U 1 1 643A8574
+P 3200 3400
+F 0 "#PWR0103" H 3200 3250 50  0001 C CNN
+F 1 "+3.3V" H 3215 3573 50  0000 C CNN
+F 2 "" H 3200 3400 50  0001 C CNN
+F 3 "" H 3200 3400 50  0001 C CNN
+	1    3200 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 3400 3200 3800
+$Comp
+L Device:C C8
+U 1 1 643BC51C
+P 2850 3550
+F 0 "C8" H 2965 3596 50  0000 L CNN
+F 1 "C" H 2965 3505 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 2888 3400 50  0001 C CNN
+F 3 "~" H 2850 3550 50  0001 C CNN
+	1    2850 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2850 3400 3200 3400
+Connection ~ 3200 3400
+$Comp
+L power:GND #PWR0104
+U 1 1 643C0C7E
+P 2850 3700
+F 0 "#PWR0104" H 2850 3450 50  0001 C CNN
+F 1 "GND" H 2855 3527 50  0001 C CNN
+F 2 "" H 2850 3700 50  0001 C CNN
+F 3 "" H 2850 3700 50  0001 C CNN
+	1    2850 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4600 3900 4600 4100
+Wire Wire Line
+	4600 3900 5350 3900
+NoConn ~ 2900 4100
+NoConn ~ 3700 4300
+NoConn ~ 3700 4400
+NoConn ~ 3700 4500
+NoConn ~ 3700 4600
+NoConn ~ 3700 4700
+NoConn ~ 3700 4800
+Wire Wire Line
+	3300 3100 3300 1250
+Wire Wire Line
+	3300 1250 7950 1250
+Wire Wire Line
+	7950 1250 7950 1550
+$Comp
+L Regulator_Linear:AP1117-50 U1
+U 1 1 643F63E8
+P 7550 1550
+F 0 "U1" H 7550 1792 50  0000 C CNN
+F 1 "AP1117-33" H 7550 1701 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-223-3_TabPin2" H 7550 1750 50  0001 C CNN
+F 3 "http://www.diodes.com/datasheets/AP1117.pdf" H 7650 1300 50  0001 C CNN
+	1    7550 1550
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J11
+U 1 1 644486E6
+P 5250 1850
+F 0 "J11" H 5278 1876 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 5278 1785 50  0001 L CNN
+F 2 "My-library:mini_conn" H 5250 1850 50  0001 C CNN
+F 3 "~" H 5250 1850 50  0001 C CNN
+	1    5250 1850
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5250 2050 5250 2200
+Connection ~ 5250 2200
+Text Label 3550 3100 0    50   ~ 0
++5v
+$Comp
+L Connector:Conn_01x01_Female J31
+U 1 1 6434537B
+P 7150 3700
+F 0 "J31" H 7178 3726 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 3635 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 3700 50  0001 C CNN
+F 3 "~" H 7150 3700 50  0001 C CNN
+	1    7150 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6650 3700 6950 3700
+Wire Wire Line
+	6650 3800 6950 3800
+Text Label 6700 3700 0    50   ~ 0
+Inc
+Text Label 6700 3800 0    50   ~ 0
+U-D
+$Comp
+L Connector:Conn_01x01_Female J29
+U 1 1 6434E613
+P 4850 3000
+F 0 "J29" H 4878 3026 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 2935 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 3000 50  0001 C CNN
+F 3 "~" H 4850 3000 50  0001 C CNN
+	1    4850 3000
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J30
+U 1 1 6434F47F
+P 4850 3100
+F 0 "J30" H 4878 3126 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 3035 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 3100 50  0001 C CNN
+F 3 "~" H 4850 3100 50  0001 C CNN
+	1    4850 3100
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J28
+U 1 1 6434FB42
+P 4850 2900
+F 0 "J28" H 4878 2926 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 2835 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 2900 50  0001 C CNN
+F 3 "~" H 4850 2900 50  0001 C CNN
+	1    4850 2900
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J32
+U 1 1 6435032D
+P 4850 3800
+F 0 "J32" H 4878 3826 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 4878 3735 50  0001 L CNN
+F 2 "My-library:mini_conn" H 4850 3800 50  0001 C CNN
+F 3 "~" H 4850 3800 50  0001 C CNN
+	1    4850 3800
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5050 3800 5350 3800
+Wire Wire Line
+	5050 3100 5350 3100
+Wire Wire Line
+	5050 3000 5350 3000
+Wire Wire Line
+	4500 2600 4500 2700
+Wire Wire Line
+	4500 2700 4550 2700
+Wire Wire Line
+	4750 2700 5350 2700
+Wire Wire Line
+	4500 2600 5350 2600
+Wire Wire Line
+	5050 2900 5350 2900
+Text Label 5050 2900 0    50   ~ 0
+CS1
+Text Label 5050 3000 0    50   ~ 0
+CS2
+Text Label 5050 3100 0    50   ~ 0
+CS3
+Text Label 5050 3800 0    50   ~ 0
+CS4
+Wire Wire Line
+	4100 4100 4600 4100
+Wire Wire Line
+	4100 4000 4200 4000
+Wire Wire Line
+	4200 4350 4200 4000
+Connection ~ 4200 4000
+Wire Wire Line
+	4200 4000 5350 4000
+$Comp
+L power:GND #PWR?
+U 1 1 643839DA
+P 4200 4650
+F 0 "#PWR?" H 4200 4400 50  0001 C CNN
+F 1 "GND" H 4205 4477 50  0001 C CNN
+F 2 "" H 4200 4650 50  0001 C CNN
+F 3 "" H 4200 4650 50  0001 C CNN
+	1    4200 4650
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
