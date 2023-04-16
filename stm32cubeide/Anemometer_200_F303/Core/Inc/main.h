@@ -42,32 +42,48 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-void levelUp(uint8_t channel, uint8_t lev, bool updn);
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-bool readyData;
+bool readyData, readyCapture ;
 #define CONVERSION_COUNT 200
-#define REF_COUNT 20
+#define REF_COUNT 80
+#define MEASURE_COUNT 20
 ADC_HandleTypeDef hadc1;
 TIM_HandleTypeDef htim1;
-uint16_t adcBuffer[CONVERSION_COUNT], refArray[REF_COUNT];
-uint16_t maxLevel, minLevel, ajustCount, haftConf, maxIndex;
+uint16_t adcBuffer[CONVERSION_COUNT];
+uint16_t maxLevel, minLevel, ajustCount, haftConf, maxIndex, mesCount;
+uint32_t captureTIM2, finishCapture;
+float measArray[CONVERSION_COUNT];
 char SndBuffer[200];
-double maxLev, curLev;
+double maxLev, curLev, avgLevel, maxAmp, maxIdxAmp;
 void ADC_complite(DMA_HandleTypeDef * hdma);
 #define SHOW_DATA 100
 #define START_TEXT "\n\rAnemometr200 start\n\r"
 #define FINISH_TEXT "Finish.\n\r"
 #define ERROR_TEXT "Error, system reset start\n\r"
-#define AVG_LEVEL 1970
+#define AD5245 /* Автоматическая регулировка уровня от 0 до 254 */
+#ifdef AD5245
+	void AD5245level(uint8_t lev);
+	#define AJUST_DELAY 1
+	#define AD5245_I2C_ADDR (0x2C << 1)
+	#define AD5245_WRITE    0x00
+	#define AD5245_RESET    0x40
+	#define AD5245_SHUTDOWN 0x20
+	#define AD5245_I2C_PORT hi2c1
+	uint8_t currLevel;
+#endif
+//#define X9CXXX
+#ifdef X9CXXX
+	void levelUp(uint8_t channel, uint8_t lev, bool updn);
+	#define AJUST_DELAY 5
+	#define UP true
+	#define DOWN false
+#endif
 #define ACURACY_LEVEL 100
 #define NOMINAL_LEVEL 1800
 #define MEASURMENT_DALAY 35000
-#define AJUST_DELAY 5
-#define UP true
-#define DOWN false
 //
 /* USER CODE END EC */
 

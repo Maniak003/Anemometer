@@ -47,17 +47,6 @@ F 3 "~" H 5650 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Amp200-rescue:Conn-My_Library J7
-U 1 1 64215621
-P 8500 4500
-F 0 "J7" H 8528 4546 50  0001 L CNN
-F 1 "Conn" H 8528 4455 50  0001 L CNN
-F 2 "My-library:SMD-CONN" H 8550 4350 50  0001 C CNN
-F 3 "~" H 8500 4500 50  0001 C CNN
-	1    8500 4500
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR06
 U 1 1 64215CB0
 P 8100 4250
@@ -82,12 +71,12 @@ $EndComp
 $Comp
 L Device:R R1
 U 1 1 6421D1E2
-P 3700 2850
-F 0 "R1" V 3493 2850 50  0000 C CNN
-F 1 "10k" V 3584 2850 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 3630 2850 50  0001 C CNN
-F 3 "~" H 3700 2850 50  0001 C CNN
-	1    3700 2850
+P 3550 2850
+F 0 "R1" V 3343 2850 50  0000 C CNN
+F 1 "10k" V 3434 2850 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3480 2850 50  0001 C CNN
+F 3 "~" H 3550 2850 50  0001 C CNN
+	1    3550 2850
 	0    1    1    0   
 $EndComp
 $Comp
@@ -208,17 +197,6 @@ Wire Wire Line
 	4150 3250 4150 4250
 Connection ~ 7750 4250
 $Comp
-L Device:C C1
-U 1 1 64268B9E
-P 2800 2850
-F 0 "C1" V 2548 2850 50  0000 C CNN
-F 1 "1.5n" V 2639 2850 50  0000 C CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 2838 2700 50  0001 C CNN
-F 3 "~" H 2800 2850 50  0001 C CNN
-	1    2800 2850
-	0    1    1    0   
-$EndComp
-$Comp
 L Amp200-rescue:Conn-My_Library J6
 U 1 1 6426C541
 P 8500 3750
@@ -254,34 +232,34 @@ $EndComp
 $Comp
 L Amp200-rescue:Conn-My_Library J2
 U 1 1 6426D58E
-P 4450 3200
-F 0 "J2" H 4478 3246 50  0001 L CNN
-F 1 "Conn" H 4478 3155 50  0001 L CNN
-F 2 "My-library:SMD-CONN" H 4500 3050 50  0001 C CNN
-F 3 "~" H 4450 3200 50  0001 C CNN
-	1    4450 3200
+P 4300 3200
+F 0 "J2" H 4328 3246 50  0001 L CNN
+F 1 "Conn" H 4328 3155 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 4350 3050 50  0001 C CNN
+F 3 "~" H 4300 3200 50  0001 C CNN
+	1    4300 3200
 	-1   0    0    1   
 $EndComp
 $Comp
 L Amp200-rescue:Conn-My_Library J3
 U 1 1 6426DCFC
-P 4450 3300
-F 0 "J3" H 4478 3346 50  0001 L CNN
-F 1 "Conn" H 4478 3255 50  0001 L CNN
-F 2 "My-library:SMD-CONN" H 4500 3150 50  0001 C CNN
-F 3 "~" H 4450 3300 50  0001 C CNN
-	1    4450 3300
+P 4300 3300
+F 0 "J3" H 4328 3346 50  0001 L CNN
+F 1 "Conn" H 4328 3255 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 4350 3150 50  0001 C CNN
+F 3 "~" H 4300 3300 50  0001 C CNN
+	1    4300 3300
 	-1   0    0    1   
 $EndComp
 $Comp
 L Amp200-rescue:Conn-My_Library J1
 U 1 1 6426E9F0
-P 2450 2850
-F 0 "J1" H 2478 2896 50  0001 L CNN
-F 1 "Conn" H 2478 2805 50  0001 L CNN
-F 2 "My-library:SMD-CONN" H 2500 2700 50  0001 C CNN
-F 3 "~" H 2450 2850 50  0001 C CNN
-	1    2450 2850
+P 2000 1500
+F 0 "J1" H 2028 1546 50  0001 L CNN
+F 1 "Conn" H 2028 1455 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 1350 50  0001 C CNN
+F 3 "~" H 2000 1500 50  0001 C CNN
+	1    2000 1500
 	-1   0    0    1   
 $EndComp
 Connection ~ 6650 3650
@@ -307,18 +285,6 @@ Wire Wire Line
 	4700 2650 5150 2650
 Wire Wire Line
 	6950 3650 7450 3650
-Connection ~ 3850 2850
-$Comp
-L Device:C C9
-U 1 1 642BFFDF
-P 7150 2650
-F 0 "C9" H 7100 2350 50  0000 L CNN
-F 1 "22u" H 7100 2250 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 7188 2500 50  0001 C CNN
-F 3 "~" H 7150 2650 50  0001 C CNN
-	1    7150 2650
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:C C6
 U 1 1 642C0DCF
@@ -350,17 +316,6 @@ F 1 ".1u" H 6500 2250 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0805_2012Metric" H 6588 2500 50  0001 C CNN
 F 3 "~" H 6550 2650 50  0001 C CNN
 	1    6550 2650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR05
-U 1 1 642C2DED
-P 7150 2800
-F 0 "#PWR05" H 7150 2550 50  0001 C CNN
-F 1 "GND" H 7155 2627 50  0001 C CNN
-F 2 "" H 7150 2800 50  0001 C CNN
-F 3 "" H 7150 2800 50  0001 C CNN
-	1    7150 2800
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -407,13 +362,6 @@ F 3 "~" H 8500 3300 50  0001 C CNN
 	1    8500 3300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3250 3150 3250 4250
-Connection ~ 4150 4250
-Wire Wire Line
-	7850 3950 7850 4500
-Wire Wire Line
-	7850 4500 3550 4500
 $Comp
 L Device:C C13
 U 1 1 64367121
@@ -463,9 +411,6 @@ F 3 "~" H 8100 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7850 4500 8400 4500
-Connection ~ 7850 4500
-Wire Wire Line
 	6950 3900 6950 3650
 Connection ~ 6950 3650
 Wire Wire Line
@@ -488,25 +433,12 @@ Wire Wire Line
 Wire Wire Line
 	7150 3850 7150 3900
 Wire Wire Line
-	7750 4250 8100 4250
+	7750 4250 7850 4250
 Wire Wire Line
 	8100 4200 8100 4250
 Connection ~ 8100 4250
 Wire Wire Line
 	8100 4250 8400 4250
-$Comp
-L Amp200-rescue:TS5A4595-My_Library D5
-U 1 1 643F68CC
-P 3250 3050
-F 0 "D5" H 3300 3100 50  0000 L CNN
-F 1 "TS5A4595" H 3300 2950 50  0000 L CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-5" H 3250 3050 50  0001 C CNN
-F 3 "" H 3250 3050 50  0001 C CNN
-	1    3250 3050
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	3250 4250 4150 4250
 Wire Wire Line
 	5850 4200 5850 4250
 Connection ~ 5850 4250
@@ -567,12 +499,8 @@ Text Label 7100 1750 0    50   ~ 0
 +12v
 Text Label 8250 3750 0    50   ~ 0
 Zero
-Text Label 8200 4500 0    50   ~ 0
-Select
-Text Label 2550 2850 0    50   ~ 0
-Input
-Wire Wire Line
-	2550 2850 2650 2850
+Text Label 2150 1500 0    50   ~ 0
+Z1
 Wire Wire Line
 	8100 3450 7750 3450
 Connection ~ 7750 3450
@@ -690,11 +618,6 @@ Wire Wire Line
 	6750 2500 6950 2500
 Connection ~ 6950 2500
 Wire Wire Line
-	6950 2500 7150 2500
-Connection ~ 7150 2500
-Wire Wire Line
-	7150 2500 7350 2500
-Wire Wire Line
 	7350 2500 7750 2500
 Wire Wire Line
 	4150 2500 4850 2500
@@ -716,24 +639,19 @@ Connection ~ 6500 2200
 $Comp
 L Amp200-rescue:Conn-My_Library J10
 U 1 1 64445C9E
-P 2450 4250
-F 0 "J10" H 2478 4296 50  0001 L CNN
-F 1 "Conn" H 2478 4205 50  0001 L CNN
-F 2 "My-library:SMD-CONN" H 2500 4100 50  0001 C CNN
-F 3 "~" H 2450 4250 50  0001 C CNN
-	1    2450 4250
+P 2000 4250
+F 0 "J10" H 2028 4296 50  0001 L CNN
+F 1 "Conn" H 2028 4205 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 4100 50  0001 C CNN
+F 3 "~" H 2000 4250 50  0001 C CNN
+	1    2000 4250
 	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	2550 4250 3250 4250
-Connection ~ 3250 4250
-Wire Wire Line
-	3550 2950 3550 4500
 $Comp
-L My_Library:AD5245 D?
+L My_Library:AD5245 D2
 U 1 1 643A72C4
 P 4850 3400
-F 0 "D?" H 4950 3800 50  0000 C CNN
+F 0 "D2" H 4950 3800 50  0000 C CNN
 F 1 "AD5245" H 5050 3050 50  0000 C CNN
 F 2 "Package_TO_SOT_SMD:SOT-23-8" H 4850 3400 50  0001 C CNN
 F 3 "" H 4850 3400 50  0001 C CNN
@@ -750,10 +668,6 @@ Connection ~ 4850 3650
 Wire Wire Line
 	4850 3650 4850 4250
 Wire Wire Line
-	4550 3400 4550 3650
-Wire Wire Line
-	4550 3650 4850 3650
-Wire Wire Line
 	4850 3000 4850 2500
 Connection ~ 4850 2500
 Wire Wire Line
@@ -761,12 +675,414 @@ Wire Wire Line
 Connection ~ 5450 2500
 Wire Wire Line
 	5450 2500 5850 2500
-Wire Wire Line
-	4150 2500 3250 2500
-Wire Wire Line
-	3250 2500 3250 2650
-Connection ~ 4150 2500
 Connection ~ 6350 2500
 Wire Wire Line
 	6350 2500 6550 2500
+Wire Wire Line
+	6950 2500 7150 2500
+Wire Wire Line
+	4400 3200 4550 3200
+Wire Wire Line
+	4400 3300 4550 3300
+Text Label 4400 3200 0    50   ~ 0
+scl
+Text Label 4400 3300 0    50   ~ 0
+sda
+$Comp
+L Analog_Switch:TS5A23159DGS U1
+U 1 1 6442460C
+P 2600 1500
+F 0 "U1" H 2550 1650 50  0000 C CNN
+F 1 "TS5A23159DGS" H 2600 1776 50  0001 C CNN
+F 2 "Package_SO:VSSOP-10_3x3mm_P0.5mm" H 2600 1350 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/ts5a23159.pdf" H 1550 1150 50  0001 C CNN
+	1    2600 1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Analog_Switch:TS5A23159DGS U1
+U 2 1 64425BB4
+P 2600 2200
+F 0 "U1" H 2550 2350 50  0000 C CNN
+F 1 "TS5A23159DGS" H 2600 2476 50  0001 C CNN
+F 2 "Package_SO:VSSOP-10_3x3mm_P0.5mm" H 2600 2050 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/ts5a23159.pdf" H 1550 1850 50  0001 C CNN
+	2    2600 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Analog_Switch:TS5A23159DGS U3
+U 3 1 6442767A
+P 5350 1750
+F 0 "U3" H 5300 1750 50  0000 L CNN
+F 1 "TS5A23159DGS" H 5530 1705 50  0001 L CNN
+F 2 "Package_SO:VSSOP-10_3x3mm_P0.5mm" H 5350 1600 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/ts5a23159.pdf" H 4300 1400 50  0001 C CNN
+	3    5350 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 3950 7850 4250
+Connection ~ 7850 4250
+Wire Wire Line
+	7850 4250 8100 4250
+$Comp
+L Amp200-rescue:Conn-My_Library J11
+U 1 1 644451C8
+P 2000 2200
+F 0 "J11" H 2028 2246 50  0001 L CNN
+F 1 "Conn" H 2028 2155 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 2050 50  0001 C CNN
+F 3 "~" H 2000 2200 50  0001 C CNN
+	1    2000 2200
+	-1   0    0    1   
+$EndComp
+$Comp
+L Analog_Switch:TS5A23159DGS U3
+U 1 1 64445AF8
+P 2600 2950
+F 0 "U3" H 2550 3100 50  0000 C CNN
+F 1 "TS5A23159DGS" H 2600 3226 50  0001 C CNN
+F 2 "Package_SO:VSSOP-10_3x3mm_P0.5mm" H 2600 2800 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/ts5a23159.pdf" H 1550 2600 50  0001 C CNN
+	1    2600 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Analog_Switch:TS5A23159DGS U3
+U 2 1 64447A8C
+P 2600 3700
+F 0 "U3" H 2550 3850 50  0000 C CNN
+F 1 "TS5A23159DGS" H 2600 3976 50  0001 C CNN
+F 2 "Package_SO:VSSOP-10_3x3mm_P0.5mm" H 2600 3550 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/ts5a23159.pdf" H 1550 3350 50  0001 C CNN
+	2    2600 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Analog_Switch:TS5A23159DGS U1
+U 3 1 6444905D
+P 4900 1750
+F 0 "U1" H 4850 1750 50  0000 L CNN
+F 1 "TS5A23159DGS" H 5080 1705 50  0001 L CNN
+F 2 "Package_SO:VSSOP-10_3x3mm_P0.5mm" H 4900 1600 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/ts5a23159.pdf" H 3850 1400 50  0001 C CNN
+	3    4900 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2100 1500 2300 1500
+Wire Wire Line
+	2900 2100 2950 2100
+Wire Wire Line
+	2900 2850 2950 2850
+Wire Wire Line
+	2900 3600 2950 3600
+Wire Wire Line
+	2900 1600 3050 1600
+$Comp
+L Amp200-rescue:Conn-My_Library J13
+U 1 1 6447D426
+P 2000 2950
+F 0 "J13" H 2028 2996 50  0001 L CNN
+F 1 "Conn" H 2028 2905 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 2800 50  0001 C CNN
+F 3 "~" H 2000 2950 50  0001 C CNN
+	1    2000 2950
+	-1   0    0    1   
+$EndComp
+$Comp
+L Amp200-rescue:Conn-My_Library J15
+U 1 1 6447DF79
+P 2000 3700
+F 0 "J15" H 2028 3746 50  0001 L CNN
+F 1 "Conn" H 2028 3655 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 3550 50  0001 C CNN
+F 3 "~" H 2000 3700 50  0001 C CNN
+	1    2000 3700
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2100 3700 2300 3700
+Wire Wire Line
+	2100 2950 2300 2950
+Wire Wire Line
+	2100 2200 2300 2200
+Text Label 2150 2200 0    50   ~ 0
+Z2
+Text Label 2150 2950 0    50   ~ 0
+Z3
+Text Label 2150 3700 0    50   ~ 0
+Z4
+Wire Wire Line
+	2900 2300 3050 2300
+Wire Wire Line
+	2900 3050 3050 3050
+Wire Wire Line
+	5850 1750 5850 1250
+Wire Wire Line
+	5850 1250 5350 1250
+Connection ~ 5850 1750
+Connection ~ 5350 1250
+Wire Wire Line
+	5350 1250 4900 1250
+$Comp
+L power:GND #PWR0101
+U 1 1 644A7C2F
+P 5350 2250
+F 0 "#PWR0101" H 5350 2000 50  0001 C CNN
+F 1 "GND" H 5355 2077 50  0001 C CNN
+F 2 "" H 5350 2250 50  0001 C CNN
+F 3 "" H 5350 2250 50  0001 C CNN
+	1    5350 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0102
+U 1 1 644A87B3
+P 4900 2250
+F 0 "#PWR0102" H 4900 2000 50  0001 C CNN
+F 1 "GND" H 4905 2077 50  0001 C CNN
+F 2 "" H 4900 2250 50  0001 C CNN
+F 3 "" H 4900 2250 50  0001 C CNN
+	1    4900 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amp200-rescue:Conn-My_Library J16
+U 1 1 644A976E
+P 2000 4100
+F 0 "J16" H 2028 4146 50  0001 L CNN
+F 1 "Conn" H 2028 4055 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 3950 50  0001 C CNN
+F 3 "~" H 2000 4100 50  0001 C CNN
+	1    2000 4100
+	-1   0    0    1   
+$EndComp
+Text Label 2150 4100 0    50   ~ 0
+Z4sel
+$Comp
+L Amp200-rescue:Conn-My_Library J14
+U 1 1 644B0104
+P 2000 3350
+F 0 "J14" H 2028 3396 50  0001 L CNN
+F 1 "Conn" H 2028 3305 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 3200 50  0001 C CNN
+F 3 "~" H 2000 3350 50  0001 C CNN
+	1    2000 3350
+	-1   0    0    1   
+$EndComp
+$Comp
+L Amp200-rescue:Conn-My_Library J12
+U 1 1 644B5B2B
+P 2000 2600
+F 0 "J12" H 2028 2646 50  0001 L CNN
+F 1 "Conn" H 2028 2555 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 2450 50  0001 C CNN
+F 3 "~" H 2000 2600 50  0001 C CNN
+	1    2000 2600
+	-1   0    0    1   
+$EndComp
+$Comp
+L Amp200-rescue:Conn-My_Library J7
+U 1 1 644BB73A
+P 2000 1900
+F 0 "J7" H 2028 1946 50  0001 L CNN
+F 1 "Conn" H 2028 1855 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 2050 1750 50  0001 C CNN
+F 3 "~" H 2000 1900 50  0001 C CNN
+	1    2000 1900
+	-1   0    0    1   
+$EndComp
+Text Label 2150 3350 0    50   ~ 0
+Z3sel
+Text Label 2150 2600 0    50   ~ 0
+Z2sel
+Text Label 2200 1900 0    50   ~ 0
+Z1sel
+$Comp
+L Device:D_Zener_Small D4
+U 1 1 644CA3DF
+P 2100 1600
+F 0 "D4" V 2100 1670 50  0000 L CNN
+F 1 "BZ55C2V7" V 2145 1670 50  0001 L CNN
+F 2 "Diode_SMD:D_MiniMELF" V 2100 1600 50  0001 C CNN
+F 3 "~" V 2100 1600 50  0001 C CNN
+	1    2100 1600
+	0    1    1    0   
+$EndComp
+Connection ~ 2100 1500
+Wire Wire Line
+	2100 1900 2600 1900
+Wire Wire Line
+	2600 1900 2600 1800
+$Comp
+L power:GND #PWR0103
+U 1 1 644D682C
+P 2100 1700
+F 0 "#PWR0103" H 2100 1450 50  0001 C CNN
+F 1 "GND" H 2105 1527 50  0001 C CNN
+F 2 "" H 2100 1700 50  0001 C CNN
+F 3 "" H 2100 1700 50  0001 C CNN
+	1    2100 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2100 2600 2600 2600
+Wire Wire Line
+	2600 2600 2600 2500
+Wire Wire Line
+	2100 3350 2600 3350
+Wire Wire Line
+	2600 3350 2600 3250
+Wire Wire Line
+	2100 4100 2600 4100
+Wire Wire Line
+	2600 4100 2600 4000
+$Comp
+L Device:D_Zener_Small D5
+U 1 1 644F065E
+P 2100 2300
+F 0 "D5" V 2100 2370 50  0000 L CNN
+F 1 "BZ55C2V7" V 2145 2370 50  0001 L CNN
+F 2 "Diode_SMD:D_MiniMELF" V 2100 2300 50  0001 C CNN
+F 3 "~" V 2100 2300 50  0001 C CNN
+	1    2100 2300
+	0    1    1    0   
+$EndComp
+Connection ~ 2100 2200
+$Comp
+L Device:D_Zener_Small D6
+U 1 1 644F5481
+P 2100 3050
+F 0 "D6" V 2100 3120 50  0000 L CNN
+F 1 "BZ55C2V7" V 2145 3120 50  0001 L CNN
+F 2 "Diode_SMD:D_MiniMELF" V 2100 3050 50  0001 C CNN
+F 3 "~" V 2100 3050 50  0001 C CNN
+	1    2100 3050
+	0    1    1    0   
+$EndComp
+Connection ~ 2100 2950
+$Comp
+L Device:D_Zener_Small D7
+U 1 1 644F7825
+P 2100 3800
+F 0 "D7" V 2100 3870 50  0000 L CNN
+F 1 "BZ55C2V7" V 2145 3870 50  0001 L CNN
+F 2 "Diode_SMD:D_MiniMELF" V 2100 3800 50  0001 C CNN
+F 3 "~" V 2100 3800 50  0001 C CNN
+	1    2100 3800
+	0    1    1    0   
+$EndComp
+Connection ~ 2100 3700
+$Comp
+L power:GND #PWR0104
+U 1 1 644F9338
+P 2100 2400
+F 0 "#PWR0104" H 2100 2150 50  0001 C CNN
+F 1 "GND" H 2105 2227 50  0001 C CNN
+F 2 "" H 2100 2400 50  0001 C CNN
+F 3 "" H 2100 2400 50  0001 C CNN
+	1    2100 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0105
+U 1 1 644F9CBC
+P 2100 3150
+F 0 "#PWR0105" H 2100 2900 50  0001 C CNN
+F 1 "GND" H 2105 2977 50  0001 C CNN
+F 2 "" H 2100 3150 50  0001 C CNN
+F 3 "" H 2100 3150 50  0001 C CNN
+	1    2100 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0106
+U 1 1 644FBF75
+P 2100 3900
+F 0 "#PWR0106" H 2100 3650 50  0001 C CNN
+F 1 "GND" H 2105 3727 50  0001 C CNN
+F 2 "" H 2100 3900 50  0001 C CNN
+F 3 "" H 2100 3900 50  0001 C CNN
+	1    2100 3900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3700 2850 3850 2850
+Connection ~ 3850 2850
+$Comp
+L Device:C C1
+U 1 1 64573685
+P 7150 2650
+F 0 "C1" H 7050 2350 50  0000 L CNN
+F 1 ".1u" H 7050 2250 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 7188 2500 50  0001 C CNN
+F 3 "~" H 7150 2650 50  0001 C CNN
+	1    7150 2650
+	1    0    0    -1  
+$EndComp
+Connection ~ 7150 2500
+$Comp
+L power:GND #PWR0107
+U 1 1 64579A54
+P 7150 2800
+F 0 "#PWR0107" H 7150 2550 50  0001 C CNN
+F 1 "GND" H 7155 2627 50  0001 C CNN
+F 2 "" H 7150 2800 50  0001 C CNN
+F 3 "" H 7150 2800 50  0001 C CNN
+	1    7150 2800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4550 3400 4550 3650
+Wire Wire Line
+	4550 3650 4850 3650
+Wire Wire Line
+	7150 2500 7350 2500
+Wire Wire Line
+	2950 1400 2950 2100
+Wire Wire Line
+	2950 1400 2900 1400
+Connection ~ 2950 2100
+Wire Wire Line
+	2950 2100 2950 2850
+Connection ~ 2950 2850
+Wire Wire Line
+	2950 2850 2950 3600
+Connection ~ 2950 3600
+Wire Wire Line
+	2950 3600 2950 4250
+Wire Wire Line
+	2100 4250 2950 4250
+Wire Wire Line
+	3050 1600 3050 2300
+Connection ~ 3050 2300
+Wire Wire Line
+	3050 2300 3050 2850
+Connection ~ 3050 3050
+Wire Wire Line
+	3050 3050 3050 3800
+Wire Wire Line
+	3050 3800 2900 3800
+$Comp
+L Device:C C?
+U 1 1 6465754F
+P 3250 2850
+F 0 "C?" V 3000 2850 50  0000 C CNN
+F 1 "1.5n" V 3100 2850 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 3288 2700 50  0001 C CNN
+F 3 "~" H 3250 2850 50  0001 C CNN
+	1    3250 2850
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3050 2850 3100 2850
+Connection ~ 3050 2850
+Wire Wire Line
+	3050 2850 3050 3050
+Wire Wire Line
+	2950 4250 4150 4250
+Connection ~ 2950 4250
+Connection ~ 4150 4250
 $EndSCHEMATC

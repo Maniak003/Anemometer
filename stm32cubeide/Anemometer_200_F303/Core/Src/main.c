@@ -48,6 +48,7 @@ I2C_HandleTypeDef hi2c1;
 SPI_HandleTypeDef hspi2;
 
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
@@ -70,14 +71,16 @@ static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+#ifdef X9CXXX
+/* Управление усилением от 0 до 99 */
 void levelUp(uint8_t channel, uint8_t lev, bool updn) {
-	//LED_PULSE
 	/* Начальный уровень -- высокий, переключение выполняется переходом в низкий уровень */
 	HAL_GPIO_WritePin(INC_GPIO_Port, INC_Pin, GPIO_PIN_SET);
 	/* Отключим выбор всех регуляторов */
@@ -118,6 +121,17 @@ void levelUp(uint8_t channel, uint8_t lev, bool updn) {
 	}
 	HAL_GPIO_WritePin(INC_GPIO_Port, INC_Pin, GPIO_PIN_RESET);
 }
+#endif
+
+#ifdef  AD5245
+/* Управление усилением от 0 до 254 */
+void AD5245level(uint8_t lev) {
+	uint8_t cmdBuff[2];
+	uint16_t cmd = AD5245_WRITE;
+	cmdBuff[0] = lev;
+	HAL_I2C_Mem_Write(&AD5245_I2C_PORT, AD5245_I2C_ADDR, cmd, 2, cmdBuff, 1, 100);
+}
+#endif
 /* USER CODE END 0 */
 
 /**
@@ -157,6 +171,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM4_Init();
   MX_TIM3_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -164,17 +179,17 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_UART_Transmit(&huart1, (uint8_t *) START_TEXT, sizeof(START_TEXT), 1000);
+  mesCount = 0;
   TIM3->ARR = MEASURMENT_DALAY;
   for (int iii = 0; iii < CONVERSION_COUNT; iii++) {
 	  adcBuffer[iii] = 0;
+	  measArray[iii] = 0;
   }
-  for (int iii = 0; iii <  REF_COUNT; iii++) {
-	  refArray[iii] = 1;
-  }
-  HAL_GPIO_WritePin(Z1Sel_GPIO_Port, Z1Sel_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(Z2Sel_GPIO_Port, Z2Sel_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(Z3Sel_GPIO_Port, Z3Sel_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(Z4Sel_GPIO_Port, Z4Sel_Pin, GPIO_PIN_SET);
+
+  HAL_GPIO_WritePin(Z1Sel_GPIO_Port, Z1Sel_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(Z2Sel_GPIO_Port, Z2Sel_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(Z3Sel_GPIO_Port, Z3Sel_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(Z4Sel_GPIO_Port, Z4Sel_Pin, GPIO_PIN_RESET);
 
   if ( (HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED) == HAL_OK)
 	&& (HAL_TIM_Base_Start_IT(&htim3) == HAL_OK)
@@ -186,6 +201,28 @@ int main(void)
 	  HAL_NVIC_SystemReset();
   }
 
+  /* Test AD5245 */
+	#ifdef AD5245
+	  currLevel = 0;
+	  AD5245level(currLevel);
+	#endif
+	float refArray[REF_COUNT] =
+		  {0,
+				  0.024940115377001, 0.023113682692083, -0.058692540699334, -0.082413572329222, 0.04994446007481, 0.151097183484819,
+				  0.011857313249657, -0.19457324950131, -0.116467834639308, 0.182395225570548, 0.234510870909306, -0.099529677089403,
+				  -0.325528561718029, -0.04656427235944, 0.350240157478877, 0.225442751517371, -0.283506728081232, -0.390322020587195,
+				  0.124139023343125,  0.490345040278936, 0.101579928455507, -0.485248167644647, -0.344134219436913, 0.358347219637693,
+				  0.542118657967222, -0.124015081961355, -0.637989029383821, -0.172846069129167, 0.594142668847654, 0.465756068260174,
+				  -0.404935582866565, -0.682165503509208, 0.101109367746524, 0.761779067335848, 0.255041008898336, -0.673001332033438,
+				  -0.583044060519319, 0.423076454132054, 0.803168062039158, -0.058940061067023, -0.856283835221426, -0.341913068387006,
+				  0.719636608628878, 0.688692404366182, -0.414338694802462, -0.898697192386077, 0.002352951496961, 0.917623294861784,
+				  0.426673502316914, -0.733694746038096, -0.775796626323933, 0.381927011809585, 0.963565176407946, 0.062799671839105,
+				  -0.94367915357791, -0.502425013911576, 0.716645777215278, 0.838276107583445, -0.330454887767279, -0.994130791146298,
+				  -0.130042480163827, 0.934202282457201, 0.562599809787346, -0.671665486251862, -0.871250762897122, 0.265632923951046,
+				  0.988515113582995,  0.192699436740623, -0.890810878923651, -0.601380536804481, 0.603416831485098, 0.871349053651563,
+				  -0.193891788043916, -0.946715111727284,-0.244329164753993, 0.816879698983995, 0.614078438035415, -0.517744332086406,
+				  -0.836928613790043,
+};
   while (1)
   {
 	  /*
@@ -206,8 +243,36 @@ int main(void)
 			  adcBuffer[i] = 0;
 		  }
 		  */
+		  //HAL_UART_Transmit(&huart1, (uint8_t *) "---", sizeof("---"), 1000);
+		  for (int ii = 0; ii < CONVERSION_COUNT; ii++) {
+			  measArray[ii] = measArray[ii] / MEASURE_COUNT;
+		  }
+			maxLev = 0;
+			maxIndex = 0;
+			maxAmp = 0;
+			maxIdxAmp = 0;
+			  memset(SndBuffer, 0, sizeof(SndBuffer));
+			for (int ii = 0; ii < CONVERSION_COUNT - REF_COUNT; ii++) {
+				curLev = 0;
+				for (int jj = 0; jj < REF_COUNT; jj++ ) {
+					curLev = curLev + measArray[ii + jj] * refArray[jj];
+				}
+				if (curLev > maxLev) {
+					maxLev = curLev;
+					maxIndex = ii;
+				}
+				if (maxAmp < measArray[ii]) {
+					maxAmp = measArray[ii];
+					maxIdxAmp = ii;
+				}
+				//sprintf(SndBuffer, "%6.4f\n\r", measArray[ii]);
+				//HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			}
+		  //HAL_UART_Transmit(&huart1, (uint8_t *) "---", sizeof("---"), 1000);
 		  memset(SndBuffer, 0, sizeof(SndBuffer));
-		  sprintf(SndBuffer, "Idx:%4.1u, Lev: %6.0f  \r", maxIndex, maxLev);
+		  //float vSound =
+		  sprintf(SndBuffer, "Idx:%4.1u, maxLev: %6.2f, avgLev:%6.2f, CAP: %lu, V: %5.2f  \r",
+				  maxIndex, maxLev, avgLevel, finishCapture, 204000 / ((double) 1/72 * (MEASURMENT_DALAY + finishCapture + TIM1->ARR * TIM1->RCR)));
 	  	  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 	  	  readyData = false;
 	  }
@@ -513,6 +578,71 @@ static void MX_TIM1_Init(void)
 }
 
 /**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_SlaveConfigTypeDef sSlaveConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_IC_InitTypeDef sConfigIC = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 0;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 4294967295;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_RESET;
+  sSlaveConfig.InputTrigger = TIM_TS_ITR2;
+  if (HAL_TIM_SlaveConfigSynchro(&htim2, &sSlaveConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_FALLING;
+  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
+  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
+  sConfigIC.ICFilter = 0;
+  if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
   * @brief TIM3 Initialization Function
   * @param None
   * @retval None
@@ -527,6 +657,7 @@ static void MX_TIM3_Init(void)
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_SlaveConfigTypeDef sSlaveConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM3_Init 1 */
 
@@ -546,6 +677,10 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_TIM_OnePulse_Init(&htim3, TIM_OPMODE_SINGLE) != HAL_OK)
   {
     Error_Handler();
@@ -559,6 +694,14 @@ static void MX_TIM3_Init(void)
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_ACTIVE;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -750,7 +893,17 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
+	if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)) {
+		captureTIM2 = HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1);
+		if (readyCapture && (captureTIM2 > (maxIndex * 18) + 5000) ) {
+			LED_PULSE
+			HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1);
+			readyCapture = false;
+			finishCapture = captureTIM2;
+		}
+	}
+}
 /* USER CODE END 4 */
 
 /**

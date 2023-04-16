@@ -57,6 +57,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
+extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 /* USER CODE BEGIN EV */
@@ -208,13 +209,14 @@ void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
 	if ( (haftConf--) == 0) { // Половина преобразования
-			LED_PULSE
+			//LED_PULSE
 		HAL_ADC_Stop_DMA(&hadc1);
 		if (ajustCount++ > AJUST_DELAY) {
 			/* Автоматическая регулировка уровня сигнала */
 			ajustCount = 0;
-			maxLevel = 0, minLevel = 4096;
+			maxLevel = 0, minLevel = 4096, avgLevel = 0;;
 			for (int ii = 0; ii < CONVERSION_COUNT; ii++) {
+				avgLevel = avgLevel + adcBuffer[ii];
 				if (maxLevel < adcBuffer[ii]) {
 					maxLevel = adcBuffer[ii];
 				}
@@ -222,34 +224,40 @@ void DMA1_Channel1_IRQHandler(void)
 					minLevel = adcBuffer[ii];
 				}
 			}
-
-			if (abs(minLevel - AVG_LEVEL) > abs(maxLevel - AVG_LEVEL)) {
-				maxLevel = abs(minLevel - AVG_LEVEL);
+			avgLevel = avgLevel / CONVERSION_COUNT;
+			if (abs(minLevel - avgLevel) > abs(maxLevel - avgLevel)) {
+				maxLevel = abs(minLevel - avgLevel);
 			} else {
-				maxLevel = abs(maxLevel - AVG_LEVEL);
+				maxLevel = abs(maxLevel - avgLevel);
 			}
 			if (abs(maxLevel - NOMINAL_LEVEL) > ACURACY_LEVEL) {
 				if (maxLevel - NOMINAL_LEVEL > 0) {
 					/* Сигнал сильный, понижаем уровень */
+					#ifdef X9CXXX
 					levelUp(0, 1, DOWN);
+					#endif
+					#ifdef AD5245
+					AD5245level(currLevel--);
+					#endif
 				} else {
 					/* Сигнал слабый, повышаем уровень */
+					#ifdef X9CXXX
 					levelUp(0, 1, UP);
+					#endif
+					#ifdef AD5245
+					AD5245level(currLevel++);
+					#endif
 				}
 			} else {  /* Можно выполнять свертку */
-				maxLev = 1;
-				maxIndex = 0;
-				for (int ii = 0; ii < CONVERSION_COUNT - REF_COUNT; ii++) {
-					curLev = 0;
-					for (int jj = 0; jj < REF_COUNT; jj++ ) {
-						curLev = curLev + (double) (adcBuffer[ii + jj] * refArray[jj]);
+				if (mesCount < MEASURE_COUNT) {
+					for (int ii = 0; ii < CONVERSION_COUNT; ii++) {
+						measArray[ii] = measArray[ii] + adcBuffer[ii];
 					}
-					if (curLev > maxLev) {
-						maxLev = curLev;
-						maxIndex = ii;
-					}
+					mesCount++;
+				} else {
+					mesCount = 0;
+					readyData = true;
 				}
-				readyData = true;
 			}
 		}
 	}
@@ -258,6 +266,19 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
 
   /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM2 global interrupt.
+  */
+void TIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+  /* USER CODE END TIM2_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim2);
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+
+  /* USER CODE END TIM2_IRQn 1 */
 }
 
 /**
@@ -282,9 +303,14 @@ void TIM4_IRQHandler(void)
   /* USER CODE BEGIN TIM4_IRQn 0 */
 	HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
 	HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
-	HAL_GPIO_WritePin(Z1Sel_GPIO_Port, Z1Sel_Pin, GPIO_PIN_RESET);
+	HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
+	HAL_GPIO_WritePin(Z1Sel_GPIO_Port, Z1Sel_Pin, GPIO_PIN_SET);
 	haftConf = 1;
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adcBuffer, CONVERSION_COUNT);
+	readyCapture = true;
+	if (! readyData) {
+		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adcBuffer, CONVERSION_COUNT);
+	}
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
