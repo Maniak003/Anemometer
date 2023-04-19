@@ -42,7 +42,11 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+uint16_t adcBuffer[CONVERSION_COUNT];
+uint16_t haftConf, mesCount, maxIndex, ajustCount, maxLevel, minLevel;
+float measArray[CONVERSION_COUNT];
+bool readyData, readyCapture;
+double avgLevel, maxLev, maxAmp, maxIdxAmp, curLev;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -237,7 +241,7 @@ void DMA1_Channel1_IRQHandler(void)
 					levelUp(0, 1, DOWN);
 					#endif
 					#ifdef AD5245
-					AD5245level(currLevel--);
+					AD5245level(currentLevel--);
 					#endif
 				} else {
 					/* Сигнал слабый, повышаем уровень */
@@ -245,7 +249,7 @@ void DMA1_Channel1_IRQHandler(void)
 					levelUp(0, 1, UP);
 					#endif
 					#ifdef AD5245
-					AD5245level(currLevel++);
+					AD5245level(currentLevel++);
 					#endif
 				}
 			} else {  /* Можно выполнять свертку */
@@ -321,4 +325,3 @@ void TIM4_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

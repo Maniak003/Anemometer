@@ -46,23 +46,23 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-bool readyData, readyCapture ;
-#define CONVERSION_COUNT 200
-#define REF_COUNT 80
-#define MEASURE_COUNT 20
-ADC_HandleTypeDef hadc1;
-TIM_HandleTypeDef htim1;
-uint16_t adcBuffer[CONVERSION_COUNT];
-uint16_t maxLevel, minLevel, ajustCount, haftConf, maxIndex, mesCount;
-uint32_t captureTIM2, finishCapture;
-float measArray[CONVERSION_COUNT];
-char SndBuffer[200];
-double maxLev, curLev, avgLevel, maxAmp, maxIdxAmp;
+extern bool readyData, readyCapture ;
+#define CONVERSION_COUNT 400
+#define REF_COUNT 100
+#define MEASURE_COUNT 100
+extern ADC_HandleTypeDef hadc1;
+extern TIM_HandleTypeDef htim1;
+extern uint16_t adcBuffer[CONVERSION_COUNT];
+extern uint16_t maxLevel, minLevel, ajustCount, haftConf, maxIndex, mesCount;
+extern uint32_t captureTIM2, finishCapture;
+extern float measArray[CONVERSION_COUNT];
+extern char SndBuffer[200];
+extern double maxLev, curLev, avgLevel, maxAmp, maxIdxAmp;
 void ADC_complite(DMA_HandleTypeDef * hdma);
 #define SHOW_DATA 100
-#define START_TEXT "\n\rAnemometr200 start\n\r"
-#define FINISH_TEXT "Finish.\n\r"
-#define ERROR_TEXT "Error, system reset start\n\r"
+#define START_TEXT "\n\rAnemometr200 init\n\r"
+#define FINISH_TEXT "Init finish.\n\r"
+#define ERROR_TEXT "Error, system reset\n\r"
 #define AD5245 /* Автоматическая регулировка уровня от 0 до 254 */
 #ifdef AD5245
 	void AD5245level(uint8_t lev);
@@ -72,7 +72,10 @@ void ADC_complite(DMA_HandleTypeDef * hdma);
 	#define AD5245_RESET    0x40
 	#define AD5245_SHUTDOWN 0x20
 	#define AD5245_I2C_PORT hi2c1
-	uint8_t currLevel;
+	#ifndef MY_DEFINES
+	#define MY_DEFINES 1
+	extern uint8_t currentLevel;
+	#endif
 #endif
 //#define X9CXXX
 #ifdef X9CXXX
@@ -84,7 +87,8 @@ void ADC_complite(DMA_HandleTypeDef * hdma);
 #define ACURACY_LEVEL 100
 #define NOMINAL_LEVEL 1800
 #define MEASURMENT_DALAY 35000
-//
+//#define RAW_DATA_OUT
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -102,18 +106,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define CS1_Pin GPIO_PIN_13
-#define CS1_GPIO_Port GPIOC
-#define CS2_Pin GPIO_PIN_14
-#define CS2_GPIO_Port GPIOC
-#define CS3_Pin GPIO_PIN_15
-#define CS3_GPIO_Port GPIOC
 #define AnIn1_Pin GPIO_PIN_0
 #define AnIn1_GPIO_Port GPIOA
-#define INC_Pin GPIO_PIN_4
-#define INC_GPIO_Port GPIOA
-#define UD_Pin GPIO_PIN_5
-#define UD_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_6
 #define LED_GPIO_Port GPIOA
 #define Z1Sel_Pin GPIO_PIN_0
@@ -134,8 +128,11 @@ void Error_Handler(void);
 #define Z3_GPIO_Port GPIOA
 #define Z4_Pin GPIO_PIN_11
 #define Z4_GPIO_Port GPIOA
+#define Zero_Pin GPIO_PIN_15
+#define Zero_GPIO_Port GPIOA
 #define CS4_Pin GPIO_PIN_5
 #define CS4_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 #define LED_PULSE HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET); HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 /* USER CODE END Private defines */
@@ -145,5 +142,3 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

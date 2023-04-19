@@ -32,6 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+uint8_t currentLevel = 0;
+char SndBuffer[200];
+uint32_t finishCapture, captureTIM2;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -203,26 +206,20 @@ int main(void)
 
   /* Test AD5245 */
 	#ifdef AD5245
-	  currLevel = 0;
-	  AD5245level(currLevel);
+  currentLevel = 0;
+	  AD5245level(currentLevel);
 	#endif
 	float refArray[REF_COUNT] =
-		  {0,
-				  0.024940115377001, 0.023113682692083, -0.058692540699334, -0.082413572329222, 0.04994446007481, 0.151097183484819,
-				  0.011857313249657, -0.19457324950131, -0.116467834639308, 0.182395225570548, 0.234510870909306, -0.099529677089403,
-				  -0.325528561718029, -0.04656427235944, 0.350240157478877, 0.225442751517371, -0.283506728081232, -0.390322020587195,
-				  0.124139023343125,  0.490345040278936, 0.101579928455507, -0.485248167644647, -0.344134219436913, 0.358347219637693,
-				  0.542118657967222, -0.124015081961355, -0.637989029383821, -0.172846069129167, 0.594142668847654, 0.465756068260174,
-				  -0.404935582866565, -0.682165503509208, 0.101109367746524, 0.761779067335848, 0.255041008898336, -0.673001332033438,
-				  -0.583044060519319, 0.423076454132054, 0.803168062039158, -0.058940061067023, -0.856283835221426, -0.341913068387006,
-				  0.719636608628878, 0.688692404366182, -0.414338694802462, -0.898697192386077, 0.002352951496961, 0.917623294861784,
-				  0.426673502316914, -0.733694746038096, -0.775796626323933, 0.381927011809585, 0.963565176407946, 0.062799671839105,
-				  -0.94367915357791, -0.502425013911576, 0.716645777215278, 0.838276107583445, -0.330454887767279, -0.994130791146298,
-				  -0.130042480163827, 0.934202282457201, 0.562599809787346, -0.671665486251862, -0.871250762897122, 0.265632923951046,
-				  0.988515113582995,  0.192699436740623, -0.890810878923651, -0.601380536804481, 0.603416831485098, 0.871349053651563,
-				  -0.193891788043916, -0.946715111727284,-0.244329164753993, 0.816879698983995, 0.614078438035415, -0.517744332086406,
-				  -0.836928613790043,
-};
+	{
+			1122.97, 1031.38, 599.13, -40.72, -699.43, -1138.74, -1223.18, -899.77, -281.71, 454.87, 1085.83, 1373.47, 1222.8, 673.01,
+			-84.56, -867.29, -1357.49, -1416.9, -1007.57, -291.46, 584.14, 1286.34, 1579.3, 1363.37, 711.94, -217.14, -1012.41, -1528.57,
+			-1548.05, -1060.15, -239.89, 711.1, 1447.19, 1710.93, 1419.82, 673.13, -272.26, -1175.91, -1684, -1638.54, -1066.84, -152.26,
+			846.65, 1582.45, 1788.48, 1402.37, 566.62, -440.04, -1346.52, -1795.53, -1648.72, -976.28, 11.56, 1031.21, 1709.1, 1805.62,
+			1302.23, 379.69, -659.57, -1491.82, -1822.64, -1541.61, -772.99, 251.66, 1214.67, 1758.8, 1698.31, 1072.94, 104.21, -887.92,
+			-1574.22, -1737.93, -1318.85, -458.2, 508.22, 1334.22, 1689.41, 1462.39, 755.91, -178.97, -1035.17, -1523.92, -1492.66, -973.56,
+			-160.39, 713.11, 1325.14, 1472.77, 1122.73, 421.84, -380.02, -1039.83, -1317.47, -1153.01, -623.86, 80.94, 750.52, 1144.58,
+			1139.43, 767.25
+	};
   while (1)
   {
 	  /*
@@ -243,10 +240,21 @@ int main(void)
 			  adcBuffer[i] = 0;
 		  }
 		  */
-		  //HAL_UART_Transmit(&huart1, (uint8_t *) "---", sizeof("---"), 1000);
+		  memset(SndBuffer, 0, sizeof(SndBuffer));
+		#ifdef RAW_DATA_OUT
+		  HAL_UART_Transmit(&huart1, (uint8_t *) "---\n\r", sizeof("---\n\r"), 1000);
+		#endif
 		  for (int ii = 0; ii < CONVERSION_COUNT; ii++) {
-			  measArray[ii] = measArray[ii] / MEASURE_COUNT;
+			measArray[ii] = measArray[ii] / MEASURE_COUNT - avgLevel;
+			#ifdef RAW_DATA_OUT
+			sprintf(SndBuffer, "%6.2f\n\r", measArray[ii]);
+			HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+			#endif
 		  }
+		#ifdef RAW_DATA_OUT
+		  HAL_UART_Transmit(&huart1, (uint8_t *) "---\n\r", sizeof("---\n\r"), 1000);
+		#endif
+		#ifndef RAW_DATA_OUT
 			maxLev = 0;
 			maxIndex = 0;
 			maxAmp = 0;
@@ -257,23 +265,23 @@ int main(void)
 				for (int jj = 0; jj < REF_COUNT; jj++ ) {
 					curLev = curLev + measArray[ii + jj] * refArray[jj];
 				}
-				if (curLev > maxLev) {
-					maxLev = curLev;
+				if (maxLev < abs(curLev)) {
+					maxLev = abs(curLev);
 					maxIndex = ii;
 				}
-				if (maxAmp < measArray[ii]) {
-					maxAmp = measArray[ii];
+				if (maxAmp < abs(measArray[ii])) {
+					maxAmp = abs(measArray[ii]);
 					maxIdxAmp = ii;
 				}
-				//sprintf(SndBuffer, "%6.4f\n\r", measArray[ii]);
-				//HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 			}
-		  //HAL_UART_Transmit(&huart1, (uint8_t *) "---", sizeof("---"), 1000);
-		  memset(SndBuffer, 0, sizeof(SndBuffer));
 		  //float vSound =
 		  sprintf(SndBuffer, "Idx:%4.1u, maxLev: %6.2f, avgLev:%6.2f, CAP: %lu, V: %5.2f  \r",
 				  maxIndex, maxLev, avgLevel, finishCapture, 204000 / ((double) 1/72 * (MEASURMENT_DALAY + finishCapture + TIM1->ARR * TIM1->RCR)));
 	  	  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
+		#endif
+		  for (int ii = 0; ii < CONVERSION_COUNT; ii++) {
+			  measArray[ii] = 0;
+		  }
 	  	  readyData = false;
 	  }
 	  //HAL_Delay(100);
@@ -315,6 +323,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -360,6 +369,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 1 */
 
   /* USER CODE END ADC1_Init 1 */
+
   /** Common config
   */
   hadc1.Instance = ADC1;
@@ -380,6 +390,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure the ADC multi-mode
   */
   multimode.Mode = ADC_MODE_INDEPENDENT;
@@ -387,12 +398,13 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.SamplingTime = ADC_SAMPLETIME_61CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_19CYCLES_5;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -433,12 +445,14 @@ static void MX_I2C1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Analogue filter
   */
   if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
   {
     Error_Handler();
   }
+
   /** Configure Digital filter
   */
   if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
@@ -850,36 +864,27 @@ static void MX_DMA_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, CS1_Pin|CS2_Pin|CS3_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, INC_Pin|UD_Pin|LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, Z1Sel_Pin|Z2Sel_Pin|Z3Sel_Pin|Z4Sel_Pin
                           |EthRst_Pin|CS4_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : CS1_Pin CS2_Pin CS3_Pin */
-  GPIO_InitStruct.Pin = CS1_Pin|CS2_Pin|CS3_Pin;
+  /*Configure GPIO pin : LED_Pin */
+  GPIO_InitStruct.Pin = LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : INC_Pin UD_Pin LED_Pin */
-  GPIO_InitStruct.Pin = INC_Pin|UD_Pin|LED_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Z1Sel_Pin Z2Sel_Pin Z3Sel_Pin Z4Sel_Pin
                            EthRst_Pin CS4_Pin */
@@ -890,6 +895,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -937,5 +944,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

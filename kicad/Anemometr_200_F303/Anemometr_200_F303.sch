@@ -265,17 +265,6 @@ F 3 "~" H 7150 3300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x01_Female J9
-U 1 1 6434AF51
-P 7150 3800
-F 0 "J9" H 7178 3826 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 7178 3735 50  0001 L CNN
-F 2 "My-library:mini_conn" H 7150 3800 50  0001 C CNN
-F 3 "~" H 7150 3800 50  0001 C CNN
-	1    7150 3800
-	1    0    0    -1  
-$EndComp
-$Comp
 L Connector:Conn_01x01_Female J15
 U 1 1 6434D795
 P 7150 4200
@@ -406,39 +395,6 @@ F 2 "My-library:mini_conn" H 4850 3700 50  0001 C CNN
 F 3 "~" H 4850 3700 50  0001 C CNN
 	1    4850 3700
 	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x01_Female J5
-U 1 1 64351949
-P 7150 3400
-F 0 "J5" H 7178 3426 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 7178 3335 50  0001 L CNN
-F 2 "My-library:mini_conn" H 7150 3400 50  0001 C CNN
-F 3 "~" H 7150 3400 50  0001 C CNN
-	1    7150 3400
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x01_Female J7
-U 1 1 64351E4D
-P 7150 3500
-F 0 "J7" H 7178 3526 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 7178 3435 50  0001 L CNN
-F 2 "My-library:mini_conn" H 7150 3500 50  0001 C CNN
-F 3 "~" H 7150 3500 50  0001 C CNN
-	1    7150 3500
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x01_Female J8
-U 1 1 64352335
-P 7150 3600
-F 0 "J8" H 7178 3626 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 7178 3535 50  0001 L CNN
-F 2 "My-library:mini_conn" H 7150 3600 50  0001 C CNN
-F 3 "~" H 7150 3600 50  0001 C CNN
-	1    7150 3600
-	1    0    0    -1  
 $EndComp
 $Comp
 L Connector:Conn_01x01_Female J2
@@ -596,20 +552,8 @@ Text Label 6750 4400 0    50   ~ 0
 Z4
 Wire Wire Line
 	6650 3300 6950 3300
-Wire Wire Line
-	6650 3400 6950 3400
-Wire Wire Line
-	6650 3500 6950 3500
-Wire Wire Line
-	6650 3600 6950 3600
 Text Label 6700 3300 0    50   ~ 0
 AnIn1
-Text Label 6700 3400 0    50   ~ 0
-AnIn2
-Text Label 6700 3500 0    50   ~ 0
-AnIn3
-Text Label 6700 3600 0    50   ~ 0
-AnIn4
 Text Label 5250 2200 0    50   ~ 0
 rst
 Wire Wire Line
@@ -670,7 +614,6 @@ Text Label 5050 4800 0    50   ~ 0
 MOSI
 NoConn ~ 6650 4000
 NoConn ~ 6650 4500
-NoConn ~ 6650 4800
 $Comp
 L Interface_USB:CH340C U3
 U 1 1 6432D493
@@ -792,7 +735,7 @@ L power:+3.3V #PWR0103
 U 1 1 643A8574
 P 3200 3400
 F 0 "#PWR0103" H 3200 3250 50  0001 C CNN
-F 1 "+3.3V" H 3215 3573 50  0000 C CNN
+F 1 "+3.3V" H 3000 3500 50  0000 C CNN
 F 2 "" H 3200 3400 50  0001 C CNN
 F 3 "" H 3200 3400 50  0001 C CNN
 	1    3200 3400
@@ -867,77 +810,6 @@ $EndComp
 Wire Wire Line
 	5250 2050 5250 2200
 Connection ~ 5250 2200
-Text Label 3550 3100 0    50   ~ 0
-+5v
-$Comp
-L Connector:Conn_01x01_Female J31
-U 1 1 6434537B
-P 7150 3700
-F 0 "J31" H 7178 3726 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 7178 3635 50  0001 L CNN
-F 2 "My-library:mini_conn" H 7150 3700 50  0001 C CNN
-F 3 "~" H 7150 3700 50  0001 C CNN
-	1    7150 3700
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6650 3700 6950 3700
-Wire Wire Line
-	6650 3800 6950 3800
-Text Label 6700 3700 0    50   ~ 0
-Inc
-Text Label 6700 3800 0    50   ~ 0
-U-D
-$Comp
-L Connector:Conn_01x01_Female J29
-U 1 1 6434E613
-P 4850 3000
-F 0 "J29" H 4878 3026 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 4878 2935 50  0001 L CNN
-F 2 "My-library:mini_conn" H 4850 3000 50  0001 C CNN
-F 3 "~" H 4850 3000 50  0001 C CNN
-	1    4850 3000
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x01_Female J30
-U 1 1 6434F47F
-P 4850 3100
-F 0 "J30" H 4878 3126 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 4878 3035 50  0001 L CNN
-F 2 "My-library:mini_conn" H 4850 3100 50  0001 C CNN
-F 3 "~" H 4850 3100 50  0001 C CNN
-	1    4850 3100
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x01_Female J28
-U 1 1 6434FB42
-P 4850 2900
-F 0 "J28" H 4878 2926 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 4878 2835 50  0001 L CNN
-F 2 "My-library:mini_conn" H 4850 2900 50  0001 C CNN
-F 3 "~" H 4850 2900 50  0001 C CNN
-	1    4850 2900
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x01_Female J32
-U 1 1 6435032D
-P 4850 3800
-F 0 "J32" H 4878 3826 50  0001 L CNN
-F 1 "Conn_01x01_Female" H 4878 3735 50  0001 L CNN
-F 2 "My-library:mini_conn" H 4850 3800 50  0001 C CNN
-F 3 "~" H 4850 3800 50  0001 C CNN
-	1    4850 3800
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	5050 3800 5350 3800
-Wire Wire Line
-	5050 3100 5350 3100
-Wire Wire Line
-	5050 3000 5350 3000
 Wire Wire Line
 	4500 2600 4500 2700
 Wire Wire Line
@@ -946,16 +818,6 @@ Wire Wire Line
 	4750 2700 5350 2700
 Wire Wire Line
 	4500 2600 5350 2600
-Wire Wire Line
-	5050 2900 5350 2900
-Text Label 5050 2900 0    50   ~ 0
-CS1
-Text Label 5050 3000 0    50   ~ 0
-CS2
-Text Label 5050 3100 0    50   ~ 0
-CS3
-Text Label 5050 3800 0    50   ~ 0
-CS4
 Wire Wire Line
 	4100 4100 4600 4100
 Wire Wire Line
@@ -966,14 +828,63 @@ Connection ~ 4200 4000
 Wire Wire Line
 	4200 4000 5350 4000
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0105
 U 1 1 643839DA
 P 4200 4650
-F 0 "#PWR?" H 4200 4400 50  0001 C CNN
+F 0 "#PWR0105" H 4200 4400 50  0001 C CNN
 F 1 "GND" H 4205 4477 50  0001 C CNN
 F 2 "" H 4200 4650 50  0001 C CNN
 F 3 "" H 4200 4650 50  0001 C CNN
 	1    4200 4650
 	1    0    0    -1  
 $EndComp
+$Comp
+L Connector:Conn_01x01_Female J5
+U 1 1 645D5C05
+P 7150 4800
+F 0 "J5" H 7178 4826 50  0001 L CNN
+F 1 "Conn_01x01_Female" H 7178 4735 50  0001 L CNN
+F 2 "My-library:mini_conn" H 7150 4800 50  0001 C CNN
+F 3 "~" H 7150 4800 50  0001 C CNN
+	1    7150 4800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6650 4800 6950 4800
+Text Label 6750 4800 0    50   ~ 0
+zero
+NoConn ~ 6650 3400
+NoConn ~ 6650 3500
+NoConn ~ 6650 3600
+NoConn ~ 6650 3700
+NoConn ~ 6650 3800
+NoConn ~ 5350 3800
+NoConn ~ 5350 3100
+NoConn ~ 5350 3000
+NoConn ~ 5350 2900
+$Comp
+L Device:C C9
+U 1 1 646343BB
+P 2250 3250
+F 0 "C9" H 2365 3296 50  0000 L CNN
+F 1 "C" H 2365 3205 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 2288 3100 50  0001 C CNN
+F 3 "~" H 2250 3250 50  0001 C CNN
+	1    2250 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR07
+U 1 1 64634CD1
+P 2250 3400
+F 0 "#PWR07" H 2250 3150 50  0001 C CNN
+F 1 "GND" H 2255 3227 50  0001 C CNN
+F 2 "" H 2250 3400 50  0001 C CNN
+F 3 "" H 2250 3400 50  0001 C CNN
+	1    2250 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2250 3100 2450 3100
+Connection ~ 2450 3100
 $EndSCHEMATC
