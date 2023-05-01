@@ -1,8 +1,12 @@
 clear, clc, close all;
-A = importdata('/home/ed/work/gitprojects/Anemometer/Documents/matLab/rawData1.txt');
-B = importdata('/home/ed/work/gitprojects/Anemometer/Documents/matLab/refData1.txt');
+A = importdata('rawData1.txt');
+B = importdata('refData1.txt');
 
 C = conv(A, B, 'same');
+subplot(2,2,1)
+plot(A), grid on, hold on
+subplot(2,2,2)
+plot(C), grid on
 N = length(C);
 X = fft(C);
 
@@ -22,8 +26,7 @@ for i= 1:length(z)
       break
    end
 end
-subplot(2,1,1)
-plot(A);
+
 subplot(2,1,2)
 plot(C), grid on, hold on
 plot(z), hold on

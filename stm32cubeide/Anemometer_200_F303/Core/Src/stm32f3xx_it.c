@@ -43,10 +43,10 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 uint16_t adcBuffer[CONVERSION_COUNT];
-uint16_t haftConf, mesCount, maxIndex, ajustCount, maxLevel, minLevel;
-float measArray[CONVERSION_COUNT];
+uint16_t haftConf, mesCount, ajustCount, maxLevel, minLevel;
+double measArray[CONVERSION_COUNT];
 bool readyData, readyCapture;
-double avgLevel, maxLev, maxAmp, maxIdxAmp, curLev;
+double avgLevel, maxLev, maxAmp, maxIdxAmp, curLev, maxIndex;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,7 +65,7 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 /* USER CODE BEGIN EV */
-
+extern UART_HandleTypeDef huart1;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -77,7 +77,7 @@ extern TIM_HandleTypeDef htim4;
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-
+	HAL_UART_Transmit(&huart1, (uint8_t *) "NMI\n\r", sizeof("NMI\n\r"), 1000);
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
   while (1)
@@ -92,7 +92,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+	HAL_UART_Transmit(&huart1, (uint8_t *) "HardFault\n\r", sizeof("HardFault\n\r"), 1000);
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -107,7 +107,7 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
-
+	HAL_UART_Transmit(&huart1, (uint8_t *) "MemManage\n\r", sizeof("MemManage\n\r"), 1000);
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
   {
@@ -122,7 +122,7 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
   /* USER CODE BEGIN BusFault_IRQn 0 */
-
+	HAL_UART_Transmit(&huart1, (uint8_t *) "BusFault\n\r", sizeof("BusFault\n\r"), 1000);
   /* USER CODE END BusFault_IRQn 0 */
   while (1)
   {
@@ -137,7 +137,7 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
-
+	HAL_UART_Transmit(&huart1, (uint8_t *) "UsageFault\n\r", sizeof("UsageFault\n\r"), 1000);
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
   {

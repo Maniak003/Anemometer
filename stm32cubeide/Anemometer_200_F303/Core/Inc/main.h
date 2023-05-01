@@ -37,6 +37,10 @@ extern "C" {
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
+#include "rtwtypes.h"
+#include "rt_nonfinite.h"
+#include "maxEnvHilbert.h"
+#include "maxEnvHilbert_terminate.h"
 //#include <math.h>
 /* USER CODE END Includes */
 
@@ -53,11 +57,11 @@ extern bool readyData, readyCapture ;
 extern ADC_HandleTypeDef hadc1;
 extern TIM_HandleTypeDef htim1;
 extern uint16_t adcBuffer[CONVERSION_COUNT];
-extern uint16_t maxLevel, minLevel, ajustCount, haftConf, maxIndex, mesCount;
+extern uint16_t maxLevel, minLevel, ajustCount, haftConf, mesCount;
 extern uint32_t captureTIM2, finishCapture;
-extern float measArray[CONVERSION_COUNT];
-extern char SndBuffer[200];
-extern double maxLev, curLev, avgLevel, maxAmp, maxIdxAmp;
+extern double measArray[CONVERSION_COUNT];
+extern char SndBuffer[100];
+extern double maxLev, curLev, avgLevel, maxAmp, maxIdxAmp, maxIndex;
 void ADC_complite(DMA_HandleTypeDef * hdma);
 #define SHOW_DATA 100
 #define START_TEXT "\n\rAnemometr200 init\n\r"
@@ -77,6 +81,7 @@ void ADC_complite(DMA_HandleTypeDef * hdma);
 	extern uint8_t currentLevel;
 	#endif
 #endif
+
 //#define X9CXXX
 #ifdef X9CXXX
 	void levelUp(uint8_t channel, uint8_t lev, bool updn);
@@ -86,8 +91,9 @@ void ADC_complite(DMA_HandleTypeDef * hdma);
 #endif
 #define ACURACY_LEVEL 100
 #define NOMINAL_LEVEL 1800
-#define MEASURMENT_DALAY 35000
+#define MEASURMENT_DALAY 40000
 //#define RAW_DATA_OUT
+
 
 /* USER CODE END EC */
 

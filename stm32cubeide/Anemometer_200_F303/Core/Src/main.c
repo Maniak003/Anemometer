@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "maxEnvHilbert.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,8 +33,17 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 uint8_t currentLevel = 0;
-char SndBuffer[200];
+char SndBuffer[100];
 uint32_t finishCapture, captureTIM2;
+//double b_dv[200];
+//double b_dv1[76];
+creal_T fv[512];
+creal_T fy[512];
+double z[200];
+creal_T x[200];
+creal_T b_x[200];
+creal_T ytmp[100];
+double test;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -135,6 +144,9 @@ void AD5245level(uint8_t lev) {
 	HAL_I2C_Mem_Write(&AD5245_I2C_PORT, AD5245_I2C_ADDR, cmd, 2, cmdBuff, 1, 100);
 }
 #endif
+
+
+
 /* USER CODE END 0 */
 
 /**
@@ -209,7 +221,7 @@ int main(void)
   currentLevel = 0;
 	  AD5245level(currentLevel);
 	#endif
-	float refArray[REF_COUNT] =
+	double refArray[REF_COUNT] =
 	{
 			1122.97, 1031.38, 599.13, -40.72, -699.43, -1138.74, -1223.18, -899.77, -281.71, 454.87, 1085.83, 1373.47, 1222.8, 673.01,
 			-84.56, -867.29, -1357.49, -1416.9, -1007.57, -291.46, 584.14, 1286.34, 1579.3, 1363.37, 711.94, -217.14, -1012.41, -1528.57,
@@ -222,24 +234,8 @@ int main(void)
 	};
   while (1)
   {
-	  /*
-	  sprintf(SndBuffer, "ADC: %u %u %u %u %u %u %u %u %u %u %u %u %u %u %u %u %u %u %u %u \r",
-			  adcBuffer[SHOW_DATA+0], adcBuffer[SHOW_DATA+1], adcBuffer[SHOW_DATA+2], adcBuffer[SHOW_DATA+3], adcBuffer[SHOW_DATA+4],
-			  adcBuffer[SHOW_DATA+5], adcBuffer[SHOW_DATA+6], adcBuffer[SHOW_DATA+7], adcBuffer[SHOW_DATA+8], adcBuffer[SHOW_DATA+9],
-			  adcBuffer[SHOW_DATA+10], adcBuffer[SHOW_DATA+11], adcBuffer[SHOW_DATA+12], adcBuffer[SHOW_DATA+13], adcBuffer[SHOW_DATA+14],
-			  adcBuffer[SHOW_DATA+15], adcBuffer[SHOW_DATA+16], adcBuffer[SHOW_DATA+17], adcBuffer[SHOW_DATA+18], adcBuffer[SHOW_DATA+19]);
-	*/
-
 	  if (readyData) {
-		  /*
-		  uint16_t cnt = 0;
-		  for (int i = 0; i < CONVERSION_COUNT; i++) {
-			  if (adcBuffer[i] == 0) {
-				  cnt++;
-			  }
-			  adcBuffer[i] = 0;
-		  }
-		  */
+		  HAL_TIM_Base_Stop_IT(&htim4);
 		  memset(SndBuffer, 0, sizeof(SndBuffer));
 		#ifdef RAW_DATA_OUT
 		  HAL_UART_Transmit(&huart1, (uint8_t *) "---\n\r", sizeof("---\n\r"), 1000);
@@ -259,30 +255,27 @@ int main(void)
 			maxIndex = 0;
 			maxAmp = 0;
 			maxIdxAmp = 0;
-			  memset(SndBuffer, 0, sizeof(SndBuffer));
-			for (int ii = 0; ii < CONVERSION_COUNT - REF_COUNT; ii++) {
-				curLev = 0;
-				for (int jj = 0; jj < REF_COUNT; jj++ ) {
-					curLev = curLev + measArray[ii + jj] * refArray[jj];
-				}
-				if (maxLev < abs(curLev)) {
-					maxLev = abs(curLev);
-					maxIndex = ii;
-				}
-				if (maxAmp < abs(measArray[ii])) {
-					maxAmp = abs(measArray[ii]);
-					maxIdxAmp = ii;
-				}
-			}
+		#ifdef FFTDEBUG
+			HAL_UART_Transmit(&huart1, (uint8_t *) "Start calculate maxEnv\n\r", sizeof("Start calculate maxEnv\n\r"), 1000);
+		#endif
+			//argInit_200x1_real_T(b_dv);
+			//argInit_76x1_real_T(b_dv1);
+			maxIdxAmp = maxEnvHilbert(measArray, refArray);
+			maxIndex = maxIdxAmp;
+			//maxEnvHilbert_terminate();
+		  memset(SndBuffer, 0, sizeof(SndBuffer));
 		  //float vSound =
-		  sprintf(SndBuffer, "Idx:%4.1u, maxLev: %6.2f, avgLev:%6.2f, CAP: %lu, V: %5.2f  \r",
-				  maxIndex, maxLev, avgLevel, finishCapture, 204000 / ((double) 1/72 * (MEASURMENT_DALAY + finishCapture + TIM1->ARR * TIM1->RCR)));
+		  sprintf(SndBuffer, "Idx:%4.1f, maxLev: %6.2f, avgLev:%6.2f, CAP: %lu, V: %5.2f, Vc:%5.2f  \r",
+				  maxIdxAmp, maxLev, avgLevel, finishCapture,
+				  204000 / ((double) 1/72 * (MEASURMENT_DALAY + finishCapture + TIM1->ARR * TIM1->RCR)),
+				  204000 / ((double) 1/72 * (MEASURMENT_DALAY + maxIdxAmp * 32.258)));
 	  	  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 		#endif
 		  for (int ii = 0; ii < CONVERSION_COUNT; ii++) {
 			  measArray[ii] = 0;
 		  }
 	  	  readyData = false;
+	  	HAL_TIM_Base_Start_IT(&htim4);
 	  }
 	  //HAL_Delay(100);
 	  /*
@@ -517,6 +510,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 0 */
 
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_OC_InitTypeDef sConfigOC = {0};
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
@@ -529,8 +523,17 @@ static void MX_TIM1_Init(void)
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 179;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 13;
+  htim1.Init.RepetitionCounter = 15;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_TIM_OC_Init(&htim1) != HAL_OK)
   {
     Error_Handler();
@@ -903,7 +906,7 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)) {
 		captureTIM2 = HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1);
-		if (readyCapture && (captureTIM2 > (maxIndex * 18) + 5000) ) {
+		if (readyCapture && (captureTIM2 > (maxIndex * 32.258) + 5000) ) {
 			LED_PULSE
 			HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1);
 			readyCapture = false;
@@ -920,6 +923,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+	HAL_UART_Transmit(&huart1, (uint8_t *) "Error handler\n\r", sizeof("Error handler\n\r"), 1000);
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
@@ -939,6 +943,7 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
+	HAL_UART_Transmit(&huart1, (uint8_t *) "Assert failed\n\r", sizeof("Assert failed\n\r"), 1000);
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
