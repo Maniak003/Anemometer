@@ -1,0 +1,9 @@
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:90:12:arm_mfcc_init_f32	0	static
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:207:1:arm_mfcc_init_32_f32	4	static
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:236:1:arm_mfcc_init_64_f32	4	static
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:265:1:arm_mfcc_init_128_f32	4	static
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:294:1:arm_mfcc_init_256_f32	4	static
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:323:1:arm_mfcc_init_512_f32	4	static
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:352:1:arm_mfcc_init_1024_f32	4	static
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:381:1:arm_mfcc_init_2048_f32	4	static
+../Drivers/CMSIS/Lib/arm_mfcc_init_f32.c:410:1:arm_mfcc_init_4096_f32	4	static
