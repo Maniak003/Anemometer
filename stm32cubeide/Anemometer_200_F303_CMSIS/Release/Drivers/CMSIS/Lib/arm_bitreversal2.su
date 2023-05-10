@@ -1,3 +1,0 @@
-../Drivers/CMSIS/Lib/arm_bitreversal2.c:41:6:arm_bitreversal_64	36	static
-../Drivers/CMSIS/Lib/arm_bitreversal2.c:76:6:arm_bitreversal_32	20	static
-../Drivers/CMSIS/Lib/arm_bitreversal2.c:111:6:arm_bitreversal_16	20	static

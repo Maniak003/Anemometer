@@ -1,9 +1,0 @@
-arm_mfcc_init_q15.c:89:12:arm_mfcc_init_q15	1
-arm_mfcc_init_q15.c:206:1:arm_mfcc_init_32_q15	1
-arm_mfcc_init_q15.c:235:1:arm_mfcc_init_64_q15	1
-arm_mfcc_init_q15.c:264:1:arm_mfcc_init_128_q15	1
-arm_mfcc_init_q15.c:293:1:arm_mfcc_init_256_q15	1
-arm_mfcc_init_q15.c:322:1:arm_mfcc_init_512_q15	1
-arm_mfcc_init_q15.c:351:1:arm_mfcc_init_1024_q15	1
-arm_mfcc_init_q15.c:380:1:arm_mfcc_init_2048_q15	1
-arm_mfcc_init_q15.c:409:1:arm_mfcc_init_4096_q15	1

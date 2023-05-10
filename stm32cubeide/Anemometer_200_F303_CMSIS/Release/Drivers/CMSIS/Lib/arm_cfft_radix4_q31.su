@@ -1,3 +1,0 @@
-../Drivers/CMSIS/Lib/arm_cfft_radix4_q31.c:155:6:arm_radix4_butterfly_q31	120	static
-../Drivers/CMSIS/Lib/arm_cfft_radix4_q31.c:527:6:arm_radix4_butterfly_inverse_q31	120	static
-../Drivers/CMSIS/Lib/arm_cfft_radix4_q31.c:85:6:arm_cfft_radix4_q31	24	static

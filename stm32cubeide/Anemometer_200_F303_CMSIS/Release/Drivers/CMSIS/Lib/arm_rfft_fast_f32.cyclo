@@ -1,3 +1,0 @@
-arm_rfft_fast_f32.c:310:6:stage_rfft_f32	2
-arm_rfft_fast_f32.c:399:6:merge_rfft_f32	2
-arm_rfft_fast_f32.c:597:6:arm_rfft_fast_f32	2
