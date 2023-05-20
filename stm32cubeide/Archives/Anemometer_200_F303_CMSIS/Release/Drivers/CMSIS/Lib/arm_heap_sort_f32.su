@@ -1,0 +1,2 @@
+../Drivers/CMSIS/Lib/arm_heap_sort_f32.c:34:13:arm_heapify	20	static
+../Drivers/CMSIS/Lib/arm_heap_sort_f32.c:84:6:arm_heap_sort_f32	24	static

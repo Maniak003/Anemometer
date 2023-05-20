@@ -1,0 +1,16 @@
+BME280.c:9:6:Error	4	static
+BME280.c:13:13:I2Cx_WriteData	40	static
+BME280.c:20:16:I2Cx_ReadData	40	static
+BME280.c:29:13:I2Cx_ReadData16	40	static
+BME280.c:36:13:I2Cx_ReadData24	40	static
+BME280.c:43:6:BME280_WriteReg	16	static
+BME280.c:48:9:BME280_ReadReg	24	static
+BME280.c:54:6:BME280_ReadReg_U16	16	static
+BME280.c:59:6:BME280_ReadReg_S16	16	static
+BME280.c:64:10:BME280_ReadReg_BE_S16	40	static
+BME280.c:75:6:BME280_ReadReg_U24	16	static
+BME280.c:81:10:BME280_ReadReg_BE_U24	40	static
+BME280.c:91:7:BME280_ReadTemperature	24	static
+BME280.c:110:7:BME280_ReadPressure	152	static
+BME280.c:135:7:BME280_ReadHumidity	40	static
+BME280.c:162:6:BME280_Init	24	static

@@ -1,0 +1,13 @@
+main.c:81:6:AD5245level	1
+main.c:103:5:main	7
+main.c:210:6:SystemClock_Config	3
+main.c:256:13:MX_ADC1_Init	4
+main.c:324:13:MX_I2C1_Init	4
+main.c:372:13:MX_TIM1_Init	11
+main.c:470:13:MX_TIM2_Init	7
+main.c:535:13:MX_TIM3_Init	8
+main.c:604:13:MX_TIM4_Init	4
+main.c:649:13:MX_USART1_UART_Init	5
+main.c:695:13:MX_DMA_Init	1
+main.c:714:13:MX_GPIO_Init	1
+main.c:758:6:Error_Handler	1

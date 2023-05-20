@@ -1,0 +1,5 @@
+main.c:81:6:AD5245level	1
+main.c:226:6:SystemClock_Config	3
+main.c:110:5:main	42
+main.c:769:6:HAL_TIM_IC_CaptureCallback	5
+main.c:787:6:Error_Handler	1

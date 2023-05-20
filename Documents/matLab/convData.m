@@ -1,6 +1,6 @@
 clear, clc, close all;
-A = importdata('rawData1.txt');
-B = importdata('refData1.txt');
+A = importdata('rawData2.txt');
+B = importdata('refData2.txt');
 
 C = conv(A, B, 'same');
 subplot(2,2,1)

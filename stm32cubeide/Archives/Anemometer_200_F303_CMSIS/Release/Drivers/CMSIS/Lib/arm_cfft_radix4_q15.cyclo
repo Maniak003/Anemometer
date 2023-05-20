@@ -1,0 +1,3 @@
+arm_cfft_radix4_q15.c:156:6:arm_radix4_butterfly_q15	6
+arm_cfft_radix4_q15.c:1026:6:arm_radix4_butterfly_inverse_q15	6
+arm_cfft_radix4_q15.c:86:6:arm_cfft_radix4_q15	3

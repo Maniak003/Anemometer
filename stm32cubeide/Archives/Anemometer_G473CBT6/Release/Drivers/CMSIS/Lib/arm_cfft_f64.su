@@ -1,0 +1,3 @@
+../Drivers/CMSIS/Lib/arm_cfft_f64.c:57:6:arm_radix4_butterfly_f64	200	static
+../Drivers/CMSIS/Lib/arm_cfft_f64.c:191:6:arm_cfft_radix4by2_f64	104	static
+../Drivers/CMSIS/Lib/arm_cfft_f64.c:256:6:arm_cfft_f64	48	static

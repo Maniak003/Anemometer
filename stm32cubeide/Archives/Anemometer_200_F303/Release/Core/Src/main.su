@@ -1,0 +1,5 @@
+../Core/Src/main.c:140:6:AD5245level	32	static
+../Core/Src/main.c:906:6:HAL_TIM_IC_CaptureCallback	24	static
+../Core/Src/main.c:923:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:299:6:SystemClock_Config	136	static
+../Core/Src/main.c:156:5:main	1168	static

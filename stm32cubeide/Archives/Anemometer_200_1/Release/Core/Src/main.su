@@ -1,0 +1,5 @@
+main.c:914:13:MX_I2C1_Init	8	static,ignoring_inline_asm
+main.c:87:6:rwFlash	56	static
+main.c:819:6:SystemClock_Config	88	static,ignoring_inline_asm
+main.c:430:5:main	288	static,ignoring_inline_asm
+main.c:1367:6:Error_Handler	0	static,ignoring_inline_asm

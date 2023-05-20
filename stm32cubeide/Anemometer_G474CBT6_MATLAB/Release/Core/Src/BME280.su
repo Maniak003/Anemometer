@@ -1,0 +1,12 @@
+../Core/Src/BME280.c:9:6:Error	0	static
+../Core/Src/BME280.c:43:6:BME280_WriteReg	32	static
+../Core/Src/BME280.c:48:9:BME280_ReadReg	32	static
+../Core/Src/BME280.c:54:6:BME280_ReadReg_U16	24	static
+../Core/Src/BME280.c:59:6:BME280_ReadReg_S16	0	static
+../Core/Src/BME280.c:64:10:BME280_ReadReg_BE_S16	32	static
+../Core/Src/BME280.c:75:6:BME280_ReadReg_U24	24	static
+../Core/Src/BME280.c:81:10:BME280_ReadReg_BE_U24	32	static
+../Core/Src/BME280.c:91:7:BME280_ReadTemperature	8	static
+../Core/Src/BME280.c:110:7:BME280_ReadPressure	24	static
+../Core/Src/BME280.c:135:7:BME280_ReadHumidity	8	static
+../Core/Src/BME280.c:162:6:BME280_Init	16	static
