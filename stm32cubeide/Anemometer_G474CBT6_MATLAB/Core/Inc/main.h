@@ -74,9 +74,14 @@ extern uint32_t maxIdxAmp, sumCaptureTIM2;
 #define ACURACY_LEVEL 50
 #define ADC_RESOLUTION 1024
 #define NOMINAL_LEVEL 450
-#define MEASURMENT_DALAY 40200
-#define SAMPLE_RATE 0.3056640625f
-#define HILBERT_CORRECTION 42.0f
+#define MEASURMENT_DELAY 40200
+#define DISTANCE 204
+/*
+  Расчет интервала АЦП преобразования в uS
+  1 / (timer clock / clock prescaler) * (sampling time + conversion time)
+*/
+#define SAMPLE_RATE 1.0f / (170.0f / 4.0f) * (2.5f + 10.5f)
+
 
 //#define RAW_DATA_OUT
 

@@ -145,7 +145,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  TIM3->ARR = MEASURMENT_DALAY;
+  TIM3->ARR = MEASURMENT_DELAY;
   HAL_UART_Transmit(&huart1, (uint8_t *) START_TEXT, sizeof(START_TEXT), 1000);
 
   HAL_GPIO_WritePin(selZ1_GPIO_Port, selZ1_Pin, GPIO_PIN_RESET);
@@ -197,11 +197,12 @@ int main(void)
 		  pressure = BME280_ReadPressure() * 0.00750063755419211f; //0.00750063755419211
 		  humidity = BME280_ReadHumidity();
 		  #endif
-		  maxIdx = 26500;
-		  Vcapture = 204000 / ((float) 1/170 * (MEASURMENT_DALAY * 2 + sumCaptureTIM2 / MEASURE_COUNT) - HILBERT_CORRECTION);
-		  Vhilbert = 204000 / ((float) 1/170 * MEASURMENT_DALAY * 2 + maxIdxAmp * SAMPLE_RATE - HILBERT_CORRECTION);
-		  Vsound = sqrt(1.4 * 8.31446262 * (temperature + 273) / (0.02898 - 184000000000 * exp(-5330 / (temperature + 273) ) * 10.944 / (pressure * 101325 / 760) / 100000 * humidity) );
-		  sprintf(SndBuffer, "Idx:%lu, avgLev:%6.2f, CAP: %lu, Vc: %5.2f, Vh:%5.2f, Vs: %5.2f, T: %4.1f, P: %4.0f, H: %4.1f  \r",
+		  float meas_delay = maxIdxAmp * SAMPLE_RATE - SAMPLE_RATE * REF_COUNT;
+		  maxIdx = meas_delay * 170;
+		  Vcapture = DISTANCE * 1000.0f / (1/170.0f * (MEASURMENT_DELAY * 2 + sumCaptureTIM2 / MEASURE_COUNT  - 1700));
+		  Vhilbert = DISTANCE * 1000.0f / (MEASURMENT_DELAY * 2 / 170.0f + meas_delay);
+		  Vsound = sqrt(1.4 * 8.31446262 * (temperature + 273) / (0.02898 - 184000000000 * exp(-5330 / (temperature + 273.15) ) * 10.944 / (pressure * 101325 / 760) / 100000 * humidity));
+		  sprintf(SndBuffer, "Idx:%lu, avgLev:%6.2f, CAP: %lu, Vc: %5.2f, Vh:%5.2f, Vs: %5.2f, T: %4.1f, P: %4.0f, H: %4.1f  \n\r",
 				  maxIdxAmp, avgLevel, sumCaptureTIM2 / MEASURE_COUNT,
 				  Vcapture, Vhilbert, Vsound,
 				  temperature, pressure, humidity);
