@@ -46,9 +46,7 @@ extern TIM_HandleTypeDef htim1;
 uint16_t adcBuffer[CONVERSION_COUNT];
 uint16_t haftConf, mesCount, ajustCount, maxLevel, minLevel;
 bool readyData, readyCapture, levelNominal;
-float maxAmp, curLev, avgLevel;
-float measArray[CONVERSION_COUNT];
-uint32_t maxIdxAmp;
+float maxAmp, curLev, avgLevel, measArray[CONVERSION_COUNT], maxIdxAmp;
 
 /* USER CODE END PV */
 
@@ -64,7 +62,6 @@ uint32_t maxIdxAmp;
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
-extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 /* USER CODE BEGIN EV */
@@ -276,20 +273,6 @@ void DMA1_Channel1_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles TIM2 global interrupt.
-  */
-void TIM2_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM2_IRQn 0 */
-
-  /* USER CODE END TIM2_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim2);
-  /* USER CODE BEGIN TIM2_IRQn 1 */
-
-  /* USER CODE END TIM2_IRQn 1 */
-}
-
-/**
   * @brief This function handles TIM3 global interrupt.
   */
 void TIM3_IRQHandler(void)
@@ -312,14 +295,14 @@ void TIM4_IRQHandler(void)
   /* USER CODE BEGIN TIM4_IRQn 0 */
 	HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
 	HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
-	HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1);
-	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
+	//HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1);
+	//HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
 	HAL_GPIO_WritePin(selZ1_GPIO_Port, selZ1_Pin, GPIO_PIN_SET);
 	haftConf = 1;
 	readyCapture = true;
 	LED_PULSE
 	if (! readyData) {
-		HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
+		//HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);
 		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adcBuffer, CONVERSION_COUNT);
 	}
 

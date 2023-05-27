@@ -46,7 +46,6 @@ DMA_HandleTypeDef hdma_adc1;
 I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim1;
-TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
@@ -54,9 +53,8 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 uint8_t currentLevel = 0;
-uint32_t finishCapture, maxIdx, captureTIM2, sumCaptureTIM2;
 char SndBuffer[150];
-float convArray[CONVERSION_COUNT + REF_COUNT], hilbertArray[CONVERSION_COUNT + REF_COUNT], temperature, pressure, humidity, Vsound, Vcapture, Vhilbert;
+float convArray[CONVERSION_COUNT + REF_COUNT], hilbertArray[CONVERSION_COUNT + REF_COUNT], temperature, pressurePA, pressure, humidity, Vsound, Vcapture, Vhilbert;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -67,7 +65,6 @@ static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
-static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
@@ -136,7 +133,6 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM1_Init();
   MX_USART1_UART_Init();
-  MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
@@ -181,7 +177,7 @@ int main(void)
 			measArray[ii] = measArray[ii] / MEASURE_COUNT - avgLevel;
 		  }
 
-		  maxIdxAmp = (uint32_t) maxEnvHilbert(measArray, refArray);
+		  maxIdxAmp = maxEnvHilbert(measArray, refArray);
 		  #ifdef RAW_DATA_OUT
 		  //for (int ii = 0; ii < CONVERSION_COUNT + REF_COUNT; ii++) {
 			//	sprintf(SndBuffer, "%6.2f \n\r", convArray[ii]);
@@ -194,22 +190,21 @@ int main(void)
 		  #else
 		  #ifdef BME280_ENABLE
 		  temperature = BME280_ReadTemperature();
-		  pressure = BME280_ReadPressure() * 0.00750063755419211f; //0.00750063755419211
+		  pressurePA = BME280_ReadPressure();
+		  pressure = pressurePA * 0.00750063755419211f;
 		  humidity = BME280_ReadHumidity();
 		  #endif
-		  float meas_delay = maxIdxAmp * SAMPLE_RATE - SAMPLE_RATE * REF_COUNT;
-		  maxIdx = meas_delay * 170;
-		  Vcapture = DISTANCE * 1000.0f / (1/170.0f * (MEASURMENT_DELAY * 2 + sumCaptureTIM2 / MEASURE_COUNT  - 1700));
-		  Vhilbert = DISTANCE * 1000.0f / (MEASURMENT_DELAY * 2 / 170.0f + meas_delay);
-		  Vsound = sqrt(1.4 * 8.31446262 * (temperature + 273) / (0.02898 - 184000000000 * exp(-5330 / (temperature + 273.15) ) * 10.944 / (pressure * 101325 / 760) / 100000 * humidity));
-		  sprintf(SndBuffer, "Idx:%lu, avgLev:%6.2f, CAP: %lu, Vc: %5.2f, Vh:%5.2f, Vs: %5.2f, T: %4.1f, P: %4.0f, H: %4.1f  \n\r",
-				  maxIdxAmp, avgLevel, sumCaptureTIM2 / MEASURE_COUNT,
-				  Vcapture, Vhilbert, Vsound,
+
+		  Vhilbert = DISTANCE * 1000.0f / (MEASURMENT_DELAY * 2 / 170.0f + maxIdxAmp * SAMPLE_RATE - SAMPLE_RATE * REF_COUNT);
+		  Vsound = sqrt(1.4 * 8.31446262 * (temperature + ABS_ZERRO) / (0.02898 - 1840000 * exp(-5330 / (temperature + ABS_ZERRO)) * 10.944 / pressurePA * humidity));
+		  sprintf(SndBuffer, "Idx:%5.2f, avgLev:%6.2f, Vh:%5.2f, Vs: %5.2f, T: %4.1f, P: %4.1f, H: %4.1f  \r",
+				  maxIdxAmp, avgLevel,
+				  Vhilbert, Vsound,
 				  temperature, pressure, humidity);
 		  HAL_UART_Transmit(&huart1, (uint8_t *) SndBuffer, sizeof(SndBuffer), 1000);
 		  #endif
 		  HAL_TIM_Base_Start_IT(&htim4);
-		  sumCaptureTIM2 = 0;
+		  //sumCaptureTIM2 = 0;
 		  readyData = false;
 	  }
 	  HAL_Delay(50);
@@ -482,71 +477,6 @@ static void MX_TIM1_Init(void)
 }
 
 /**
-  * @brief TIM2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM2_Init(void)
-{
-
-  /* USER CODE BEGIN TIM2_Init 0 */
-
-  /* USER CODE END TIM2_Init 0 */
-
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_SlaveConfigTypeDef sSlaveConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_IC_InitTypeDef sConfigIC = {0};
-
-  /* USER CODE BEGIN TIM2_Init 1 */
-
-  /* USER CODE END TIM2_Init 1 */
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4.294967295E9;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_IC_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_RESET;
-  sSlaveConfig.InputTrigger = TIM_TS_ITR2;
-  if (HAL_TIM_SlaveConfigSynchro(&htim2, &sSlaveConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_FALLING;
-  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
-  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 0;
-  if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM2_Init 2 */
-
-  /* USER CODE END TIM2_Init 2 */
-
-}
-
-/**
   * @brief TIM3 Initialization Function
   * @param None
   * @retval None
@@ -762,11 +692,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : capture_Pin */
+  GPIO_InitStruct.Pin = capture_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+  HAL_GPIO_Init(capture_GPIO_Port, &GPIO_InitStruct);
+
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+/*
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	if ((htim->Instance == TIM2) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
 		captureTIM2 = HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_2);
@@ -778,7 +717,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 		}
 	}
 }
-
+*/
 /* USER CODE END 4 */
 
 /**

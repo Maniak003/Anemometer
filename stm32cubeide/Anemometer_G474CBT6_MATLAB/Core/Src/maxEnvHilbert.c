@@ -2,19 +2,20 @@
  * File: maxEnvHilbert.c
  *
  * MATLAB Coder version            : 5.5
- * C/C++ source code generated on  : 20-May-2023 15:32:44
+ * C/C++ source code generated on  : 27-May-2023 12:28:36
  */
 
 /* Include Files */
 #include "maxEnvHilbert.h"
 #include "FFTImplementationCallback.h"
 #include "rt_nonfinite.h"
+#include "spline.h"
 #include "rt_nonfinite.h"
 #include <math.h>
 #include <string.h>
 
 /* Function Declarations */
-static double rt_hypotd_snf(float u0, float u1);
+static float rt_hypotd_snf(float u0, float u1);
 
 /* Function Definitions */
 /*
@@ -22,11 +23,11 @@ static double rt_hypotd_snf(float u0, float u1);
  *                double u1
  * Return Type  : double
  */
-static double rt_hypotd_snf(float u0, float u1)
+static float rt_hypotd_snf(float u0, float u1)
 {
-  float a;
-  float b;
-  float y;
+	float a;
+	float b;
+	float y;
   a = fabs(u0);
   b = fabs(u1);
   if (a < b) {
@@ -48,7 +49,7 @@ static double rt_hypotd_snf(float u0, float u1)
  *                const double B[140]
  * Return Type  : double
  */
-double maxEnvHilbert(const float A[1024], const float B[140])
+float maxEnvHilbert(const float A[1024], const float B[140])
 {
   static const float dv[513] = {1.0,
                                  0.99998117528260111,
@@ -1078,33 +1079,41 @@ double maxEnvHilbert(const float A[1024], const float B[140])
                                   0.0};
   creal_T b_x[1024];
   creal_T x[1024];
+  float y_data[1034];
   float z[1024];
+  float D[29];
+  float n[29];
   float m;
   float mx;
+  float mx2;
   float temp_im;
   float temp_re;
   float temp_re_tmp;
   float twid_re;
+  int y_size[2];
+  int b_k;
   int i;
-  int iDelta2;
+  int iheight;
   int iy;
   int j;
   int ju;
   int k;
   mx = 0.0;
+  mx2 = 0.0;
   m = 0.0;
+  k = 0;
   memset(&z[0], 0, 1024U * sizeof(float));
-  for (k = 0; k < 70; k++) {
-    iy = k + 953;
-    for (ju = 0; ju <= iy; ju++) {
-      z[ju] += B[k] * A[(ju - k) + 70];
+  for (b_k = 0; b_k < 70; b_k++) {
+    iheight = b_k + 953;
+    for (iy = 0; iy <= iheight; iy++) {
+      z[iy] += B[b_k] * A[(iy - b_k) + 70];
     }
   }
-  for (k = 0; k < 70; k++) {
-    iy = 1023 - k;
-    for (ju = 0; ju <= iy; ju++) {
-      iDelta2 = k + ju;
-      z[iDelta2] += B[k + 70] * A[ju];
+  for (b_k = 0; b_k < 70; b_k++) {
+    iheight = 1023 - b_k;
+    for (iy = 0; iy <= iheight; iy++) {
+      ju = b_k + iy;
+      z[ju] += B[b_k + 70] * A[iy];
     }
   }
   c_FFTImplementationCallback_doH(z, x);
@@ -1141,13 +1150,13 @@ double maxEnvHilbert(const float A[1024], const float B[140])
     x[i].im = twid_re + temp_re;
   }
   iy = 2;
-  iDelta2 = 4;
-  k = 256;
-  ju = 1021;
-  while (k > 0) {
+  ju = 4;
+  b_k = 256;
+  iheight = 1021;
+  while (b_k > 0) {
     int b_temp_re_tmp;
     int istart;
-    for (i = 0; i < ju; i += iDelta2) {
+    for (i = 0; i < iheight; i += ju) {
       b_temp_re_tmp = i + iy;
       temp_re = x[b_temp_re_tmp].re;
       temp_im = x[b_temp_re_tmp].im;
@@ -1157,13 +1166,13 @@ double maxEnvHilbert(const float A[1024], const float B[140])
       x[i].im += temp_im;
     }
     istart = 1;
-    for (j = k; j < 512; j += k) {
-    	float twid_im;
+    for (j = b_k; j < 512; j += b_k) {
+      double twid_im;
       int ihi;
       twid_re = dv[j];
       twid_im = dv1[j];
       i = istart;
-      ihi = istart + ju;
+      ihi = istart + iheight;
       while (i < ihi) {
         b_temp_re_tmp = i + iy;
         temp_re_tmp = x[b_temp_re_tmp].im;
@@ -1174,14 +1183,14 @@ double maxEnvHilbert(const float A[1024], const float B[140])
         x[b_temp_re_tmp].im = x[i].im - temp_im;
         x[i].re += temp_re;
         x[i].im += temp_im;
-        i += iDelta2;
+        i += ju;
       }
       istart++;
     }
-    k /= 2;
-    iy = iDelta2;
-    iDelta2 += iDelta2;
-    ju -= iy;
+    b_k /= 2;
+    iy = ju;
+    ju += ju;
+    iheight -= iy;
   }
   for (i = 0; i < 1024; i++) {
     temp_im = 0.0009765625 * x[i].re;
@@ -1189,12 +1198,38 @@ double maxEnvHilbert(const float A[1024], const float B[140])
     x[i].re = temp_im;
     x[i].im = temp_re;
     temp_im = rt_hypotd_snf(temp_im, temp_re);
+    z[i] = temp_im;
     if (temp_im > m) {
       m = temp_im;
       mx = (float)i + 1.0;
     }
   }
-  return mx;
+  n[28] = mx + 5.0;
+  n[0] = mx - 4.0;
+  iy = (int)(((float)mx + 5.0F) - ((float)mx - 4.0F));
+  temp_im = (float)iy / 28.0;
+  for (b_k = 0; b_k < 27; b_k++) {
+    n[b_k + 1] = (mx - 4.0) + ((float)b_k + 1.0) * temp_im;
+  }
+  if (mx + 5.0 < mx - 4.0) {
+    y_size[0] = 1;
+    y_size[1] = 0;
+  } else {
+    y_size[0] = 1;
+    y_size[1] = iy + 1;
+    for (iheight = 0; iheight <= iy; iheight++) {
+      y_data[iheight] = (mx - 4.0) + (float)iheight;
+    }
+  }
+  spline(y_data, y_size, &z[(int)mx + -5], n, D);
+  for (i = 0; i < 29; i++) {
+    temp_im = D[i];
+    if (temp_im > mx2) {
+      mx2 = temp_im;
+      k = i + 1;
+    }
+  }
+  return (mx - 4.0) + ((float)k - 1.0) / 3.0;
 }
 
 /*

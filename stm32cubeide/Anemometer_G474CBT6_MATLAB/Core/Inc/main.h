@@ -33,7 +33,6 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include <string.h>
 #include <stdbool.h>
-//#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "maxEnvHilbert.h"
@@ -50,12 +49,10 @@ extern "C" {
 #define MEASURE_COUNT 16
 #define REF_COUNT 140
 
-extern float refArray[];
+extern float refArray[], measArray[CONVERSION_COUNT], convArray[CONVERSION_COUNT + REF_COUNT], curLev, avgLevel, maxAmp, maxIdxAmp;
 extern bool readyData, readyCapture ;
 extern uint16_t adcBuffer[CONVERSION_COUNT], maxLevel, minLevel, ajustCount, haftConf, mesCount;
-extern float measArray[CONVERSION_COUNT], convArray[CONVERSION_COUNT + REF_COUNT];
-extern float curLev, avgLevel, maxAmp;
-extern uint32_t maxIdxAmp, sumCaptureTIM2;
+extern uint32_t sumCaptureTIM2;
 
 #define START_TEXT "\n\rAnemometr200 init\n\r"
 #define FINISH_TEXT "Init finish.\n\r"
@@ -75,7 +72,8 @@ extern uint32_t maxIdxAmp, sumCaptureTIM2;
 #define ADC_RESOLUTION 1024
 #define NOMINAL_LEVEL 450
 #define MEASURMENT_DELAY 40200
-#define DISTANCE 204
+#define DISTANCE 203.5f
+#define ABS_ZERRO 273.15f
 /*
   Расчет интервала АЦП преобразования в uS
   1 / (timer clock / clock prescaler) * (sampling time + conversion time)
