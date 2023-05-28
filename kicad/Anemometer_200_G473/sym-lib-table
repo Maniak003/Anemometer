@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name conn_01x08_shielded)(type Legacy)(uri ${KIPRJMOD}/conn_01x08_shielded.lib)(options "")(descr ""))
+  (lib (name conn_01x04_shielded)(type Legacy)(uri ${KIPRJMOD}/conn_01x04_shielded.lib)(options "")(descr ""))
 )

@@ -285,6 +285,31 @@ X v3 8 100 400 100 D 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
+# My_Library_Conn_01x04_Shielded
+#
+DEF My_Library_Conn_01x04_Shielded J 0 40 Y N 1 F N
+F0 "J" 10 190 50 H V C CNN
+F1 "My_Library_Conn_01x04_Shielded" 40 -290 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*_1x??-1SH*
+$ENDFPLIST
+DRAW
+S -50 150 50 -250 1 1 6 N
+S -40 -195 10 -205 1 1 6 N
+S -40 -95 10 -105 1 1 6 N
+S -40 5 10 -5 1 1 6 N
+S -40 105 10 95 1 1 6 N
+S -40 140 40 -240 1 1 10 f
+X Pin_1 1 -200 100 160 R 50 50 1 1 P
+X Pin_2 2 -200 0 160 R 50 50 1 1 P
+X Pin_3 3 -200 -100 160 R 50 50 1 1 P
+X Pin_4 4 -200 -200 160 R 50 50 1 1 P
+X Shield MP 0 -400 150 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # My_Library_Conn_01x08_Shielded
 #
 DEF My_Library_Conn_01x08_Shielded J 0 40 Y N 1 F N

@@ -127,8 +127,6 @@ void Error_Handler(void);
 #define Z4_GPIO_Port GPIOA
 #define SCL_Pin GPIO_PIN_15
 #define SCL_GPIO_Port GPIOA
-#define capture_Pin GPIO_PIN_3
-#define capture_GPIO_Port GPIOB
 #define TX_Pin GPIO_PIN_6
 #define TX_GPIO_Port GPIOB
 #define RX_Pin GPIO_PIN_7
