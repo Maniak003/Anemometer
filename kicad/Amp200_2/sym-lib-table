@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name Amp200-rescue)(type Legacy)(uri ${KIPRJMOD}/Amp200-rescue.lib)(options "")(descr ""))
+  (lib (name ad5245-my_library)(type Legacy)(uri /home/ed/work/Anemometer/kicad/Anemometer_200_G473/ad5245-my_library.lib)(options "")(descr ""))
 )

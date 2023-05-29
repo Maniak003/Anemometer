@@ -1952,7 +1952,7 @@
   (segment (start 44.46 39.41) (end 44.83 39.78) (width 0.4) (layer B.Cu) (net 3) (tstamp 643D52D0))
   (segment (start 44.83 39.78) (end 44.83 42.92) (width 0.4) (layer B.Cu) (net 3) (tstamp 643D52CD))
   (segment (start 46.01 40.28) (end 46.01 42.48) (width 0.25) (layer B.Cu) (net 3) (tstamp 643D4895))
-  (via (at 46.21 41.35) (size 1) (drill 0.4) (layers F.Cu B.Cu) (net 3) (tstamp 643D505A))
+  (via (at 45.47 41.37) (size 1) (drill 0.4) (layers F.Cu B.Cu) (net 3) (tstamp 643D505A))
   (via (at 49.19 47.64) (size 1) (drill 0.4) (layers F.Cu B.Cu) (net 3) (tstamp 643D5057))
   (segment (start 48.28 38.91) (end 47.48 38.91) (width 0.25) (layer B.Cu) (net 3) (tstamp 643D4C19))
   (segment (start 48.28 38.91) (end 48.291845 38.91029) (width 0.25) (layer B.Cu) (net 3) (tstamp 643D525B))
