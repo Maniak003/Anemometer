@@ -1,0 +1,416 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Diode:BAT54C D2
+U 1 1 645294D1
+P 5000 2250
+F 0 "D2" H 4900 2100 50  0000 C CNN
+F 1 "BAT54C" H 5000 2500 50  0001 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 5075 2375 50  0001 L CNN
+F 3 "http://www.diodes.com/_files/datasheets/ds11005.pdf" H 4920 2250 50  0001 C CNN
+	1    5000 2250
+	-1   0    0    1   
+$EndComp
+$Comp
+L Transistor_FET:IRF7343PBF Q2
+U 2 1 6452A028
+P 5500 2250
+F 0 "Q2" H 5704 2296 50  0001 L CNN
+F 1 "IRF7343PBF" H 5704 2205 50  0001 L CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 5700 2175 50  0001 L CNN
+F 3 "http://www.irf.com/product-info/datasheets/data/irf7343ipbf.pdf" H 5600 2250 50  0001 L CNN
+	2    5500 2250
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:R R4
+U 1 1 6452CB22
+P 5300 3000
+F 0 "R4" H 5370 3046 50  0000 L CNN
+F 1 "100k" H 5370 2955 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 5230 3000 50  0001 C CNN
+F 3 "~" H 5300 3000 50  0001 C CNN
+	1    5300 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R3
+U 1 1 6453988B
+P 5300 2100
+F 0 "R3" H 5350 2250 50  0000 L CNN
+F 1 "100k" H 5350 2150 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 5230 2100 50  0001 C CNN
+F 3 "~" H 5300 2100 50  0001 C CNN
+	1    5300 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Transistor_FET:IRF7343PBF Q1
+U 1 1 6453F38D
+P 4500 2850
+F 0 "Q1" H 4705 2804 50  0001 L CNN
+F 1 "IRF7343PBF" H 4705 2895 50  0001 L CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 4700 2775 50  0001 L CNN
+F 3 "http://www.irf.com/product-info/datasheets/data/irf7343ipbf.pdf" H 4600 2850 50  0001 L CNN
+	1    4500 2850
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R R1
+U 1 1 64542A76
+P 4700 2100
+F 0 "R1" H 4750 2250 50  0000 L CNN
+F 1 "100k" H 4750 2150 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 4630 2100 50  0001 C CNN
+F 3 "~" H 4700 2100 50  0001 C CNN
+	1    4700 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Transistor_FET:IRF7343PBF Q1
+U 2 1 645443DB
+P 4500 2250
+F 0 "Q1" H 4705 2296 50  0001 L CNN
+F 1 "IRF7343PBF" H 4705 2205 50  0001 L CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 4700 2175 50  0001 L CNN
+F 3 "http://www.irf.com/product-info/datasheets/data/irf7343ipbf.pdf" H 4600 2250 50  0001 L CNN
+	2    4500 2250
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R2
+U 1 1 64553303
+P 4700 3000
+F 0 "R2" H 4750 3050 50  0000 L CNN
+F 1 "100k" H 4750 2950 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 4630 3000 50  0001 C CNN
+F 3 "~" H 4700 3000 50  0001 C CNN
+	1    4700 3000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4400 2050 4400 1900
+Wire Wire Line
+	5300 1950 5300 1900
+Wire Wire Line
+	4700 1950 4700 1900
+Connection ~ 4700 2250
+Connection ~ 5300 2250
+Wire Wire Line
+	4400 3050 4400 3150
+Wire Wire Line
+	4400 3150 4700 3150
+Wire Wire Line
+	5600 3150 5600 3050
+Connection ~ 5300 2850
+Connection ~ 4700 2850
+Connection ~ 4700 3150
+Wire Wire Line
+	4700 3150 5000 3150
+Wire Wire Line
+	5300 3150 5600 3150
+$Comp
+L Device:C C1
+U 1 1 6455CFC6
+P 4700 2450
+F 0 "C1" H 4450 2450 50  0000 L CNN
+F 1 "82nF" H 4450 2350 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 4738 2300 50  0001 C CNN
+F 3 "~" H 4700 2450 50  0001 C CNN
+	1    4700 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C3
+U 1 1 6455F066
+P 5300 2450
+F 0 "C3" H 5000 2450 50  0000 L CNN
+F 1 "82nF" H 5000 2350 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 5338 2300 50  0001 C CNN
+F 3 "~" H 5300 2450 50  0001 C CNN
+	1    5300 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R6
+U 1 1 64566F42
+P 3700 2850
+F 0 "R6" V 3500 2800 50  0000 L CNN
+F 1 "10" V 3600 2800 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3630 2850 50  0001 C CNN
+F 3 "~" H 3700 2850 50  0001 C CNN
+	1    3700 2850
+	0    1    1    0   
+$EndComp
+$Comp
+L Transistor_FET:IRF7343PBF Q2
+U 1 1 6452BE0F
+P 5500 2850
+F 0 "Q2" H 5704 2804 50  0001 L CNN
+F 1 "IRF7343PBF" H 5704 2895 50  0001 L CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 5700 2775 50  0001 L CNN
+F 3 "http://www.irf.com/product-info/datasheets/data/irf7343ipbf.pdf" H 5600 2850 50  0001 L CNN
+	1    5500 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L invertor-rescue:Conn-My_Library J4
+U 1 1 645979CD
+P 6550 1900
+F 0 "J4" H 6578 1900 50  0001 L CNN
+F 1 "Conn" H 6578 1855 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 6600 1750 50  0001 C CNN
+F 3 "~" H 6550 1900 50  0001 C CNN
+	1    6550 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L invertor-rescue:Conn-My_Library J5
+U 1 1 6459E72C
+P 5700 2500
+F 0 "J5" H 5728 2500 50  0001 L CNN
+F 1 "Conn" H 5728 2455 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 5750 2350 50  0001 C CNN
+F 3 "~" H 5700 2500 50  0001 C CNN
+	1    5700 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L invertor-rescue:Conn-My_Library J1
+U 1 1 6459EF77
+P 4300 2500
+F 0 "J1" H 4242 2407 50  0001 C CNN
+F 1 "Conn" H 4328 2455 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 4350 2350 50  0001 C CNN
+F 3 "~" H 4300 2500 50  0001 C CNN
+	1    4300 2500
+	-1   0    0    1   
+$EndComp
+$Comp
+L invertor-rescue:Conn-My_Library J3
+U 1 1 645A03DA
+P 3450 2850
+F 0 "J3" H 3478 2850 50  0001 L CNN
+F 1 "Conn" H 3478 2805 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 3500 2700 50  0001 C CNN
+F 3 "~" H 3450 2850 50  0001 C CNN
+	1    3450 2850
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR0101
+U 1 1 645A16BE
+P 5000 3150
+F 0 "#PWR0101" H 5000 2900 50  0001 C CNN
+F 1 "GND" H 5005 2977 50  0000 C CNN
+F 2 "" H 5000 3150 50  0001 C CNN
+F 3 "" H 5000 3150 50  0001 C CNN
+	1    5000 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L invertor-rescue:Conn-My_Library J6
+U 1 1 645A527F
+P 6550 3150
+F 0 "J6" H 6578 3150 50  0001 L CNN
+F 1 "Conn" H 6578 3105 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 6600 3000 50  0001 C CNN
+F 3 "~" H 6550 3150 50  0001 C CNN
+	1    6550 3150
+	1    0    0    -1  
+$EndComp
+Connection ~ 5600 3150
+$Comp
+L Device:Q_NMOS_GSD Q3
+U 1 1 64672C0F
+P 4050 2850
+F 0 "Q3" H 3950 3200 50  0001 L CNN
+F 1 "IRLML6344" H 3650 3050 50  0001 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 4250 2950 50  0001 C CNN
+F 3 "~" H 4050 2850 50  0001 C CNN
+	1    4050 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R7
+U 1 1 6467B7D9
+P 4150 2100
+F 0 "R7" H 4200 2250 50  0000 L CNN
+F 1 "100" H 4200 2150 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 4080 2100 50  0001 C CNN
+F 3 "~" H 4150 2100 50  0001 C CNN
+	1    4150 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4700 2300 4700 2250
+Wire Wire Line
+	5300 2300 5300 2250
+Connection ~ 4400 3150
+$Comp
+L Device:R R8
+U 1 1 646BA42D
+P 3850 3000
+F 0 "R8" H 3650 3050 50  0000 L CNN
+F 1 "100k" H 3600 2950 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3780 3000 50  0001 C CNN
+F 3 "~" H 3850 3000 50  0001 C CNN
+	1    3850 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Q_NMOS_GSD Q4
+U 1 1 6475D60E
+P 5950 2850
+F 0 "Q4" H 5850 3200 50  0001 L CNN
+F 1 "IRLML6344" H 5550 3050 50  0001 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 6150 2950 50  0001 C CNN
+F 3 "~" H 5950 2850 50  0001 C CNN
+	1    5950 2850
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R R5
+U 1 1 64767CC5
+P 6150 3000
+F 0 "R5" H 6250 3050 50  0000 L CNN
+F 1 "100k" H 6200 2950 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 6080 3000 50  0001 C CNN
+F 3 "~" H 6150 3000 50  0001 C CNN
+	1    6150 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R9
+U 1 1 6476ADFD
+P 6300 2850
+F 0 "R9" V 6100 2800 50  0000 L CNN
+F 1 "10" V 6200 2800 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 6230 2850 50  0001 C CNN
+F 3 "~" H 6300 2850 50  0001 C CNN
+	1    6300 2850
+	0    1    1    0   
+$EndComp
+$Comp
+L invertor-rescue:Conn-My_Library J2
+U 1 1 6476CB9D
+P 6550 2850
+F 0 "J2" H 6578 2850 50  0001 L CNN
+F 1 "Conn" H 6578 2805 50  0001 L CNN
+F 2 "My-library:SMD-CONN" H 6600 2700 50  0001 C CNN
+F 3 "~" H 6550 2850 50  0001 C CNN
+	1    6550 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R10
+U 1 1 647775B0
+P 5850 2100
+F 0 "R10" H 5900 2250 50  0000 L CNN
+F 1 "100" H 5900 2150 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 5780 2100 50  0001 C CNN
+F 3 "~" H 5850 2100 50  0001 C CNN
+	1    5850 2100
+	1    0    0    -1  
+$EndComp
+Connection ~ 5300 2600
+Wire Wire Line
+	5300 2600 5300 2850
+Wire Wire Line
+	4700 2600 4150 2600
+Connection ~ 4700 2600
+Wire Wire Line
+	4700 2600 4700 2850
+Connection ~ 5600 2500
+Wire Wire Line
+	5600 2500 5600 2650
+Wire Wire Line
+	5600 2450 5600 2500
+Connection ~ 4400 2500
+Wire Wire Line
+	4400 2500 4400 2650
+Wire Wire Line
+	4400 2450 4400 2500
+Connection ~ 4400 1900
+Wire Wire Line
+	4400 1900 4700 1900
+Wire Wire Line
+	5300 1900 5600 1900
+Connection ~ 5600 1900
+Wire Wire Line
+	5600 1900 5600 2050
+Wire Wire Line
+	5600 1900 5850 1900
+Connection ~ 5000 3150
+Wire Wire Line
+	5000 3150 5300 3150
+Connection ~ 5300 3150
+Wire Wire Line
+	4700 1900 5000 1900
+Connection ~ 4700 1900
+Connection ~ 5300 1900
+Wire Wire Line
+	5000 2050 5000 1900
+Connection ~ 5000 1900
+Wire Wire Line
+	5000 1900 5300 1900
+Wire Wire Line
+	4150 3050 4150 3150
+Connection ~ 4150 3150
+Wire Wire Line
+	4150 3150 4400 3150
+Wire Wire Line
+	4150 2650 4150 2600
+Connection ~ 4150 2600
+Wire Wire Line
+	4150 2600 4150 2250
+Wire Wire Line
+	4150 1950 4150 1900
+Wire Wire Line
+	4150 1900 4400 1900
+Wire Wire Line
+	3850 3150 4150 3150
+Connection ~ 3850 2850
+Wire Wire Line
+	5850 1950 5850 1900
+Connection ~ 5850 1900
+Wire Wire Line
+	5850 2650 5850 2600
+Connection ~ 5850 2600
+Wire Wire Line
+	5850 2600 5300 2600
+Wire Wire Line
+	5850 2600 5850 2250
+Wire Wire Line
+	5850 1900 6450 1900
+Wire Wire Line
+	5600 3150 5850 3150
+Wire Wire Line
+	5850 3050 5850 3150
+Connection ~ 5850 3150
+Wire Wire Line
+	5850 3150 6150 3150
+Connection ~ 6150 3150
+Connection ~ 6150 2850
+Wire Wire Line
+	6150 3150 6450 3150
+Text Label 6150 1900 0    50   ~ 0
++12v
+Text Label 6450 2850 0    50   ~ 0
+Z1
+Text Label 3550 2850 0    50   ~ 0
+Z2
+$EndSCHEMATC
