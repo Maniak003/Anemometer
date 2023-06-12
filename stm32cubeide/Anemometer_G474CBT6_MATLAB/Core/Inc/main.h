@@ -36,6 +36,10 @@ extern "C" {
 #include <stdlib.h>
 #include <stdio.h>
 #include "maxEnvHilbert.h"
+#include "sntp.h"
+#include "w5500.h"
+#include "socket.h"
+#include "dhcp.h"
 #define BME280_ENABLE
 #ifdef BME280_ENABLE
 #include "BME280.h"
@@ -109,6 +113,16 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOC
 #define AIn_Pin GPIO_PIN_0
 #define AIn_GPIO_Port GPIOA
+#define W5500_RST_Pin GPIO_PIN_3
+#define W5500_RST_GPIO_Port GPIOA
+#define W5500_CS_Pin GPIO_PIN_4
+#define W5500_CS_GPIO_Port GPIOA
+#define W5500_SCK_Pin GPIO_PIN_5
+#define W5500_SCK_GPIO_Port GPIOA
+#define W5500_MISO_Pin GPIO_PIN_6
+#define W5500_MISO_GPIO_Port GPIOA
+#define W5500_MOSI_Pin GPIO_PIN_7
+#define W5500_MOSI_GPIO_Port GPIOA
 #define selZ1_Pin GPIO_PIN_11
 #define selZ1_GPIO_Port GPIOB
 #define selZ2_Pin GPIO_PIN_12
@@ -135,6 +149,19 @@ void Error_Handler(void);
 #define SDA_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+/* For W5500*/
+#define DHCP_SOCKET     0
+#define DNS_SOCKET      1
+#define TCP_SOCKET		2
+#define _DHCP_DEBUG_
+
+//#define ZABBIX_DEBUG
+#define DATA_BUF_SIZE   1024
+#define ZABBIX_ENABLE
+#define ZABBIXAGHOST	"Anemometer04"  // Default hostname.
+#define ZABBIXPORT		10051
+#define ZABBIXMAXLEN	128
+#define MAC_ADDRESS		0x00, 0x11, 0x22, 0x33, 0x44, 0xf0
 
 /* USER CODE END Private defines */
 

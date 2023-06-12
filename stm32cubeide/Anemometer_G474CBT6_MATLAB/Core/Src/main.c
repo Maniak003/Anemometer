@@ -45,6 +45,8 @@ DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
 
+SPI_HandleTypeDef hspi1;
+
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
@@ -55,6 +57,19 @@ UART_HandleTypeDef huart1;
 uint8_t currentLevel = 0;
 char SndBuffer[150];
 float convArray[CONVERSION_COUNT + REF_COUNT], hilbertArray[CONVERSION_COUNT + REF_COUNT], temperature, pressurePA, pressure, humidity, Vsound, Vcapture, Vhilbert;
+char ZabbixHostName[255];
+
+#ifdef ZABBIX_ENABLE
+wiz_NetInfo net_info = {
+	.mac  = { MAC_ADDRESS },
+	.dhcp = NETINFO_DHCP
+};
+uint8_t ntp_server[4] = {192, 168, 1, 1};
+uint8_t gDATABUF[DATA_BUF_SIZE];
+datetime timeNTP;
+#endif
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -67,6 +82,7 @@ static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
+static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -97,6 +113,248 @@ float refArray[] =
 		-2.81, 113.04, 208.17, 266.86, 281.61, 250.84, 182.99, 89.89, -12.97, -108.2, -185.37, -230.21, -238.69, -210.58
 
 };
+
+#ifdef ZABBIX_ENABLE
+
+#ifdef ZABBIX_DEBUG
+void UART_Printf(const char* fmt, ...) {
+	char buff[256];
+	va_list args;
+	va_start(args, fmt);
+	vsnprintf(buff, sizeof(buff), fmt, args);
+	HAL_UART_Transmit(&huart1, (uint8_t*) buff, strlen(buff), HAL_MAX_DELAY);
+	va_end(args);
+}
+#endif
+
+
+void W5500_Select(void) {
+	HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_RESET);
+}
+
+void W5500_Unselect(void) {
+	HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_SET);
+}
+
+void W5500_ReadBuff(uint8_t* buff, uint16_t len) {
+	HAL_SPI_Receive(&hspi1, buff, len, HAL_MAX_DELAY);
+}
+
+void W5500_WriteBuff(uint8_t* buff, uint16_t len) {
+	HAL_SPI_Transmit(&hspi1, buff, len, HAL_MAX_DELAY);
+}
+
+uint8_t W5500_ReadByte(void) {
+	uint8_t byte;
+	W5500_ReadBuff(&byte, sizeof(byte));
+	return byte;
+}
+
+void W5500_WriteByte(uint8_t byte) {
+	W5500_WriteBuff(&byte, sizeof(byte));
+}
+
+volatile bool ip_assigned = false;
+
+void Callback_IPAssigned(void) {
+#ifdef ZABBIX_DEBUG
+	UART_Printf("Callback: IP assigned! Leased time: %d sec\r\n", getDHCPLeasetime());
+#endif
+    ip_assigned = true;
+}
+
+void Callback_IPConflict(void) {
+#ifdef ZABBIX_DEBUG
+    UART_Printf("Callback: IP conflict!\r\n");
+#endif
+}
+
+// 1K should be enough, see https://forum.wiznet.io/t/topic/1612/2
+uint8_t dhcp_buffer[1024];
+// 1K seems to be enough for this buffer as well
+//uint8_t dns_buffer[1024];
+
+/*
+ * addr -- IP address zabbix server, dhcp option 224.
+ * Settings for isc-dhcp-server:
+ * 		option zabbix-server-ip code 224 = ip-address ;
+ * 		option zabix-host-name code 225 = string ;
+ * 		host anemometr {
+ *      	hardware ethernet 00:11:22:33:44:xx;
+ *      	fixed-address 192.168.1.24;
+ *       	option zabbix-server-ip 192.168.1.6;
+ *       	option zabix-host-name "Ed";
+ * 		}
+ *
+ * key -- Zabbix key: {ALTIM_DIRECT, ALTIM_SPEED}
+ *
+ * value -- Float value of key.
+*/
+uint8_t sendToZabbix(uint8_t * addr, char * host, char * key, float value) {
+#ifdef ZABBIX_DEBUG
+    UART_Printf("Creating socket...\r\n");
+#endif
+    uint8_t tcp_socket = TCP_SOCKET;
+    uint8_t code = socket(tcp_socket, Sn_MR_TCP, 10888, 0);
+    if(code != tcp_socket) {
+	#ifdef ZABBIX_DEBUG
+        UART_Printf("socket() failed, code = %d\r\n", code);
+	#endif
+        return(-1);
+    }
+#ifdef ZABBIX_DEBUG
+    UART_Printf("Socket created, connecting...\r\n");
+#endif
+    code = connect(tcp_socket, addr, ZABBIXPORT);
+    if(code != SOCK_OK) {
+	#ifdef ZABBIX_DEBUG
+        UART_Printf("connect() failed, code = %d\r\n", code);
+	#endif
+        close(tcp_socket);
+        return(-2);
+    }
+#ifdef ZABBIX_DEBUG
+    UART_Printf("Connected, sending ZABBIX request...\r\n");
+#endif
+    {
+    	char req[ZABBIXMAXLEN];
+    	char str[ZABBIXMAXLEN - 13];
+    	sprintf(str, "{\"request\":\"sender data\",\"data\":[{\"host\":\"%.20s\",\"key\":\"%s\",\"value\":\"%f\"}]}", host, key, value);
+    	req[0] = 'Z';
+    	req[1] = 'B';
+		req[2] = 'X';
+		req[3] = 'D';
+		req[4] = 0x01;
+		req[5] = strlen(str);
+		req[6] = 0;
+		req[7] = 0;
+		req[8] = 0;
+		req[9] = 0;
+		req[10] = 0;
+		req[11] = 0;
+		req[12] = 0;
+		strcpy(req + 13, str);
+        //char req[] = "ZBXD\1\0\0\0\0\0\0\0\0{\"request\":\"sender data\",\"data\":[{\"host\":\"Ed\",\"key\":\"ALTIM_DIRECT\",\"value\":\"10\"}]}";
+        uint8_t len = req[5] + 13;
+        uint8_t* buff = (uint8_t*)&req;
+        while(len > 0) {
+		#ifdef ZABBIX_DEBUG
+            UART_Printf("Sending %d bytes, data length %d bytes...\r\n", len, req[5]);
+		#endif
+            int32_t nbytes = send(tcp_socket, buff, len);
+            if(nbytes <= 0) {
+			#ifdef ZABBIX_DEBUG
+                UART_Printf("send() failed, %d returned\r\n", nbytes);
+			#endif
+                close(tcp_socket);
+                return(-3);
+            }
+			#ifdef ZABBIX_DEBUG
+            UART_Printf("%d b sent!\r\n", nbytes);
+			#endif
+            len -= nbytes;
+        }
+    }
+    /* Read data from Zabbix */
+	#ifdef ZABBIX_DEBUG
+		UART_Printf("Read.\r\n");
+		{
+			char buff[32];
+			for(;;) {
+				int32_t nbytes = recv(tcp_socket, (uint8_t*)&buff, sizeof(buff)-1);
+				if(nbytes == SOCKERR_SOCKSTATUS) {
+					UART_Printf("\r\nDisconnect.\r\n");
+					break;
+				}
+
+				if(nbytes <= 0) {
+					UART_Printf("\r\nrecv() failed, %d\r\n", nbytes);
+					break;
+				}
+
+				buff[nbytes] = '\0';
+				UART_Printf("%s", buff);
+			}
+		}
+
+		UART_Printf("Closing socket.\r\n");
+	#endif
+    close(tcp_socket);
+    return(0);
+}
+
+
+
+void init_w5500() {
+	#ifdef ZABBIX_DEBUG
+    UART_Printf("\r\ninit() called!\r\n");
+    UART_Printf("W5500 callbacks...\r\n");
+	#endif
+    reg_wizchip_cs_cbfunc(W5500_Select, W5500_Unselect);
+    reg_wizchip_spi_cbfunc(W5500_ReadByte, W5500_WriteByte);
+    reg_wizchip_spiburst_cbfunc(W5500_ReadBuff, W5500_WriteBuff);
+	#ifdef ZABBIX_DEBUG
+    UART_Printf("wizchip_init()...\r\n");
+	#endif
+    uint8_t rx_tx_buff_sizes[] = {2, 2, 2, 2, 2, 2, 2, 2};
+    wizchip_init(rx_tx_buff_sizes, rx_tx_buff_sizes);
+	#ifdef ZABBIX_DEBUG
+    UART_Printf("DHCP_init()...\r\n");
+	#endif
+
+    // set MAC address before using DHCP
+    setSHAR(net_info.mac);
+    DHCP_init(DHCP_SOCKET, dhcp_buffer);
+	#ifdef ZABBIX_DEBUG
+    UART_Printf("DHCP callbacks...\r\n");
+	#endif
+    reg_dhcp_cbfunc(Callback_IPAssigned, Callback_IPAssigned, Callback_IPConflict);
+	#ifdef ZABBIX_DEBUG
+    UART_Printf("DHCP_run()...\r\n");
+	#endif
+    // actually should be called in a loop, e.g. by timer
+    uint32_t ctr = 10000;
+    while((!ip_assigned) && (ctr > 0)) {
+        DHCP_run();
+        ctr--;
+        HAL_Delay(300);
+    }
+    if(!ip_assigned) {
+		#ifdef ZABBIX_DEBUG
+        UART_Printf("\r\nIP was not assigned :(\r\n");
+		#endif
+        return;
+    }
+
+    getIPfromDHCP(net_info.ip);
+    getGWfromDHCP(net_info.gw);
+    getSNfromDHCP(net_info.sn);
+    getZABBIXfromDHCP(net_info.zabbix);
+    getHostNamefromDHCP(net_info.hostname);
+    //getTimeSrvfromDHCP(net_info.tmsrv);
+    if (net_info.hostname[0] == '\0') {
+    	sprintf(ZabbixHostName, "%s", ZABBIXAGHOST);
+    } else {
+    	sprintf(ZabbixHostName, "%s", net_info.hostname);
+    }
+
+    //uint8_t dns[4];
+    //getDNSfromDHCP(dns);
+	#ifdef ZABBIX_DEBUG
+    UART_Printf("IP:  %d.%d.%d.%d\r\nGW:  %d.%d.%d.%d\r\nNet: %d.%d.%d.%d\r\nZabbix: %d.%d.%d.%d\r\nHostName:%s\r\n",
+        net_info.ip[0], net_info.ip[1], net_info.ip[2], net_info.ip[3],
+        net_info.gw[0], net_info.gw[1], net_info.gw[2], net_info.gw[3],
+        net_info.sn[0], net_info.sn[1], net_info.sn[2], net_info.sn[3],
+        net_info.zabbix[0], net_info.zabbix[1], net_info.zabbix[2], net_info.zabbix[3],
+		ZabbixHostName
+    );
+    UART_Printf("Calling wizchip_setnetinfo()...\r\n");
+	#endif
+    wizchip_setnetinfo(&net_info);
+
+}
+#endif
+
 
 /* USER CODE END 0 */
 
@@ -135,8 +393,10 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+  HAL_Delay(300);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -164,10 +424,28 @@ int main(void)
   	  currentLevel = 0;
 	  AD5245level(currentLevel);
 	#endif
-#ifdef BME280_ENABLE
-  BME280_Init();
-#endif
+	#ifdef BME280_ENABLE
+	  BME280_Init();
+	#endif
 
+	#ifdef ZABBIX_ENABLE
+	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_RESET);	// Reset W5500
+	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_RESET);
+	HAL_Delay(3000);
+	init_w5500();
+	//if (net_info.tmsrv[0] == 0) {
+	//	  SNTP_init(0, ntp_server, 28, gDATABUF);
+	//} else {
+	//	  SNTP_init(0, net_info.tmsrv, 28, gDATABUF);
+	//}
+	#else
+	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_RESET);	// Reset W5500
+	HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_SET);
+	#endif
+
+
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
   while (1)
   {
 	  if (readyData) {
@@ -375,6 +653,46 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief SPI1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI1_Init(void)
+{
+
+  /* USER CODE BEGIN SPI1_Init 0 */
+
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 7;
+  hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI1_Init 2 */
+
+  /* USER CODE END SPI1_Init 2 */
 
 }
 
@@ -676,6 +994,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, W5500_RST_Pin|W5500_CS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, selZ1_Pin|selZ2_Pin|selZ3_Pin|selZ4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : LED_Pin */
@@ -684,6 +1005,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : W5500_RST_Pin W5500_CS_Pin */
+  GPIO_InitStruct.Pin = W5500_RST_Pin|W5500_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : selZ1_Pin selZ2_Pin selZ3_Pin selZ4_Pin */
   GPIO_InitStruct.Pin = selZ1_Pin|selZ2_Pin|selZ3_Pin|selZ4_Pin;

@@ -6,7 +6,7 @@ stm32g4xx_it.c:137:6:UsageFault_Handler	1
 stm32g4xx_it.c:152:6:SVC_Handler	1
 stm32g4xx_it.c:165:6:DebugMon_Handler	1
 stm32g4xx_it.c:178:6:PendSV_Handler	1
-stm32g4xx_it.c:191:6:SysTick_Handler	1
-stm32g4xx_it.c:212:6:DMA1_Channel1_IRQHandler	14
-stm32g4xx_it.c:278:6:TIM3_IRQHandler	1
-stm32g4xx_it.c:293:6:TIM4_IRQHandler	2
+stm32g4xx_it.c:191:6:SysTick_Handler	2
+stm32g4xx_it.c:218:6:DMA1_Channel1_IRQHandler	14
+stm32g4xx_it.c:284:6:TIM3_IRQHandler	1
+stm32g4xx_it.c:299:6:TIM4_IRQHandler	2
