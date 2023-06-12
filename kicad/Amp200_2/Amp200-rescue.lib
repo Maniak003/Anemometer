@@ -1,6 +1,26 @@
 EESchema-LIBRARY Version 2.4
 #encoding utf-8
 #
+# AD5245-My_Library
+#
+DEF AD5245-My_Library D 0 40 Y Y 1 F N
+F0 "D" 200 -200 50 H V C CNN
+F1 "AD5245-My_Library" 300 400 50 H V C CNN
+F2 "Package_TO_SOT_SMD:SOT-23-8" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+S -200 300 200 -100 0 1 0 f
+X W 1 300 100 100 L 50 50 1 1 I
+X vdd 2 0 400 100 D 50 50 1 1 I
+X gnd 3 0 -200 100 U 50 50 1 1 I
+X scl 4 -300 200 100 R 50 50 1 1 I
+X sda 5 -300 100 100 R 50 50 1 1 I
+X ad0 6 -300 0 100 R 50 50 1 1 I
+X B 7 300 0 100 L 50 50 1 1 I
+X A 8 300 200 100 L 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
 # Conn-My_Library
 #
 DEF Conn-My_Library J 0 40 N N 1 F N
