@@ -4150,7 +4150,7 @@
   (segment (start 34.75 61.4) (end 34.75 61.4) (width 1) (layer B.Cu) (net 2))
   (segment (start 31.46 61.57) (end 32.47 60.56) (width 0.25) (layer B.Cu) (net 2))
   (segment (start 26.08 61.57) (end 31.46 61.57) (width 1) (layer B.Cu) (net 2))
-  (segment (start 32.56 60.935) (end 32.56 60.14) (width 0.25) (layer F.Cu) (net 2))
+  (segment (start 32.56 60.935) (end 32.56 60.14) (width 0.8) (layer F.Cu) (net 2))
   (segment (start 34.75 61.4) (end 32.55 61.4) (width 1) (layer B.Cu) (net 2) (tstamp 64776F23))
   (via (at 34.75 61.4) (size 1) (drill 0.4) (layers F.Cu B.Cu) (net 2))
   (segment (start 36.542867 59.607132) (end 34.75 61.4) (width 0.6) (layer F.Cu) (net 2))

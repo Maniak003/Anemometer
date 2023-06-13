@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Anemometer_200_G473-rescue:STM32G473CBTx-My_Library D2
+L Anemometer_200_G473-rescue:STM32G473CBTx-My_Library-Anemometer_200_G473-rescue D2
 U 1 1 645A79A7
 P 8000 2250
 F 0 "D2" H 7950 2500 50  0000 C CNN
@@ -626,7 +626,7 @@ Wire Wire Line
 Connection ~ 10850 3050
 NoConn ~ 8700 1950
 $Comp
-L Anemometer_200_G473-rescue:CH340N-My_Library D5
+L Anemometer_200_G473-rescue:CH340N-My_Library-Anemometer_200_G473-rescue D5
 U 1 1 6496EE1B
 P 9950 2850
 F 0 "D5" H 9800 2500 50  0000 C CNN
@@ -1229,46 +1229,6 @@ Connection ~ 2100 4100
 Wire Wire Line
 	2300 1500 2650 1500
 $Comp
-L Device:C C33
-U 1 1 64CE6F1B
-<<<<<<< HEAD
-P 2350 4050
-F 0 "C33" H 2350 3850 50  0000 C CNN
-F 1 ".1" H 2465 4005 50  0001 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 2388 3900 50  0001 C CNN
-F 3 "~" H 2350 4050 50  0001 C CNN
-	1    2350 4050
-=======
-P 1950 1250
-F 0 "C33" H 1950 1050 50  0000 C CNN
-F 1 "22n" H 2065 1205 50  0001 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 1988 1100 50  0001 C CNN
-F 3 "~" H 1950 1250 50  0001 C CNN
-	1    1950 1250
->>>>>>> 37f192aa4905b686ab01ebaaab19d0ca18adb12d
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C C32
-U 1 1 64CE7920
-<<<<<<< HEAD
-P 2150 4050
-F 0 "C32" H 1850 4200 50  0000 C CNN
-F 1 "10u" H 2265 4005 50  0001 L CNN
-F 2 "Capacitor_SMD:C_0402_1005Metric" H 2188 3900 50  0001 C CNN
-F 3 "~" H 2150 4050 50  0001 C CNN
-	1    2150 4050
-=======
-P 1750 1250
-F 0 "C32" H 1450 1400 50  0000 C CNN
-F 1 "22n" H 1865 1205 50  0001 L CNN
-F 2 "Capacitor_SMD:C_0402_1005Metric" H 1788 1100 50  0001 C CNN
-F 3 "~" H 1750 1250 50  0001 C CNN
-	1    1750 1250
->>>>>>> 37f192aa4905b686ab01ebaaab19d0ca18adb12d
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:C C27
 U 1 1 64CE82CE
 P 3250 750
@@ -1392,12 +1352,7 @@ F 3 "" H 2850 900 50  0001 C CNN
 $EndComp
 Connection ~ 2850 900 
 Wire Wire Line
-	1750 1100 1950 1100
-Wire Wire Line
 	2300 1100 2300 1200
-Connection ~ 1950 1100
-Wire Wire Line
-	1950 1100 2100 1100
 Connection ~ 2100 1100
 Wire Wire Line
 	2100 1100 2300 1100
@@ -1416,7 +1371,6 @@ F 3 "" H 1750 1400 50  0001 C CNN
 	1    1750 1400
 	1    0    0    -1  
 $EndComp
-Connection ~ 1750 1400
 Connection ~ 2650 1100
 Wire Wire Line
 	2650 1100 2650 1500
@@ -1467,7 +1421,7 @@ F 3 "" H 5450 2400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Anemometer_200_G473-rescue:Conn_01x08_Shielded-My_Library J3
+L Anemometer_200_G473-rescue:Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue J3
 U 1 1 65094C58
 P 5450 1800
 F 0 "J3" H 5538 1713 50  0000 L CNN
@@ -1524,7 +1478,7 @@ F 3 "~" H 5450 2700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Anemometer_200_G473-rescue:Conn_01x04_Shielded-My_Library J8
+L Anemometer_200_G473-rescue:Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue J8
 U 1 1 648B00AE
 P 6200 900
 F 0 "J8" H 6288 767 50  0000 L CNN
@@ -1683,7 +1637,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/ts5a23159.pdf" H 9050 4250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:MAX4477 D9
+L Anemometer_200_G473-rescue:MAX4477-My_Library D9
 U 1 1 64A019B6
 P 8050 5150
 F 0 "D9" H 7850 5250 50  0000 L CNN
@@ -1694,7 +1648,7 @@ F 3 "" H 8050 5150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:MAX4477 D9
+L Anemometer_200_G473-rescue:MAX4477-My_Library D9
 U 2 1 64A0390D
 P 10050 5800
 F 0 "D9" H 9950 5800 50  0000 C CNN
@@ -1705,7 +1659,7 @@ F 3 "" H 10050 5800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L My_Library:AD5245-My_Library D10
+L Anemometer_200_G473-rescue:AD5245-My_Library-My_Library D10
 U 1 1 64A1FA03
 P 8650 5550
 F 0 "D10" H 9050 5300 50  0000 C CNN
@@ -2695,7 +2649,6 @@ F 3 "~" H 1650 4800 50  0001 C CNN
 	1    1650 4800
 	1    0    0    1   
 $EndComp
-Connection ~ 1650 4950
 $Comp
 L Device:R R31
 U 1 1 65AD8719
@@ -2707,7 +2660,6 @@ F 3 "~" H 2500 4800 50  0001 C CNN
 	1    2500 4800
 	1    0    0    1   
 $EndComp
-Connection ~ 2500 4950
 $Comp
 L Device:R R32
 U 1 1 65AD98A9
@@ -2719,7 +2671,6 @@ F 3 "~" H 3350 4800 50  0001 C CNN
 	1    3350 4800
 	1    0    0    1   
 $EndComp
-Connection ~ 3350 4950
 $Comp
 L Device:R R33
 U 1 1 65ADA994
@@ -2731,7 +2682,6 @@ F 3 "~" H 4200 4800 50  0001 C CNN
 	1    4200 4800
 	1    0    0    1   
 $EndComp
-Connection ~ 4200 4950
 Wire Wire Line
 	1650 4650 2500 4650
 Connection ~ 2500 4650
@@ -3231,4 +3181,6 @@ Wire Wire Line
 Connection ~ 3950 7400
 Wire Wire Line
 	3950 7400 3650 7400
+Wire Wire Line
+	1750 1100 2100 1100
 $EndSCHEMATC
