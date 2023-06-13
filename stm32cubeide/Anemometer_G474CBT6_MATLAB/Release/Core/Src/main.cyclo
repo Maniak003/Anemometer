@@ -9,6 +9,6 @@ main.c:153:6:W5500_WriteByte	1
 main.c:94:6:AD5245level	1
 main.c:193:9:sendToZabbix	5
 main.c:288:6:init_w5500	5
-main.c:500:6:SystemClock_Config	3
+main.c:495:6:SystemClock_Config	3
 main.c:365:5:main	37
-main.c:1047:6:Error_Handler	1
+main.c:1042:6:Error_Handler	1

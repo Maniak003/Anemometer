@@ -9,6 +9,6 @@
 ../Core/Src/main.c:94:6:AD5245level	32	static
 ../Core/Src/main.c:193:9:sendToZabbix	280	static
 ../Core/Src/main.c:288:6:init_w5500	24	static
-../Core/Src/main.c:500:6:SystemClock_Config	96	static,ignoring_inline_asm
+../Core/Src/main.c:495:6:SystemClock_Config	96	static,ignoring_inline_asm
 ../Core/Src/main.c:365:5:main	240	static,ignoring_inline_asm
-../Core/Src/main.c:1047:6:Error_Handler	0	static,ignoring_inline_asm
+../Core/Src/main.c:1042:6:Error_Handler	0	static,ignoring_inline_asm

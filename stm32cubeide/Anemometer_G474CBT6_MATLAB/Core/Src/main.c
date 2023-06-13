@@ -396,7 +396,28 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-  HAL_Delay(300);
+  /* AD5245 */
+	#ifdef AD5245
+	  currentLevel = 0;
+	  AD5245level(currentLevel);
+	#endif
+	#ifdef BME280_ENABLE
+	  BME280_Init();
+	#endif
+
+	HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_RESET);	// Reset W5500
+	#ifdef ZABBIX_ENABLE
+	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_SET);
+	//HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_RESET);
+	HAL_Delay(3000);
+	init_w5500();
+	//if (net_info.tmsrv[0] == 0) {
+	//	  SNTP_init(0, ntp_server, 28, gDATABUF);
+	//} else {
+	//	  SNTP_init(0, net_info.tmsrv, 28, gDATABUF);
+	//}
+	#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -418,32 +439,6 @@ int main(void)
 	  HAL_Delay(1000);
 	  HAL_NVIC_SystemReset();
   }
-
-  /* Test AD5245 */
-	#ifdef AD5245
-  	  currentLevel = 0;
-	  AD5245level(currentLevel);
-	#endif
-	#ifdef BME280_ENABLE
-	  BME280_Init();
-	#endif
-
-	#ifdef ZABBIX_ENABLE
-	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_RESET);	// Reset W5500
-	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_RESET);
-	HAL_Delay(3000);
-	init_w5500();
-	//if (net_info.tmsrv[0] == 0) {
-	//	  SNTP_init(0, ntp_server, 28, gDATABUF);
-	//} else {
-	//	  SNTP_init(0, net_info.tmsrv, 28, gDATABUF);
-	//}
-	#else
-	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_RESET);	// Reset W5500
-	HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_SET);
-	#endif
-
 
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
   while (1)

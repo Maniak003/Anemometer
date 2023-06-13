@@ -60,8 +60,8 @@ all: main-build
 main-build: Anemometer_G473CBT7_MATLAB.elf secondary-outputs
 
 # Tool invocations
-Anemometer_G473CBT7_MATLAB.elf Anemometer_G473CBT7_MATLAB.map: $(OBJS) $(USER_OBJS) /home/ed/work/gitprojects/Anemometer/stm32cubeide/Anemometer_G474CBT6_MATLAB/STM32G473CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Anemometer_G473CBT7_MATLAB.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/ed/work/gitprojects/Anemometer/stm32cubeide/Anemometer_G474CBT6_MATLAB/STM32G473CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Anemometer_G473CBT7_MATLAB.map" -Wl,--gc-sections -static -LARM_MATH_CM4 --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Anemometer_G473CBT7_MATLAB.elf Anemometer_G473CBT7_MATLAB.map: $(OBJS) $(USER_OBJS) /home/ed/work/Anemometer/stm32cubeide/Anemometer_G474CBT6_MATLAB/STM32G473CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Anemometer_G473CBT7_MATLAB.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/ed/work/Anemometer/stm32cubeide/Anemometer_G474CBT6_MATLAB/STM32G473CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Anemometer_G473CBT7_MATLAB.map" -Wl,--gc-sections -static -LARM_MATH_CM4 --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
