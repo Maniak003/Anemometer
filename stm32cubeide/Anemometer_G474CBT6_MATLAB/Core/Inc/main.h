@@ -61,6 +61,11 @@ extern uint32_t sumCaptureTIM2;
 #define START_TEXT "\n\rAnemometr200 init\n\r"
 #define FINISH_TEXT "Init finish.\n\r"
 #define ERROR_TEXT "Error, system reset\n\r"
+#define BME280_INIT_TEXT "BM280 init.."
+#define AD5245_INIT_TEXT "AD5245 init.\n\r"
+#define W5500_INIT_TEXT "W5500 init.."
+#define ADC_TMR_INIT_TEXT "ADC, TMRs init.."
+#define INIT_OK "Ok\n\r"
 #define AD5245 /* Автоматическая регулировка уровня от 0 до 254 */
 #ifdef AD5245
 	void AD5245level(uint8_t lev);

@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Anemometer_200_G473-rescue:STM32G473CBTx-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D2
+L Anemometer_200_G473-rescue:STM32G473CBTx-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D2
 U 1 1 645A79A7
 P 8000 2250
 F 0 "D2" H 7950 2500 50  0000 C CNN
@@ -626,7 +626,7 @@ Wire Wire Line
 Connection ~ 10850 3050
 NoConn ~ 8700 1950
 $Comp
-L Anemometer_200_G473-rescue:CH340N-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D5
+L Anemometer_200_G473-rescue:CH340N-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D5
 U 1 1 6496EE1B
 P 9950 2850
 F 0 "D5" H 9800 2500 50  0000 C CNN
@@ -1421,7 +1421,7 @@ F 3 "" H 5450 2400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Anemometer_200_G473-rescue:Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue J3
+L Anemometer_200_G473-rescue:Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue J3
 U 1 1 65094C58
 P 5450 1800
 F 0 "J3" H 5538 1713 50  0000 L CNN
@@ -1478,7 +1478,7 @@ F 3 "~" H 5450 2700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Anemometer_200_G473-rescue:Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue J8
+L Anemometer_200_G473-rescue:Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue J8
 U 1 1 648B00AE
 P 6200 900
 F 0 "J8" H 6288 767 50  0000 L CNN
@@ -1637,7 +1637,7 @@ F 3 "http://www.ti.com/lit/ds/symlink/ts5a23159.pdf" H 9050 4250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Anemometer_200_G473-rescue:MAX4477-My_Library-Anemometer_200_G473-rescue D9
+L Anemometer_200_G473-rescue:MAX4477-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D9
 U 1 1 64A019B6
 P 8050 5150
 F 0 "D9" H 7850 5250 50  0000 L CNN
@@ -1648,7 +1648,7 @@ F 3 "" H 8050 5150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Anemometer_200_G473-rescue:MAX4477-My_Library-Anemometer_200_G473-rescue D9
+L Anemometer_200_G473-rescue:MAX4477-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D9
 U 2 1 64A0390D
 P 10050 5800
 F 0 "D9" H 9950 5800 50  0000 C CNN
@@ -1659,7 +1659,7 @@ F 3 "" H 10050 5800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Anemometer_200_G473-rescue:AD5245-My_Library-My_Library-Anemometer_200_G473-rescue D10
+L Anemometer_200_G473-rescue:AD5245-My_Library-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D10
 U 1 1 64A1FA03
 P 8650 5550
 F 0 "D10" H 9050 5300 50  0000 C CNN

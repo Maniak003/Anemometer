@@ -64,11 +64,11 @@ X VCC 8 0 500 100 D 50 50 3 1 W
 ENDDRAW
 ENDDEF
 #
-# Anemometer_200_G473-rescue_AD5245-My_Library-My_Library-Anemometer_200_G473-rescue
+# Anemometer_200_G473-rescue_AD5245-My_Library-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
 #
-DEF Anemometer_200_G473-rescue_AD5245-My_Library-My_Library-Anemometer_200_G473-rescue D 0 40 Y Y 1 F N
+DEF Anemometer_200_G473-rescue_AD5245-My_Library-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D 0 40 Y Y 1 F N
 F0 "D" 200 -200 50 H V C CNN
-F1 "Anemometer_200_G473-rescue_AD5245-My_Library-My_Library-Anemometer_200_G473-rescue" 300 400 50 H V C CNN
+F1 "Anemometer_200_G473-rescue_AD5245-My_Library-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 300 400 50 H V C CNN
 F2 "Package_TO_SOT_SMD:SOT-23-8" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -84,11 +84,11 @@ X A 8 300 200 100 L 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
-# Anemometer_200_G473-rescue_CH340N-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
+# Anemometer_200_G473-rescue_CH340N-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
 #
-DEF Anemometer_200_G473-rescue_CH340N-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D 0 40 Y Y 1 F N
+DEF Anemometer_200_G473-rescue_CH340N-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D 0 40 Y Y 1 F N
 F0 "D" 0 -400 50 H V C CNN
-F1 "Anemometer_200_G473-rescue_CH340N-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 300 -300 50 H V C CNN
+F1 "Anemometer_200_G473-rescue_CH340N-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 300 -300 50 H V C CNN
 F2 "Package_SO:SOP-8_3.9x4.9mm_P1.27mm" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -105,11 +105,11 @@ X v3 8 100 400 100 D 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
-# Anemometer_200_G473-rescue_Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
+# Anemometer_200_G473-rescue_Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
 #
-DEF Anemometer_200_G473-rescue_Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue J 0 40 Y N 1 F N
+DEF Anemometer_200_G473-rescue_Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue J 0 40 Y N 1 F N
 F0 "J" 10 190 50 H V C CNN
-F1 "Anemometer_200_G473-rescue_Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 40 -290 50 H V L CNN
+F1 "Anemometer_200_G473-rescue_Conn_01x04_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 40 -290 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -130,11 +130,11 @@ X Shield MP 0 -400 150 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# Anemometer_200_G473-rescue_Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
+# Anemometer_200_G473-rescue_Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
 #
-DEF Anemometer_200_G473-rescue_Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue J 0 40 Y N 1 F N
+DEF Anemometer_200_G473-rescue_Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue J 0 40 Y N 1 F N
 F0 "J" 10 390 50 H V C CNN
-F1 "Anemometer_200_G473-rescue_Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 40 -490 50 H V L CNN
+F1 "Anemometer_200_G473-rescue_Conn_01x08_Shielded-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 40 -490 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -163,11 +163,11 @@ X Shield MP 0 -600 150 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# Anemometer_200_G473-rescue_MAX4477-My_Library-Anemometer_200_G473-rescue
+# Anemometer_200_G473-rescue_MAX4477-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
 #
-DEF Anemometer_200_G473-rescue_MAX4477-My_Library-Anemometer_200_G473-rescue D 0 40 Y Y 2 L N
+DEF Anemometer_200_G473-rescue_MAX4477-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D 0 40 Y Y 2 L N
 F0 "D" 50 150 50 H V C CNN
-F1 "Anemometer_200_G473-rescue_MAX4477-My_Library-Anemometer_200_G473-rescue" -50 0 50 H V C CNN
+F1 "Anemometer_200_G473-rescue_MAX4477-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" -50 0 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -183,11 +183,11 @@ X ~ 7 350 0 100 L 50 50 2 1 I
 ENDDRAW
 ENDDEF
 #
-# Anemometer_200_G473-rescue_STM32G473CBTx-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
+# Anemometer_200_G473-rescue_STM32G473CBTx-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue
 #
-DEF Anemometer_200_G473-rescue_STM32G473CBTx-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D 0 40 Y Y 1 F N
+DEF Anemometer_200_G473-rescue_STM32G473CBTx-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue D 0 40 Y Y 1 F N
 F0 "D" 0 700 50 H V C CNN
-F1 "Anemometer_200_G473-rescue_STM32G473CBTx-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 0 600 50 H V C CNN
+F1 "Anemometer_200_G473-rescue_STM32G473CBTx-My_Library-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue-Anemometer_200_G473-rescue" 0 600 50 H V C CNN
 F2 "Package_QFP:LQFP-48_7x7mm_P0.5mm" -400 300 50 H I C CNN
 F3 "" -400 300 50 H I C CNN
 DRAW
@@ -724,6 +724,18 @@ C 64 196 4 0 0 0 N
 C 64 310 4 0 0 0 N
 C 66 -204 4 0 0 0 N
 C 66 -92 4 0 0 0 N
+T 0 -250 225 24 0 0 0 CT1 Normal 0 C C
+T 0 -250 -175 24 0 0 0 CT2 Normal 0 C C
+T 0 250 -325 24 0 0 0 CT3 Normal 0 C C
+T 0 250 75 24 0 0 0 CT4 Normal 0 C C
+T 0 -250 -75 24 0 0 0 RD+ Normal 0 C C
+T 0 -250 -325 24 0 0 0 RD- Normal 0 C C
+T 0 250 -75 24 0 0 0 RX+ Normal 0 C C
+T 0 250 -225 24 0 0 0 RX- Normal 0 C C
+T 0 -250 325 24 0 0 0 TD+ Normal 0 C C
+T 0 -250 75 24 0 0 0 TD- Normal 0 C C
+T 0 250 325 24 0 0 0 TX+ Normal 0 C C
+T 0 250 175 24 0 0 0 TX- Normal 0 C C
 S -300 400 300 -400 0 1 0 f
 P 2 0 1 0 -300 -300 -200 -300 N
 P 2 0 1 0 -300 -200 -200 -200 N

@@ -45,6 +45,8 @@ DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
 
+IWDG_HandleTypeDef hiwdg;
+
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim1;
@@ -83,6 +85,7 @@ static void MX_USART1_UART_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -394,24 +397,31 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_SPI1_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+  HAL_UART_Transmit(&huart1, (uint8_t *) START_TEXT, sizeof(START_TEXT), 1000);
   /* AD5245 */
 	#ifdef AD5245
+  	  HAL_UART_Transmit(&huart1, (uint8_t *) AD5245_INIT_TEXT, sizeof(AD5245_INIT_TEXT), 1000);
 	  currentLevel = 0;
 	  AD5245level(currentLevel);
 	#endif
 	#ifdef BME280_ENABLE
+	  HAL_UART_Transmit(&huart1, (uint8_t *) BME280_INIT_TEXT, sizeof(BME280_INIT_TEXT), 1000);
 	  BME280_Init();
+	  HAL_UART_Transmit(&huart1, (uint8_t *) INIT_OK, sizeof(INIT_OK), 1000);
 	#endif
 
 	HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_RESET);	// Reset W5500
 	#ifdef ZABBIX_ENABLE
+	HAL_UART_Transmit(&huart1, (uint8_t *) W5500_INIT_TEXT, sizeof(W5500_INIT_TEXT), 1000);
 	HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_SET);
 	//HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_RESET);
 	HAL_Delay(3000);
 	init_w5500();
+    HAL_UART_Transmit(&huart1, (uint8_t *) INIT_OK, sizeof(INIT_OK), 1000);
 	//if (net_info.tmsrv[0] == 0) {
 	//	  SNTP_init(0, ntp_server, 28, gDATABUF);
 	//} else {
@@ -422,8 +432,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_UART_Transmit(&huart1, (uint8_t *) ADC_TMR_INIT_TEXT, sizeof(ADC_TMR_INIT_TEXT), 1000);
   TIM3->ARR = MEASURMENT_DELAY;
-  HAL_UART_Transmit(&huart1, (uint8_t *) START_TEXT, sizeof(START_TEXT), 1000);
 
   HAL_GPIO_WritePin(selZ1_GPIO_Port, selZ1_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(selZ2_GPIO_Port, selZ2_Pin, GPIO_PIN_RESET);
@@ -433,17 +443,19 @@ int main(void)
   if ( (HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED) == HAL_OK)
 	&& (HAL_TIM_Base_Start_IT(&htim3) == HAL_OK)
 	&& (HAL_TIM_Base_Start_IT(&htim4) == HAL_OK) ) {
-	  HAL_UART_Transmit(&huart1, (uint8_t *) FINISH_TEXT, sizeof(FINISH_TEXT), 1000);
+	  HAL_UART_Transmit(&huart1, (uint8_t *) INIT_OK, sizeof(INIT_OK), 1000);
   } else {
 	  HAL_UART_Transmit(&huart1, (uint8_t *) ERROR_TEXT, sizeof(ERROR_TEXT), 1000);
 	  HAL_Delay(1000);
 	  HAL_NVIC_SystemReset();
   }
 
+  HAL_UART_Transmit(&huart1, (uint8_t *) FINISH_TEXT, sizeof(FINISH_TEXT), 1000);
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
   while (1)
   {
 	  if (readyData) {
+		  HAL_IWDG_Refresh(&hiwdg);
 		  HAL_TIM_Base_Stop_IT(&htim4);
 		  memset(SndBuffer, 0, sizeof(SndBuffer));
 		  for (int ii = 0; ii < CONVERSION_COUNT; ii++) {
@@ -504,10 +516,12 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI
+                              |RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
@@ -648,6 +662,35 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief IWDG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IWDG_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG_Init 0 */
+
+  /* USER CODE END IWDG_Init 0 */
+
+  /* USER CODE BEGIN IWDG_Init 1 */
+
+  /* USER CODE END IWDG_Init 1 */
+  hiwdg.Instance = IWDG;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
+  hiwdg.Init.Window = 4095;
+  hiwdg.Init.Reload = 4095;
+  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG_Init 2 */
+
+  /* USER CODE END IWDG_Init 2 */
 
 }
 
