@@ -116,8 +116,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
-#define AIn_Pin GPIO_PIN_0
-#define AIn_GPIO_Port GPIOA
 #define W5500_RST_Pin GPIO_PIN_3
 #define W5500_RST_GPIO_Port GPIOA
 #define W5500_CS_Pin GPIO_PIN_4
@@ -128,6 +126,8 @@ void Error_Handler(void);
 #define W5500_MISO_GPIO_Port GPIOA
 #define W5500_MOSI_Pin GPIO_PIN_7
 #define W5500_MOSI_GPIO_Port GPIOA
+#define AIn_Pin GPIO_PIN_0
+#define AIn_GPIO_Port GPIOB
 #define selZ1_Pin GPIO_PIN_11
 #define selZ1_GPIO_Port GPIOB
 #define selZ2_Pin GPIO_PIN_12
