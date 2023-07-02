@@ -455,6 +455,7 @@ int main(void)
   while (1)
   {
 	  if (readyData) {
+		  readyData = false;
 		  HAL_IWDG_Refresh(&hiwdg);
 		  HAL_TIM_Base_Stop_IT(&htim4);
 		  memset(SndBuffer, 0, sizeof(SndBuffer));
@@ -490,7 +491,6 @@ int main(void)
 		  #endif
 		  HAL_TIM_Base_Start_IT(&htim4);
 		  //sumCaptureTIM2 = 0;
-		  readyData = false;
 	  }
 	  HAL_Delay(50);
     /* USER CODE END WHILE */

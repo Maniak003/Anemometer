@@ -79,7 +79,7 @@ extern uint32_t sumCaptureTIM2;
 #endif
 #define ACURACY_LEVEL 50
 #define ADC_RESOLUTION 1024
-#define NOMINAL_LEVEL 450
+#define NOMINAL_LEVEL 250 //450
 #define MEASURMENT_DELAY 40200
 #define DISTANCE 203.5f
 #define ABS_ZERRO 273.15f

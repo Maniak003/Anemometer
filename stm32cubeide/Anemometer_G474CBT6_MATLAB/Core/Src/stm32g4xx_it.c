@@ -240,9 +240,9 @@ void DMA1_Channel1_IRQHandler(void)
 			} else {
 				maxLevel = abs(maxLevel - avgLevel);
 			}
+			levelNominal = false;
 			if (abs(maxLevel - NOMINAL_LEVEL) > ACURACY_LEVEL) {
 				if (maxLevel - NOMINAL_LEVEL > 0) {
-					levelNominal = false;
 					/* Сигнал сильный, понижаем уровень */
 					#ifdef AD5245
 					AD5245level(currentLevel--);
